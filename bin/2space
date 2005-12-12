@@ -1,0 +1,7 @@
+#!/bin/sh
+# stupid little shell script for double spacing
+while read line
+do
+	echo "$line"
+	echo
+done
