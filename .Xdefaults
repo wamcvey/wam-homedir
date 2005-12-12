@@ -103,13 +103,15 @@ XTerm*VT100.Translations:	#override \
 	Shift<Key>Up:		scroll-back(1,page)	\n\
 	Shift<Key>Down:		scroll-forw(1,page)
 ! XTerm*font:			fixed
-XTerm*font:			-*-fixed-medium-*-normal-*-15-*-*-*-c-*-*-*
+XTerm*font:			12x24
 XTerm*font3:			fixed
 XTerm*fontMenu*font3*Label:	fixed
-XTerm*font4:			-adobe-*-medium-r-normal-*-15-*-*-*-*-*-*-*
-XTerm*fontMenu*font4*Label:	Adobe18
-XTerm*fontMenu*font6*Label:	blind
-XTerm*font6:			12x24
+XTerm*font4:			-adobe-*-medium-r-normal-*-20-*-*-*-*-*-*-*
+XTerm*fontMenu*font4*Label:	Adobe20
+! XTerm*fontMenu*font6*Label:	blind
+! XTerm*font6:			12x24
+XTerm*fontMenu*font6*Label:	fixed18
+XTerm*font6:			-misc-fixed-*-r-*-*-18-120-*-*-c-*-*-*
 XTerm*termName:			xterm
 #ifndef COLOR
 XTerm*background:		white
