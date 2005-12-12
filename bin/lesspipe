@@ -1,0 +1,69 @@
+#!/bin/sh
+# set -x
+PATH=/usr/bin:/bin:/usr/local/bin:$PATH
+GZCAT="gzip -dc"
+UNZIP=unzip
+BZCAT=bzcat
+UNRAR=unrar
+JAR=jar
+
+# big time hack.  This is only temporary, until I have time to think about it.
+# should probably switch on file(1) info
+if [ -d "$1" ] 
+then
+	ls -Flags $1
+	exit 0
+fi
+
+case "$1" in
+*.tar)
+	tar tvf $1 
+	;;
+*.tar.Z)
+	( $GZCAT $1 || uncompress -c $1 ; ) 2>/dev/null | tar tvf -
+	;;
+*.tgz|*.tar.gz)
+	$GZCAT $1 | tar tvf -
+	;;
+*.tgz::*|*.tar.gz::*|*.tar.Z::*)
+	base=`expr "$1" : '\(.*\)::'`
+	subfile=`expr "$1" : '.*::\(.*\)'`
+	$GZCAT $base | tar Oxf - $subfile 2> /dev/null
+	;;
+*.tar.bz2)
+	$BZCAT $1 | tar tvf -
+	;;
+*.rar)
+	$UNRAR lt "$1"
+	;;
+*.tar.bz2::*)
+	base=`expr "$1" : '\(.*\)::'`
+	subfile=`expr "$1" : '.*::\(.*\)'`
+	$BZCAT $base | tar  Oxf - $subfile 2> /dev/null
+	;;
+*.Z)
+	$GZCAT $1 2> /dev/null || uncompress -c $1 2>/dev/null
+	;;
+*.gz)
+	$GZCAT $1 2> /dev/null || echo "lesspipe: can't find $GZCAT" 1>&2
+	;;
+*.zip)
+	$UNZIP -l $1 2> /dev/null
+	;;
+*.jar)
+	$JAR tvf $1 2> /dev/null
+	;;
+*.htm::|*.html::)
+	base=`expr "$1" : '\(.*\)::'`
+	dehtml $base | less
+	;;
+*.zip::*)
+	base=`expr "$1" : '\(.*\)::'`
+	subfile=`expr "$1" : '.*::\(.*\)'`
+	$UNZIP -p $base $subfile 2> /dev/null
+	;;
+*.jar)
+	$JAR tvf $1 2> /dev/null
+	;;
+esac
+exit 0

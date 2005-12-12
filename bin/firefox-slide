@@ -1,0 +1,77 @@
+#!/usr/bin/env python
+
+"""A program to do something
+
+Detailed documentation
+"""
+
+__author__ =	"William McVey"
+__date__ = 	"3 September, 2004"
+__revision__ =	"$Id:$"
+
+
+import os
+import sys
+import logging
+import re
+
+firefox_path = "/usr/local/firefox/firefox"
+
+badurl_re = re.compile(r"^[a-zA-Z]+://[^/]+$")
+
+def open_window():
+	cmd = 'xfeDoCommand(openBrowser)'
+	os.system(
+	  '%(firefox)s -a firefox -remote "%(cmd)s" || %(firefox)s' % {
+	  "firefox": firefox_path, 
+	  "cmd": cmd,
+	  }
+	)
+	
+
+def open_page(url, tab=False):
+	if os.path.exists(url):
+		url="file://" + os.path.abspath(url)
+	elif "://" not in url:
+		url = "http://" + url + "/"
+	elif badurl_re.search(url):
+		url += "/"
+	if tab:
+		cmd = "openUrl(%s, new-tab)" % url
+	else:
+		cmd = "openUrl(%s, new-window)" % url
+	os.system(
+	  '%(firefox)s -a firefox -remote "%(cmd)s" || %(firefox)s %(url)s' % {
+	  "firefox": firefox_path, 
+	  "cmd": cmd,
+	  "url": url
+	  }
+	)
+
+if __name__ == '__main__':
+	import sys
+	import os
+	from optparse import OptionParser       # aka Optik
+
+	Progname=os.path.basename(sys.argv[0])
+	Usage="""\
+%prog usage: [-t] URL
+%prog usage: -h
+%prog usage: -V 
+"""
+	optparser = OptionParser(usage=Usage, version="%prog: $Id:$" )
+	optparser.add_option("-t", "--tab", dest = "tab", 
+	  action="store_true", help="open new window in a tab")
+	# optparser.add_option("-v", "--verbose", dest = "verbose",
+	#   action="store_true", help="be verbose")
+	#optparser.add_option("-N", "--name", dest="var_n", 
+	#  action= "store" | "append" | "store_true" | "store_false" 
+	#  type = "int"
+	#  default="foo", metavar="SOME_STRING", help="store a string")
+	(options, params) = optparser.parse_args()
+
+	if len(params) == 0:
+		open_window()
+		sys.exit(0)
+	for param in params:
+		open_page(param, tab=options.tab)

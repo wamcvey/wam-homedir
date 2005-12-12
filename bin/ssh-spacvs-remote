@@ -1,0 +1,3 @@
+#!/bin/sh
+shift
+ssh -p 2522 localhost $@

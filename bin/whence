@@ -1,0 +1,23 @@
+#!/bin/sh
+# whence
+# ksh has a whence which does almost the same thing as csh's which.
+# this is a shell implimentation of the same thing.
+
+IFS=:
+
+for program
+do
+	found=0
+	for path in $PATH
+	do
+		if [ -x ${path}/$program ] ; then
+			echo ${path}/${program}
+			found=1
+			break
+		fi
+	done
+	if [ $found -eq 0 ] ; then
+		exit 1;
+	fi
+done
+exit 0

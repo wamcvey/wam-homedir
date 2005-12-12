@@ -1,0 +1,5 @@
+#!/bin/sh
+# you'd be surprised how often you want to ls just the directories
+
+ARGS=${@:-.}
+ls -dF `find $ARGS -maxdepth 1 -type d -print`

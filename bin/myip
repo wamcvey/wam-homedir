@@ -1,0 +1,9 @@
+#!/bin/sh
+
+result=`ifconfig $1 | sed -ne 's/.*inet addr:\([^ ]*\) .*$/\1/p'`
+
+if [ -z "$result" ]
+then
+	exit 1
+fi
+echo "$result"

@@ -1,0 +1,39 @@
+#!/bin/sh
+# prompt me for where I want to go
+
+echo_no_nl() {
+        ECHO_TEST=$(echo -n foo |wc -w) 
+        if [ ${ECHO_TEST} -ne 2 ] 
+        then
+                echo -n "${*}" 
+        else
+                echo "${*}\c" 
+        fi 
+} 
+
+xtitle() {
+        echo_no_nl  "]0;$@"
+}
+
+echo_no_nl "SSH to: "
+read host
+set _ $host
+shift
+
+# Pull up a localhost if nothing entered
+if [ "$host" = "" ]
+then
+	xtitle "localhost"
+	exec $SHELL
+fi
+
+# allow to override with telnet in case  host isn't ssh enabled (blech)
+if [ "$1" = "telnet" ]
+then
+	shift
+	xtitle "$@"
+	exec telnet $@
+fi
+
+xtitle "+ $@ +"
+exec ssh $@

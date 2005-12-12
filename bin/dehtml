@@ -1,0 +1,39 @@
+#!/usr/bin/perl
+
+undef $/;		# slurp mode
+$file= <>;
+$file =~ s///;
+if ($file !~ /<PRE>/i) {
+	# don't fold whitespace if we've got preformated text
+	# kind of a hack, but mostly works.
+	$file =~ s/^\s*$//g;
+	$file =~ s/\s+/ /g;
+}
+# strip out javascript
+$file =~ s@<script[^>]*>.*?</script>@@ig;
+
+# table processing
+$file =~ s@</tr>@\n@ig;
+$file =~ s@</td>@\t@ig;
+$file =~ s@<th[^>]*>(.*?)</th>@==$1==\t@ig;
+
+# This is still broken... I want the alt tag for images if available
+# $file =~ s/\<IMG.+?ALT\s+=\s+(.+?)\>/sub-\1-par/;
+# $file =~ s/<IMG\s+.*?ALT\s*=\s*(["']?)(.*?)\1[^>]*>/sub-\2/;
+$file =~ s@</?P[^>]*?>@\n@ig;
+$file =~ s@</?br[^>]*>@\n@ig;
+$file =~ s@<H[0-9]>@\n\n@ig;
+$file =~ s@</H[0-9]>@\n====================================\n@ig;
+$file =~ s@<LI>@\n@ig;
+$file =~ s@<Tab>@\t@ig;		# not html, but usefull for mml
+$file =~ s@<TR>@\n@ig;
+$file =~ s@</dt>@\n\t@ig;
+$file =~ s@</dd>@\n@ig;
+$file =~ s@<[^>]+>@@g;
+$file =~ s/&lt;/</ig;
+$file =~ s/&gt;/>/ig;
+$file =~ s/&nbsp;/ /ig;
+$file =~ s/&amp;/&/ig;
+
+print $file;
+exit 0;

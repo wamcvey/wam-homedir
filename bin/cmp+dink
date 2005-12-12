@@ -1,0 +1,55 @@
+#!/bin/sh
+
+# this script finds all the files in two directory trees, removing
+# the common ones from the local copy.
+
+# WARNING: this program can be very destructive, use with caution
+
+# given to wam by ksb long time ago...
+
+PROGNAME="`basename $0`"
+USAGE="$PROGNAME: usage [-fhi] remote [local]"
+
+RMFLAGS=""
+
+while [ $# -gt 0 ]
+do
+	case "$1" in
+	-f|-i|-if|-fi)
+		RMFLAGS="$RMFLAGS $1"
+		shift
+		continue
+		;;
+	-h)
+		echo "$USAGE"
+		cat -<<!
+f	force removal, see rm(1)
+h	print this help message
+i	interactive, see rm(1)
+remote	the directory tree to compare to
+local	the directory tree to prune (default .)
+!
+		exit 0
+		;;
+	-*)
+		echo "$USAGE" 1>&2
+		exit 1
+		;;
+	esac
+	break;
+done
+
+REM=${1?'must give remote directory name, see -h'}
+LOCAL=${2-.}
+
+find "$LOCAL" -type f -print | while read file
+do
+	basefile=`expr "${file}" : "${LOCAL}\(.*\)"`
+	if cmp -s "$file" "$REM/$basefile"
+	then
+		rm $RMFLAGS $file
+	else
+		echo "keeping $file"
+	fi
+done
+exit 0

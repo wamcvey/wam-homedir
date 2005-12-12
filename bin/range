@@ -1,0 +1,24 @@
+#!/usr/bin/perl
+# range
+# Print out a set of data from one end point to another endpoint
+# range _start_ _end_ "some string with RANGE as a literal"
+#
+# Useful invocations include, but certainly are not limited to:
+#    range 0 255 10.20.RANGE.0/24
+#    range 01 12 "range 01 31 http://site/path/2003RANGER\ANGE/index.html" | sh 
+#    range aaaaa zzzzz RANGE
+#    for num in `range 0 100 RANGE`; do .... done
+# 
+# William McVey <wam@wamber.net>
+# Some time around Spring of 1998
+# Comments added Feb 2003
+
+foreach $num ($ARGV[0] ... $ARGV[1]) {
+	if (defined $ARGV[2]) {
+		$new=$ARGV[2];
+		$new=~ s/RANGE/$num/g;
+	} else {
+		$new=$num;
+	}
+	print $new, "\n";
+}

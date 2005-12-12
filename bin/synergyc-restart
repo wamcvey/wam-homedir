@@ -1,0 +1,4 @@
+#!/bin/sh
+myip=`myip eth0 || myip eth1`
+
+ssh $@ "pkill synergyc ; DISPLAY=:0.0 synergyc $myip"

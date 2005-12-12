@@ -1,0 +1,64 @@
+#!/bin/sh
+# Quick and  dirty hack to show longest file in a directory 
+# (usefull to determine what should be renamed/removed to get nice ls -C output)
+
+# our program name and usage message
+progname=`basename $0`
+usage="$progname: usage [-num] [directories]"
+
+
+COUNT=1
+while [ $# -gt 0 ]
+do
+	case "$1" in
+	-[0-9]*)
+		COUNT=`expr "$1" : '-\(.*\)'`
+		shift
+		;;
+
+	--)
+		shift
+		break
+		;;
+	-h|-h*)
+		cat <<HERE
+$usage
+num	number of longest files to display
+dirs	directories to search through
+HERE
+		exit 0
+		;;
+	-*)
+		echo "$usage" 1>&2 
+		exit 1
+		;;
+	*)
+		# process and continue for intermixed options & args
+		break
+		;;
+	esac
+	done
+
+
+CWD=pwd
+if [ $# -eq 0 ]
+then
+	ls | while read filename
+	do
+		echo `echo $filename | wc -c` $filename
+	done | sort -n | tail -$COUNT
+	exit 0
+fi
+
+while [ $# -gt 0 ]
+do
+	dir=$1
+	shift
+
+	cd $dir
+	ls $dir | while read filename
+	do
+		echo `echo $filename | wc -c` $filename
+	done | sort -n | tail -$COUNT
+	cd $CWD
+done

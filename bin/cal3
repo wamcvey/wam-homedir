@@ -1,0 +1,28 @@
+#!/bin/sh
+#FROM mentor.cc.purdue.edu!noose.ecn.purdue.edu!samsung!uunet!walter!porthos!jjw!jjw3 Wed May 20 12:32:16 EST 1992
+
+#Gee, just because someone codes verbosely and awkwardly in csh
+#is no reason to jump to perl.  It could be shorter and easier even
+#in ye-olde-Bourne-shell.  Yes, I lament sh's inability to do math,
+#but the math tools are there (I've just chosen one of many), and when
+#you leave the shell you lose the beauty and elegance of the single
+#shell pipeline (which is really all this program is).
+#--> joe w.
+
+########
+# cal3 - 3-month calendar printer
+########
+
+case $# in
+0|1)    eval `date "+M=${1:-%m} Y=${2:-%Y}"`;;
+2)      M=$1 Y=$2;;
+*)      echo "Usage: $0 [month [year]]" >&2; exit 2;;
+esac
+
+bc <<! | xargs -n2 cal | pr -3 -t -l8
+m=$M; y=$Y
+if (m>1) {m-1; y}; if (m==1) {12; y-1}     /* prev month */
+m; y                                       /* this month */
+if (m<12) {m+1; y}; if (m==12) {1; y+1}    /* next month */
+!
+exit 0

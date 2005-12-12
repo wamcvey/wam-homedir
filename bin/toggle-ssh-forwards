@@ -1,0 +1,11 @@
+#!/bin/sh
+
+cp /etc/hosts /etc/hosts-bkp
+if grep -q '^#SSH-TOGGLE' /etc/hosts-bkp
+then
+	sed  -e 's/^\(#SSH-TOGGLE\) \(.*\)$/\2 \1/' < /etc/hosts-bkp > /etc/hosts
+else
+	sed  -e 's/^\(.*\) \(#SSH-TOGGLE\)$/\2 \1/' < /etc/hosts-bkp > /etc/hosts
+fi
+grep '#SSH-TOGGLE' /etc/hosts 
+

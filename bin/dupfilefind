@@ -1,0 +1,123 @@
+#!/usr/bin/env python
+"""dupfilefind - A program to find duplicated files in a set of directory trees
+"""
+
+__author__ = "William McVey <wam@cisco.com>"
+__date__ =  "Sep  3, 2002"
+
+import os
+import stat
+import md5
+
+class reportsamefiles:
+	def __init__(self, verbose=0, delim=" ", remove=False):
+		self._statcache={}
+		self._verbose=verbose
+		self.delimiter=delim
+		self.remove = remove
+
+	def run(self, directories, arg=None):
+		for dir in directories:
+			os.path.walk(dir, self.visit, arg)
+		self.report()
+
+	def visit(self, arg, dirname, files):
+		for file in files:
+			pathname=os.path.join(dirname,file)
+			if (self._verbose):
+				print "Looking at:", pathname
+			try:
+				statobj = os.stat(pathname)
+			except:
+				sys.stderr.write("%s: Couldn't stat %s\n" %(os.path.basename(sys.argv[0]), pathname))
+				continue
+			if not stat.S_ISREG(statobj.st_mode):
+				continue
+			if self._statcache.has_key(statobj.st_size):
+				self._statcache[statobj.st_size].append(pathname)
+			else:
+				self._statcache[statobj.st_size]=[pathname]
+
+	def md5_file(self, filename):
+		# ZZZ: potential optimization here... might not have to hash
+		# the whole file if I were a bit more clever (?)
+		try:
+			f=open(filename)
+		except:
+			sys.stderr.write("%s: Couldn't open %s for hashing\n" %(os.path.basename(sys.argv[0]), filename))
+			return None 
+		hash=md5.new(f.read())
+		f.close()
+		return hash.digest()
+
+	def report(self):
+		for file_size in self._statcache:
+			md5cache={}
+			remove_files = {}
+			if len(self._statcache[file_size]) <= 1:
+				continue
+			for filename in self._statcache[file_size]:
+				hash = self.md5_file(filename)
+				if hash == None:
+					continue
+				if md5cache.has_key(hash):
+					if self.remove:
+						remove_files.setdefault(hash, []).append(filename)
+					md5cache[hash].append(filename)
+				else:
+					md5cache[hash]=[filename]
+			for hash in md5cache:
+				if len(md5cache[hash]) == 1:
+					continue
+				print self.delimiter.join(md5cache[hash])
+				if self.remove:
+					ansr = raw_input("Remove %s: [Yn]:" % " ".join(remove_files[hash]))
+					if ansr.strip() == "" or ansr.strip()[0].upper() != "N":
+						map(os.unlink, remove_files[hash])
+					
+
+if __name__ == '__main__':
+	import getopt
+	import sys
+	import os
+
+	Progname=os.path.basename(sys.argv[0])
+	Version= "%(Progname)s: $Id:$" % vars()
+	Usage="""\
+%(Progname)s usage: [directory ...]
+%(Progname)s usage: -h
+%(Progname)s usage: -V""" % vars()
+	Help="""%(Usage)s
+-r	prompt to remove duplicates (files seen first are kept)
+-d	specify a delimiter (default: space)
+-V      show version info
+-h      show this message""" %  vars()
+
+	try:
+		opts, params = getopt.getopt(sys.argv[1:], "hvVrd:")
+	except:
+		sys.exit("%(Progname)s: invalid commandline.\n%(Usage)s" % vars())
+
+	verbose=0
+	delim=" "
+	remove=False
+	for (option, val) in opts:
+		if option == "-v":
+			verbose=1
+		if option == "-d":
+			delim=val
+		if option == "-r":
+			remove=True
+		if option == "-h":
+			print Help
+			sys.exit(0)
+		if option == "-V":
+			print Version
+			sys.exit(0)
+	if len(params) == 0:
+		suspect_dirs = ["."]
+	else:
+		suspect_dirs = params
+
+	finder=reportsamefiles(verbose=verbose, delim=delim, remove=remove)
+	finder.run(suspect_dirs)

@@ -1,0 +1,17 @@
+#!/bin/sh
+
+echo_no_nl() {
+	ECHO_TEST=`echo -n foo |wc -w`
+	if [ $ECHO_TEST -ne 2 ] ; then
+		echo_no_nl() {
+			echo -n "$*"
+		}
+	else
+		echo_no_nl() {
+			echo "$*\c"
+		}
+	fi
+	echo_no_nl "$*"
+}
+
+echo_no_nl  "]0;$@"

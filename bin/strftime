@@ -1,0 +1,85 @@
+#!/usr/bin/perl
+# strftime  - command line interface to advanced date manipulations and
+#             formatting
+# 
+# In addition to reformatting an arbitrary date into an alternate format
+# (like date +"%c" does for current time), a specified date can have 
+# arithemtic operations performed on it, such as:
+#
+# 	$ strftime -s 'NOW - 3 DAYS'
+# 	$ strftime -d 19981218 -s 'NEWDATE + 3 WEEKS - 1 DAY'
+# 
+# William McVey <wam@fedex.com>
+# April 5, 1998
+
+use Getopt::Std;
+use POSIX;
+use File::Basename;
+
+$basename=basename($0);
+
+getopts('vhs:d:');
+
+if ( defined $opt_h ) {
+	&Usage();
+	exit 0;
+}
+$bVerbose=$opt_v;
+$now_seconds= time;
+if ( defined $opt_d ) {
+	if ($opt_d =~ /^(....)(..)(..)(..)?(..)?(..)?/) {
+		$year=$1 - 1900;
+		$month=$2 - 1;
+		$day=$3;
+		$hour=$4 || 0;
+		$minute=$5 || 0;
+		$second=$6 || 0;
+		$do_fields=1;
+	} else {
+		die "$basename: expecting time format YYYYMMDD[HH[MM[SS]]].  Received: $opt_d\n";
+	}
+	# $newdate_seconds=POSIX::strftime("%s", $second, $minute, $hour, $day, $month, $year , $wday, $yday, $isdst);
+	$newdate_seconds=mktime($second, $minute, $hour, $day, $month, $year , $wday, $yday, $isdst);
+}
+
+if ( defined $opt_s ) {
+	$opt_s =~ s/\s*NOW\s*/ $now_seconds /g;
+	$opt_s =~ s/\s*NEWDATE\s*/ $newdate_seconds /g;
+	$opt_s =~ s/\s(SECONDS?)/ /g;
+	$opt_s =~ s/([\)0-9]+)\s(MINUTES?)/ \1 * 60 /g;
+	$opt_s =~ s/([\)0-9]+)\s(HOURS?)/ \1 * 3600 /g;
+	$opt_s =~ s/([\)0-9]+)\s(DAYS?)/ \1 * 86400 /g;
+	$opt_s =~ s/([\)0-9]+)\s(WEEKS?)/ \1 * 604800 /g;
+	if ($bVerbose) {
+		print "seconds expansion: $opt_s\n";
+	}
+	if ($opt_s =~ /([^\(\)0-9*\s+-])/) {
+		die "${basename}: illegal characters in seconds expansion: $1\n";
+	}
+	$epoch_seconds= eval $opt_s;
+} else { 
+	$epoch_seconds= $now_seconds;
+}
+
+if (! defined ($format = shift)) {
+	$format="%c";
+}
+
+print strftime($format, localtime($epoch_seconds)) . "\n";
+exit 0;
+
+sub Usage {
+	print <<'!';
+strftime USAGE: [-d YYYYMMDD[HH[MM[SS]]]] [-s EXPRESSION] [format]
+strftime USAGE: [-h]
+-h				This help message.
+-d YYYYMMDD[HH[MM[SS]]]		Specify a new NEWDATE value.
+-s EXPRESSION			Mathematical expression which can include 
+				a count of the followng time intervals:
+				SECONDS, MINUTES, HOURS, DAYS, WEEKS, NOW,
+				NEWDATE.
+format				Format of the form accepted by strftime(3)
+
+!
+	return;
+}

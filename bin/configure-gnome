@@ -1,0 +1,47 @@
+#!/bin/sh
+# configure metacity with wam's preferred bindings
+# $Id:$
+
+# what window manager do I want to use 
+# gconftool-2 --type=string --set /desktop/gnome/applications/window_manager/default '/usr/bin/metacity' # default is fine for me for now
+
+# Basic behavior
+gconftool-2 --type=string --set /apps/metacity/general/focus_mode 'sloppy'
+gconftool-2 --type=int --set /apps/metacity/general/num_workspaces '8'
+
+# Basic navigation (global)
+gconftool-2 --type=string --set /apps/metacity/global_keybindings/switch_to_workspace_left '<Control>Left'
+gconftool-2 --type=string --set /apps/metacity/global_keybindings/switch_to_workspace_right '<Control>Right'
+gconftool-2 --type=string --set /apps/metacity/global_keybindings/switch_to_workspace_up '<Control>Up'
+gconftool-2 --type=string --set /apps/metacity/global_keybindings/switch_to_workspace_down '<Control>Down'
+
+# Window bindings
+gconftool-2 --type=string --set /apps/metacity/window_keybindings/move_to_workspace_left '<Control><Alt>Left'
+gconftool-2 --type=string --set /apps/metacity/window_keybindings/move_to_workspace_right '<Control><Alt>Right'
+gconftool-2 --type=string --set /apps/metacity/window_keybindings/move_to_workspace_up '<Control><Alt>Up'
+gconftool-2 --type=string --set /apps/metacity/window_keybindings/move_to_workspace_down '<Control><Alt>Down'
+gconftool-2 --type=string --set /apps/metacity/window_keybindings/raise_or_lower '<Shift>F1'
+gconftool-2 --type=string --set /apps/metacity/window_keybindings/minimize '<Shift>F2'
+gconftool-2 --type=string --set /apps/metacity/window_keybindings/toggle_maximized '<Shift>F3'
+
+# Binding commands to keys
+gconftool-2 --type=string --set /apps/metacity/global_keybindings/run_command_1 'KP_Subtract'
+gconftool-2 --type=string --set /apps/metacity/global_keybindings/run_command_2 'XF86Mail'
+gconftool-2 --type=string --set /apps/metacity/global_keybindings/run_command_3 'XF86HomePage'
+gconftool-2 --type=string --set /apps/metacity/global_keybindings/run_command_4 'XF86Search'
+gconftool-2 --type=string --set /apps/metacity/global_keybindings/run_command_5 '<Shift>XF86Mail'
+gconftool-2 --type=string --set /apps/metacity/global_keybindings/run_command_6 'XF86Stop'
+gconftool-2 --type=string --set /apps/metacity/keybinding_commands/command_1 'xterm'
+gconftool-2 --type=string --set /apps/metacity/keybinding_commands/command_2 'evolution mailto:'
+gconftool-2 --type=string --set /apps/metacity/keybinding_commands/command_3 'firefox-slide'
+gconftool-2 --type=string --set /apps/metacity/keybinding_commands/command_4 'xterm'
+gconftool-2 --type=string --set /apps/metacity/keybinding_commands/command_5 'evolution'
+gconftool-2 --type=string --set /apps/metacity/keybinding_commands/command_6 'xscreensaver-command --lock'
+
+
+# Kill the desktop icons
+# gconftool-2 --type=string --set /apps/gnome-session/options/splash_image 'splash/mdk-gnome-splash.png'
+gconftool-2 --type=string --set /apps/gnome-session/options/splash_image '/home/wam/lib/images/noodledoodle1600_1200.jpg'
+
+gconftool-2 --type=string --set /desktop/gnome/background/primary_color '#000000' # black
+

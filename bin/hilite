@@ -1,0 +1,62 @@
+#!/bin/sh
+# hilight
+# A simple script to hilight a regex as a particular color
+# depends on wam's other 'color' script
+#
+# William McVey <wam@cisco.com>
+# Feb 28, 2003
+
+# our program name and usage message
+progname=`basename $0`
+usage="$progname: usage [-c color] [-n] pattern [files]"
+
+param='if [ $# -lt 2 ]; then echo "$progname: missing value for $1" 1>&2 ; exit 
+1; fi'
+print_only_matches=false
+while [ $# -gt 0 ]
+do
+	case "$1" in
+	-c)
+		eval "$param"
+		color=$2
+		shift ; shift
+		;;
+	-c*)
+		color=`expr "$1" : '-.\(.*\)'`
+		shift
+		;;
+	-n)
+		print_only_matches=true
+		shift
+		;;
+	-h|-h*)
+	cat <<HERE
+$usage
+c color         choose a color to use to markup text
+n               only output the lines matching the pattern
+pattern         a (sed based) regex to hilight as a color
+HERE
+		exit 0
+		;;
+	-*)
+		echo "$usage" 1>&2
+		exit 1
+		;;
+	*)
+		break
+		;;
+	esac
+done
+
+if $print_only_matches
+then
+	SED_OPTS="${SED_OPTS} -n"
+	PATTERN_SUFFIX="p"
+fi
+
+pattern=$1
+shift
+
+escape=`color ${color:-"red"}`
+off=`color off`
+sed ${SED_OPTS} -e "s@\($pattern\)@${escape}\1${off}@g${PATTERN_SUFFIX}" $@
