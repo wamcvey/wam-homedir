@@ -1,0 +1,114 @@
+#!/bin/sh
+# share -
+# Small commandline option wrapper around NT's 'net use' command.
+#
+# William McVey
+# March 28, 2001
+
+# By default, the program will do a null session against $IP (or first
+# parameter, if specified).  Options -u and -p allow specifying alternate
+# user name and password to connect as.  Option -s specifies an alternate
+# share to attach to (eg ADMIN$, C$, etc).  You can clean up your mess
+# with the -d option.
+
+# our program name and usage message
+progname=`basename $0`
+usage="$progname: usage [-u user] [-p password] [-s share] IP
+$progname: usage -d  IP
+$progname: usage -h"
+
+# how to slide a single letter option off the beginning of a bundle
+# -barf -> -arf
+slide='P=$1; shift; set _ -`expr "$P" : '\''-.\(.*\)'\''` ${1+"$@"}; shift'
+param='if [ $# -lt 2 ]; then echo "$progname: missing value for $1" 1>&2 ; exit 1; fi'
+
+# default values for all the flags, or leave unset for a ${flag-value) form
+UFLAG=''
+PFLAG=""
+DFLAG=false
+SHARE='IPC$'
+
+# get the options from the command line (+ any variables)
+while [ $# -gt 0 ]
+do
+	case "$1" in
+	-d)
+		DFLAG=true
+		shift
+		;;
+	-d*)
+		DFLAG=true
+		eval "$slide"
+		;;
+	-u)
+		eval "$param"
+		UFLAG=$2
+		shift ; shift
+		;;
+	-u*)
+		UFLAG=`expr "$1" : '-.\(.*\)'`
+		shift
+		;;
+	-p)
+		eval "$param"
+		PFLAG=$2
+		shift ; shift
+		;;
+	-p*)
+		PFLAG=`expr "$1" : '-.\(.*\)'`
+		shift
+		;;
+	-s)
+		eval "$param"
+		SHARE=$2
+		shift ; shift
+		;;
+	-s*)
+		SHARE=`expr "$1" : '-.\(.*\)'`
+		shift
+		;;
+	--)
+		shift
+		break
+		;;
+	-h|-h*)
+		cat <<HERE
+$usage
+d	delete the share
+u user	authenticate with specifed user (default: '$UFLAG')
+p passw	authenticate with specifed password (default: '$PFLAG')
+s share	specify an alternate share to connect to (default: '$SHARE')
+h	print this help message
+IP	the IP address to hit  (default: '\$IP')
+HERE
+		exit 0
+		;;
+	-*)
+		echo "$usage" 1>&2 
+		exit 1
+		;;
+	*)
+		# process and continue for intermixed options & args
+		break
+		;;
+	esac
+done
+
+# handle the remaining args
+if [ $# -gt 1 ]
+then
+	echo $usage >&2
+	exit 1
+fi
+IPADDR=${1:-${IP:?"Must specify ip address on commandline or set \$IP"}}
+if $DFLAG
+then
+	# to kill all connections for an IP, use -s '*'
+	echo net use \\\\${IPADDR}\\${SHARE} /d
+	net use \\\\${IPADDR}\\${SHARE} /d 
+else
+	echo net use "\\\\${IPADDR}\\${SHARE}" "/user:${UFLAG}" "${PFLAG}"
+	net use "\\\\${IPADDR}\\${SHARE}" "/user:${UFLAG}" "${PFLAG}"
+fi
+
+exit 0
