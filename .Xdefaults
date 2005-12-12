@@ -1,3 +1,6 @@
+! $Id$
+! $URL$
+
 Xroot.width:			WIDTH
 Xroot.height:			HEIGHT
 Xroot.class:			CLASS
