@@ -1,0 +1,311 @@
+Xroot.width:			WIDTH
+Xroot.height:			HEIGHT
+Xroot.class:			CLASS
+Xroot.color:			COLOR
+Xroot.X_resolution:		X_RESOLUTION
+Xroot.Y_resolution:		Y_RESOLUTION
+
+exmh*font:		-bitstream-*-medium-r-*-*-20-0-*-100-c-111-iso8859-*
+exmh*fl_font:		-bitstream-*-medium-r-*-*-20-0-*-100-c-111-iso8859-*
+
+x3270.model:            3
+x3270.geometry:         -0-128
+x3270.activeIcon:       true
+x3270.labelIcon:        false
+x3270.hostsFile:        .ibm_hosts
+x3270.keypad:		integral
+x3270.keypadOn:		true
+x3270.emulatorFont:	12x24
+x3270.keymap.5250: #override \
+	<Key>Return:	Enter()
+
+Ups*Background:	dark slate grey
+Ups*EditlinesColor:	light salmon
+Ups*Font:	fixed
+Ups*Foreground:	wheat1
+Ups*Geometry:	620x650
+
+XLock.remote:	true
+XLock.mode: random
+XLock.random.modelist: ball bouboule daisy coral galaxy swarm flag ifs julia
+XLock.enablesaver: on
+XLock.mouse: True
+XLock.lockdelay: 4
+XLock.galaxy.tracks: True
+XLock.daisy.garden: True
+
+xautolock.time: 5
+xautolock.locker: lock-crack
+xautolock.notify: 30
+xautolock.bell: 100
+xautolock.corners: ++--
+xautolock.cornerdelay: 3
+xautolock.cornersize: 25
+xautolock.cornerredelay: 30
+
+XMcd.solaris2VolumeManager:	True
+!*      %S      mail subject string (required)
+!*      %A      e-mail address (cddbMailSite)
+!*      %F      CD database file path
+XMcd*cddbMailCmd:	Mail -s '%S' %A <%F
+XMcd.closeOnEject: True
+
+XDaliClock.font:		-adobe-new century schoolbook-bold-*-normal-*-0-350-100-100-p-*-*-*
+XDaliClock.seconds:		false
+XDaliClock.geometry:		180x60+2+2
+#ifndef COLOR
+XDaliClock.background:		black
+XDaliClock.foreground:		white
+#else
+XDaliClock.background:		MidnightBlue
+XDaliClock.foreground:		wheat1
+#endif
+
+XClipboard*font:		fixed
+#ifndef COLOR
+XClipboard*background:		black
+XClipboard*foreground:		white
+#endif
+
+XTerm*LoginShell:		true
+XTerm*SaveLines:		20000
+XTerm*ScrollBar:		false
+XTerm*scrollTtyOutput:		false
+XTerm*scrollKey:		true
+XTerm*VisualBell:		false
+XTerm*titeInhibit:		false
+XTerm*UtmpInhibit:		false
+XTerm*pointerColorBackground:	white
+XTerm*zIconBeep:		1
+!  suitable for low res fonts, but not with big fonts
+!  Alt <Key> 2:		set-vt-font(d)
+XTerm*VT100.Translations:	#override \
+	Meta<Key>1:		set-vt-font(1)	\n\
+	Meta<Key>2:		set-vt-font(3)	\n\
+	Meta<Key>3:		set-vt-font(6)	\n\
+	Ctrl <Key> 1:		set-vt-font(1)	\n\
+	Ctrl <Key> 2:		set-vt-font(3)	\n\
+	Ctrl <Key> 3:		set-vt-font(6)	\n\
+	Alt <Key> 1:		set-vt-font(1)	\n\
+	Alt <Key> 2:		set-vt-font(3)	\n\
+	Alt <Key> 3:		set-vt-font(6)	\n\
+	Meta<Key>z:		secure()	\n\
+	<Key>F10:		secure()	\n\
+	<Key>F9:		create-menu(vtMenu)	\n\
+	<Key>F20:		select-cursor-start() \
+				select-cursor-end(PRIMARY, CUT_BUFFER0) \n\
+	<Key>F18:		insert-selection(PRIMARY, CUT_BUFFER0) \n\
+	Shift<Key>Left:		scroll-back(1,line)	\n\
+	Shift<Key>Right:	scroll-forw(1,line)	\n\
+	Shift<Key>Up:		scroll-back(1,page)	\n\
+	Shift<Key>Down:		scroll-forw(1,page)
+! XTerm*font:			fixed
+XTerm*font:			-*-fixed-medium-*-normal-*-15-*-*-*-c-*-*-*
+XTerm*font3:			fixed
+XTerm*fontMenu*font3*Label:	fixed
+XTerm*font4:			-adobe-*-medium-r-normal-*-15-*-*-*-*-*-*-*
+XTerm*fontMenu*font4*Label:	Adobe18
+XTerm*fontMenu*font6*Label:	blind
+XTerm*font6:			12x24
+XTerm*termName:			xterm
+#ifndef COLOR
+XTerm*background:		white
+XTerm*foreground:		black
+#else
+XTerm*background:		black
+/* XTerm*foreground:		wheat1 */
+XTerm*foreground:		green2
+#endif	/* COLOR */
+
+SPA_Term*foreground:		yellow
+SPA_Term*background:		darkslategrey
+SPA_Term*ScrollBar:		true
+SPA_Term*SaveLines:		20000
+
+KTerm*LoginShell:		true
+KTerm*SaveLines:		2000
+KTerm*ScrollBar:		false
+KTerm*VisualBell:		false
+KTerm*titeInhibit:		false
+KTerm*UtmpInhibit:		false
+KTerm*pointerColorBackground:	white
+KTerm*zIconBeep:		1
+KTerm*VT100.Translations:	#override \
+	Meta<Key>1:		set-vt-font(1)	\n\
+	Meta<Key>2:		set-vt-font(d)	\n\
+	Meta<Key>3:		set-vt-font(6)	\n\
+	Meta<Key>z:		secure()	\n\
+	<KeyPress>F20:		select-cursor-start() \
+				select-cursor-end(PRIMARY, CUT_BUFFER0) \n\
+	<KeyPress>F18:		insert-selection(PRIMARY, CUT_BUFFER0) \n\
+	Shift<Key>Left:		scroll-back(1,line)	\n\
+	Shift<Key>Right:	scroll-forw(1,line)	\n\
+	Shift<Key>Up:		scroll-back(1,page)	\n\
+	Shift<Key>Down:		scroll-forw(1,page)
+#ifndef COLOR
+KTerm*background:		white
+KTerm*foreground:		black
+#else
+KTerm*background:		black
+/* XTerm*foreground:		wheat1 */
+KTerm*foreground:		green2
+#endif	/* COLOR */
+
+#ifndef COLOR
+Gnuplot*background:		white
+#else
+Gnuplot*background:		wheat1
+#endif /* COLOR */
+
+DClock*bell:			false
+DClock*font:			fixed
+DClock*date:			%m %d
+DClock*miltime:			false
+DClock*fade:			true
+DClock*fadeRate:		150
+DClock*seconds:			false
+#ifndef COLOR
+DClock*foreground:		white
+DClock*background:		black
+#else
+DClock*foreground:		wheat1
+DClock*background:		MidnightBlue
+#endif	/* COLOR */
+
+XLoad*font:			6x10
+XLoad*update:			5
+XLoad*geometry:			60x60+248+2
+XLoad*highlight:		black
+#ifndef COLOR
+XLoad*foreground:		white
+XLoad*background:		black
+#endif	/* COLOR */
+
+;Xmessage*geometry:		500x50+2+65
+Xmessage*font:                  8x13
+Xmessage*Translations:		#override <Key>q: exit(1)
+#ifndef COLOR
+Xmessage*foreground:            white
+Xmessage*background:            black
+#endif	/* COLOR */
+
+XBiff*geometry:			60x60+185+2
+XBiff*onceOnly:			true
+#ifndef COLOR
+XBiff*foreground:		white
+XBiff*background:		black
+#endif
+
+tkpostage.postageGeometry:	+185+2
+tkpostage.detailGeometry:	79x5-1+105
+
+Xcb*geometry:			300x70
+!Xcb*font:			fixed
+!Xcb*font:			6x10
+Xcb*font:			5x7
+Xcb*borderWidth:		1
+Xcb*container.defaultDistance:	0
+!Xcb.bufferCount:		4
+!Xcb.layout:			horizontal
+!Xcb.layout:			custom
+!Xcb*buffer1.fromHoriz:		buffer0
+!Xcb*buffer2.fromVert:		buffer0
+!Xcb*buffer3.fromVert:		buffer1
+!Xcb*buffer3.fromHoriz:		buffer2
+Xcb.bufferCount:               10
+Xcb.layout:                    custom
+Xcb*buffer1.fromHoriz:         buffer0
+Xcb*buffer2.fromHoriz:         buffer1
+Xcb*buffer3.fromHoriz:         buffer2
+Xcb*buffer4.fromHoriz:         buffer3
+Xcb*buffer5.fromVert:          buffer0
+Xcb*buffer6.fromHoriz:         buffer5
+Xcb*buffer6.fromVert:          buffer1
+Xcb*buffer7.fromHoriz:         buffer6
+Xcb*buffer7.fromVert:          buffer2
+Xcb*buffer8.fromHoriz:         buffer7
+Xcb*buffer8.fromVert:          buffer3
+Xcb*buffer9.fromHoriz:         buffer8
+Xcb*buffer9.fromVert:          buffer4
+
+#ifndef COLOR
+Xcb*foreground:			white
+Xcb*background:			black
+Xcb*borderColor:		white
+#else
+!Xcb*borderColor:		MidnightBlue
+!Xcb*foreground:			black
+!Xcb*background:			wheat1
+Xcb*borderColor:		darkslategrey
+Xcb*foreground:			green2
+Xcb*background:			black
+#endif
+; Xcb*border:			maroon
+
+XCalc*Geometry:			325x200+2-2
+XCalc*Mode:			analog
+XCalc.font:			6x10
+#ifndef COLOR
+XCalc*foreground:		white
+XCalc*background:		black
+#endif
+
+xnetLoad.font:			6x10
+xnetload.geometry:		175x125-175-80
+xnetload*update:		10
+
+Xman*manualFontNormal:		serif10
+Xman*manualFontBold:		serifb10
+Xman*manualFontItalic:		serifi10
+Xman*directoryFontNormal:	serif10
+#ifndef COLOR
+Xman*foreground:		black
+Xman*background:		white
+#endif
+
+XPostit*saveNotes:		true
+#ifndef COLOR
+XPostit.Plaid.Background:	black
+XPostit.Plaid.Foreground:	white
+XPostit.PostItNote.Foreground:	white
+XPostit.PostItNote.Background:	black
+#endif
+
+xtroff*Geometry:		1000x600+900+97
+
+XIn_out*Geometry:		140x265-2-2
+
+; Mosaic*httpProxy:		http://internet.fedex.com/
+Mosaic*proxySpecfile:		.mosaic/proxy-file
+Mosaic*noproxySpecfile:		.mosaic/noproxy-file
+Mosaic*autoPlaceWindows:	false
+Mosaic*confirmExit:		false
+Mosaic*defaultHotlistFile:	.mosaic/hotlist
+Mosaic*globalHistoryFile:	.mosaic/history
+Mosaic*personalAnnotationDirectory:	.mosaic/annotations
+#ifdef COLOR
+Mosaic*customization:	-color
+Mosaic*visitedAnchorColor:	red3
+#endif
+;Mosaic*foreground:	white
+;Mosaic*background:		MidnightBlue
+;Mosaic*anchorColor:	cyan
+Mosaic*documentsMenuSpecfile:	/isuser/wam/.mosaic/documents
+Mosaic*homeDocument:		http://vault.dpd.fedex.com/homes/wam
+
+HPterm*loginShell:		true
+
+Toplevel*geometry:	-1+0
+;*background:		MidnightBlue
+;*foreground:		burlywood
+*highlightOnEnter:	TRUE
+
+Netscape*blinkingEnabled:		False
+Netscape*vlinkForeground:			red3
+;Netscape*defaultBackground:			white
+;Netscape*selectForeground:                      #000000
+;Netscape*selectBackground:                      #FFFFCC
+Netscape*selectForeground:                      wheat
+Netscape*selectBackground:                      black
+
+*Text.MaxDocumentSize:		1000
