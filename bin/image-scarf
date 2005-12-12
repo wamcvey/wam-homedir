@@ -1,0 +1,171 @@
+#!/bin/sh 
+# Script to automate the process of downloading images from
+# umm... the National Geographic website.  
+#
+# William McVey
+# Jun 10, 2001 
+#
+
+# our program name and usage message
+progname=`basename $0`
+usage="$progname: usage [-bhO] [-f arg] [files]"
+
+# how to slide a single letter option off the beginning of a bundle
+# -barf -> -arf
+slide='P=$1; shift; set _ -`expr "$P" : '\''-.\(.*\)'\''` ${1+"$@"}; shift'
+param='if [ $# -lt 2 ]; then echo "$progname: missing value for $1" 1>&2 ; exit 1; fi'
+
+PATTERN='jpg$|zip$|mpeg$|mp.$|asf$|\.avi|ren$|aza$|xxx$|pdf$|.txt$|.egg$|\.[0-9]*$|flx$|wmv$'
+CURL_OPTS="-L"
+BROWSER_EMULATE='-A Mozilla/4.05 [en] (X11; U; Linux 2.0.32 i586)'
+
+# default values for all the flags, or leave unset for a ${flag-value) form
+# BFLAG=false
+# FFLAG=default-value
+UNIQDIR=""
+urlfile="urls"
+CURDIR=false
+
+# get the options from the command line (+ any variables)
+while [ $# -gt 0 ]
+do
+	case "$1" in
+	-u)
+		eval "$param"
+		UNIQDIR=$2
+		shift ; shift
+		;;
+	-u*)
+		UNIQDIR=`expr "$1" : '-.\(.*\)'`
+		shift
+		;;
+	-O)	CURDIR=true
+		shift
+		;;
+	-r)	RANGE=true
+		RANGE_START=$2
+		RANGE_END=$3
+		shift ; shift ; shift
+		;;
+	-r*)	RANGE=true
+		RANGE_START=`expr "$1" : '-.\(.*\)'`
+		RANGE_END=$2
+		shift ; shift
+		;;
+	--)
+		shift
+		break
+		;;
+	-h|-h*)
+		cat <<HERE
+$usage
+O		drop files into the current directory
+u dir		Use dir as a uniqing hierarchy
+urls		Snarf from these urls
+HERE
+		exit 0
+		;;
+	-*)
+		echo "$usage" 1>&2 
+		exit 1
+		;;
+	*)
+		# process and continue for intermixed options & args
+		break
+		;;
+	esac
+done
+
+# get the files left on the line
+if [ $# -eq 0 ]
+then
+	echo "$progname: requires urls to be specified on commandline"
+	exit 1
+fi
+
+while [ $# -gt 0 ]
+do
+	URL=$1
+	shift
+
+	trailing=`expr "$URL" : 'h..p://\(.*\)'`
+	if [ $? -eq 0 ]
+	then
+		URL="http://$trailing"
+	fi
+
+	urlpath=`expr "$URL" : 'http://\([^?]*\)'`
+	#urldir=`dirname $urlpath`
+	urldir=`expr "$URL" : 'http://\(.*\)/'`
+	urlmachine=`expr "$URL" : 'http://\([^/]*\)'`
+
+	if echo $URL | egrep -q -i $PATTERN
+	then
+		urlpath=`expr "$URL" : 'http://\(.*\)'`
+		if $CURDIR
+		then
+			urlpath=`basename $urlpath`
+		fi
+		outputdir=`dirname $urlpath`
+		if [ ! -d $outputdir ]
+		then
+			mkdir -p $outputdir
+		fi
+		if [ -f "$urlpath" -o -f "keep/$urlpath" ]
+		then
+			echo "already have a real copy of $urlpath"
+			continue
+		fi
+		curl $CURL_OPTS "${BROWSER_EMULATE}" -# -e $URL  -o $urlpath  $URL
+		continue
+	fi
+		
+	# ren is a bogus image format rename to avi
+	curl $CURL_OPTS "${BROWSER_EMULATE}"  $URL | ( xurl || xurl.pl ) | egrep -i $PATTERN | while read image
+	do
+		case "$image" in
+		http*)	# fully qualified URL
+			url=$image
+			;;
+		/*)	# Relative URL giving full path but not host
+			url="http://$urlmachine/$image"
+			;;
+		*)	# relative URL giving either relative path or base file 
+			url="http://$urldir/$image"
+			;;
+		esac
+
+		urlpath=`expr "$url" : 'http://\(.*\)'`
+		outputdir=`dirname $urlpath`
+		if $CURDIR
+		then
+			outputdir=.
+		fi
+		mkdir -p $outputdir
+
+		baseimage=`basename $url`
+		if [ -f "$outputdir/$baseimage" ]
+		then
+			echo "already have a real copy of $outputdir/$baseimage"
+			ls -alF $outputdir/$baseimage
+			continue
+		fi
+		if [ -n "$UNIQDIR" ]
+		then
+			if [ ! -d "$UNIQDIR/$outputdir" ]
+			then
+				mkdir -p $UNIQDIR/$outputdir
+			fi
+			UNIQFILE=$UNIQDIR/$outputdir/$urlfile
+			if fgrep -q $url $UNIQFILE
+			then
+				echo "already have downloaded $baseimage"
+				continue
+			fi
+			echo "$url" >> $UNIQFILE
+		fi
+		echo curl $CURL_OPTS "${BROWSER_EMULATE}" -# -e $URL  -o $outputdir/$baseimage  $url | tee -a $outputdir/info
+		curl $CURL_OPTS "${BROWSER_EMULATE}" -# -e $URL  -o $outputdir/$baseimage  $url
+	done
+done
+exit 0
