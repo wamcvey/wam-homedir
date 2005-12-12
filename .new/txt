@@ -1,0 +1,62 @@
+@{
+TITLE=BASE
+TITLE_BARS="="*len(TITLE)
+}@#
+@(TITLE_BARS)
+@(TITLE)
+@(TITLE_BARS)
+
+:Author:   William McVey
+:Date:     @(MONTH) @(DAY), @(YEAR)
+:Revision: $Id:$
+
+ReST Reference
+--------------
+
+Inline
+~~~~~~
+Inline markups include:
+
+generic marked up text 
+	put a word in `backticks`
+
+literal
+	put words in ``double backticks``
+
+emphasis 
+	put a word in *stars*
+
+strong emphasis
+	word in **double stars**
+
+embedded hyperlinks
+	hyperlinks point to `Another document <http://google.com/>`_
+
+named hyperlinks
+	see `reStructuredText QuickRef`_
+
+macros
+	|reST| has can do simple macro expansion too
+
+Block 
+~~~~~
+
+Block elements include:
+
+Literal (code) block::
+
+	some code
+
+Bullet lists:
+
+- bullet 1
+- bullet 2
+
+Enumerated lists:
+
+1. item 1
+2. item 2
+
+.. _reStructuredText QuickRef:  http://docutils.sf.net/docs/user/rst/quickref.html
+
+.. |reST| replace:: reStructuredText

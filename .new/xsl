@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!-- Transform some XML document into something else
+  -
+  -  William McVey <wam@@cisco.com>
+  -  $Id:$
+  -  @(MONTH) @(DAY), @(YEAR)
+  -
+  -->
+
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+
+	<xsl:output method="xml" 
+	     indent="yes" encoding="UTF-8"
+	     doctype-system="XXX:doctype" />
+
+	<!-- copy nodes and attributes that we don't have a rule for -->
+	<xsl:template match = "node()|@@*" >
+		<xsl:copy >
+			<xsl:apply-templates select = "node()|@@*" />
+		</xsl:copy>
+	</xsl:template> 
+
+</xsl:stylesheet>
