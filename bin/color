@@ -1,0 +1,68 @@
+#!/bin/sh
+echo_no_nl() {
+    ECHO_TEST=$(echo -n foo |wc -w) 
+    if [ $ECHO_TEST -ne 2 ] 
+    then
+	echo_no_nl() {
+	    echo -n "$*" 
+	} 
+    else
+	echo_no_nl() {
+	    echo "$*\c" 
+	} 
+    fi 
+    echo_no_nl "$*" 
+} 
+
+for color in $@
+do
+	case "$color" in
+	off)	char="${char}[0m"
+		# char="${char}[37;40;0m"
+		;;
+	-h)	cat <<!
+$0: usage: colorspec
+colorspec	One of: black red green yellow blue magenta cyan white 
+		bold reverse off
+		can also prepend bg_ to change background color
+!
+		exit 0
+		;;
+	black)		char="${char}[30m"
+			;;
+	red)		char="${char}[31m"
+			;;
+	green)		char="${char}[32m"
+			;;
+	yellow) 	char="${char}[33m"
+			;;
+	blue)		char="${char}[34m"
+			;;
+	magenta) 	char="${char}[35m"
+			;;
+	cyan)		char="${char}[36m"
+			;;
+	white)		char="${char}[37m"
+			;;
+	bg_black)	char="${char}[40m"
+			;;
+	bg_red)		char="${char}[41m"
+			;;
+	bg_green)	char="${char}[42m"
+			;;
+	bg_yellow)	char="${char}[43m"
+			;;
+	bg_blue)	char="${char}[44m"
+			;;
+	bg_magenta)	char="${char}[45m"
+			;;
+	bg_cyan)	char="${char}[46m"
+			;;
+	bg_white)	char="${char}[47m"
+			;;
+	bold)		char="${char}[01m"
+			;;
+	esac
+done
+
+echo_no_nl "${char}"
