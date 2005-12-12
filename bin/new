@@ -1,0 +1,129 @@
+#!/usr/bin/env python
+
+"""A program to drive template expansion of source files
+
+"""
+
+__author__ =	"William McVey <wam@cisco.com>"
+__date__ =      "24 June, 2004"
+__revision__ =	"$Id:$"
+
+
+import os
+import sys
+import time
+import fnmatch
+import em
+
+
+class TemplateFileMaker:
+	def __init__(self, filename=None):
+		self.template_dirs = self._template_dirs()
+		self.expansions = {}
+		if filename:
+			self.filename = filename
+			self.template = self.find_template(filename)
+
+	def _template_dirs(self):
+		dotnew = os.environ.get('NEW_TEMPLATES',
+		  os.path.join(os.environ.get('HOME', "/"), ".new"))
+		return filter(os.path.isdir, 
+		  (dotnew,
+		  "/usr/local/lib/new",
+		  "/usr/local/share/new",
+		  "/usr/lib/new",
+		  "/usr/share/new"
+		  ))
+
+	def find_template(self, filename):
+		"""goes through the template directories (as defined in 
+		_template_dirs() and tries to find a template that matches
+		(according to fnmatch) the basename of the requested file.
+		If no match can be found, looks for a file template named 
+		after the extension of the filename. If multiple matches are
+		found, returns the template with the most specific match.
+		"""
+		base= os.path.basename(filename)
+		(root, ext) = os.path.splitext(filename)
+		extension = ext[1:]
+		match = []
+		for dir in self._template_dirs():
+			for template in os.listdir(dir):
+				if fnmatch.fnmatch(base, template):
+					match.append(os.path.join(dir, template))
+			if match:
+				match.sort(lambda x, y: cmp(len(x), cmp(y)))
+				return match[0]
+			template = os.path.join(dir, extension)
+			if os.path.isfile(template):
+				return template
+		return None
+
+	def build_values(self):
+		self.expansions = os.environ.copy()
+		(year,mon,day,hour,min,sec,wday,yday,isdst) = time.localtime()
+		self.expansions['DAY'] = day
+		self.expansions['MONTH'] = time.strftime("%B")
+		self.expansions['YEAR'] = year
+		self.expansions['FILENAME'] = self.filename
+		self.expansions['BASENAME'] = os.path.basename(self.filename)
+		self.expansions['BASE'] = os.path.splitext(
+		  os.path.basename(self.filename))[0]
+	
+	def expand_template(self, output=None):
+		if output == None:
+			output=file(self.filename, "w")
+		self.interpreter = em.Interpreter(output=output)
+		self.interpreter.file(open(self.template), locals=self.expansions)
+		self.interpreter.shutdown() 
+
+
+
+if __name__ == '__main__':
+	import sys
+	import os
+	from optparse import OptionParser       # aka Optik
+
+	Progname=os.path.basename(sys.argv[0])
+	Usage="""\
+%prog usage: [-n] FILENAME
+%prog usage: -h
+%prog usage: -V 
+"""
+	optparser = OptionParser(usage=Usage, version="%prog: $Id:$" )
+	optparser.add_option("-n", dest = "nofile",
+	   action="store_true", help="don't write the file")
+	# optparser.add_option("-v", "--verbose", dest = "verbose",
+	#   action="store_true", help="be verbose")
+	# optparser.add_option("-v", "--verbose", dest = "verbose",
+	#   action="store_true", help="be verbose")
+	#optparser.add_option("-N", "--name", dest="var_n", 
+	#  action= "store" | "append" | "store_true" | "store_false" 
+	#  type = "int"
+	#  default="foo", metavar="SOME_STRING", help="store a string")
+	(options, params) = optparser.parse_args()
+
+	#if options.var_n:
+	#	# do something
+	
+	for param in params:
+		newfile = TemplateFileMaker(param)
+		if newfile.template:
+			print >>sys.stderr, "found template for %s:"%param, ":", newfile.template
+		else:
+			print >>sys.stderr, "couldn't find template for", param, "(skipping)"
+			continue
+
+			
+		newfile.build_values()
+		if options.nofile:
+			newfile.expand_template(output=sys.stdout)
+		else:
+			newfile.expand_template()
+
+#        output = StringIO.StringIO()
+#        interpreter = em.Interpreter(output=output)
+        # Do something.
+#        interpreter.file(open('/path/to/some/file'))
+#        interpreter.shutdown() # again, this is important; see below
+#        print output.getvalue() # this is the result from the session

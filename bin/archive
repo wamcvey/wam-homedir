@@ -1,0 +1,66 @@
+#!/bin/sh
+# archive
+# $Id: archive,v 1.2 1997/02/21 01:40:25 fipl Exp $
+#   move the target file to a unique filename in the archive directory
+#
+
+PATH=/usr/bin:/bin:$PATH
+PROGNAME=`basename $0`
+
+if [ $1 = "-r" ]
+then
+	remove=yes
+	shift
+fi
+
+filename=$1
+targetdir=$2
+
+if [ $# -ne 2 ]
+then
+	cat <<! 1>&2
+$PROGNAME: wrong number of arguments
+$PROGNAME: Usage:  filename directory
+filename	the file to archive
+directory	the directory to archive the file to
+!
+	exit 1
+fi
+
+if [ ! -d "${targetdir}" ]
+then
+	if mkdir -p "${targetdir}" 
+	then
+		: success
+	else
+		echo "$PROGNAME: couldn't build archive directory: $targetdir" 1>&2
+		exit 1
+	fi
+fi
+
+# base=`date +"%Y%m%d%H"`
+base=`basename $filename`
+suffix=""
+
+
+while [ -f "${targetdir}/${base}${suffix}" ]
+do
+	count=`expr ${count:-0} + 1`
+	suffix=".${count}"
+done
+
+if cp $filename ${targetdir}/${base}${suffix}
+then
+	if [ "$remove" = "yes" ]
+	then
+		rm $filename
+	else
+		> $filename
+	fi
+else
+	echo "$PROGNAME: couldn't copy $filename to archive location: ${targetdir}/${base}${suffix}" 1>&2
+	exit 1 
+fi
+
+echo ${targetdir}/${base}${suffix}
+exit 0
