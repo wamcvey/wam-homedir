@@ -1,0 +1,45 @@
+#!/bin/sh
+
+while [ $# -gt 0 ]
+do
+	if expr "$1" : "-.*" >/dev/null
+	then
+		ISOPTIONS="$ISOPTIONS $1"
+		shift
+	else
+		break
+	fi
+done
+
+if [ $# -gt 0 ]
+then
+	for url
+	do
+		image-scarf $ISOPTIONS $url
+	done
+	exit
+fi
+
+while read -p URL?\  -e  url first last template
+do
+	if [ "$url" = "range" ]
+	then
+		range $first $last $template | while read newurl 
+		do
+			color yellow
+			echo "retrieving $newurl"
+			color off
+			image-scarf $ISOPTIONS $newurl
+		done
+	else
+		image-scarf $ISOPTIONS $url
+	fi
+	color bg_blue
+	echo
+	echo
+	echo
+	echo
+	color off
+	echo
+	echo
+done
