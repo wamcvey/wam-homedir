@@ -1,0 +1,429 @@
+
+# This file gets
+# executed for each new shell
+
+# hack to avoid having circular sourcing of $ENV when/if a sh or ksh script
+# is run from within this file.  (esp. with braindead pdksh that source $ENV
+# for every shell script run.
+oldENV=$ENV
+ENV=
+
+#
+# Do special things if I'm root
+#
+if [ "`whoami`" = "root" ]
+then
+	# If I'm root, I want my environment to be just a tad different
+	ROOTPROMPT="#"
+else	# I'm not root 
+	# aliases for things I shouldn't be doing as root
+	alias t="talk"
+	alias sR="screen -R"
+
+	#TPS aliases 
+	alias tapels='tps -kt -s762 -v wiz'
+	alias havenput='tps -ku -s3098 -v wiz -On '
+	alias tapeput='tps -ku -s762 -v wiz -On '
+	alias tapeget='tps -kx -s762 -v wiz -On '
+
+	#Mail aliases
+	alias sinc="inc; show"
+	alias rmm="refile +${TMP}/junk"
+	alias pack="folder -pack"
+	re() {
+		pick -from $1 -or -cc $1 -or -to $1 -seq $1
+		scan $1
+	}
+	refilelist() {
+		STRING=$( pick +inbox -to $1 -or -cc $1 -seq $1 )
+		echo "${2-+$1} ${STRING}"
+		refile $1 ${2-+$1}
+	}
+
+	mhless() {
+		less `mhpath ${@:-cur}`
+	}
+fi 
+
+echo_no_nl() {
+	ECHO_TEST=`echo -n foo |wc -w`
+	if [ $ECHO_TEST -ne 2 ] ; then
+		echo -n "$*"
+	else
+		echo "$*\c"
+	fi
+}
+
+
+
+#
+# Alias and functions common to both root and regular ole me
+#
+alias cd=pd
+alias emc2=emc2lookup
+
+#listing aliases
+if ls --color=auto >/dev/null 2>/dev/null
+then
+	alias ls="/bin/ls --color=auto"
+	alias ll="/bin/ls -Flag --color=auto"
+else
+	alias ls="/bin/ls -F"
+	alias ll="/bin/ls -Flag"
+fi
+
+alias cfsattach="cattach $HOME/.crypt wam"
+alias cfsdetach="cdetach wam"
+alias j="jobs -l"
+alias zz="suspend"
+alias %-="fg %-"
+# alias q="quota -v"
+alias h="fc -lr -1 -20"
+alias z="reset"
+alias cexit="exec clear"
+alias UC="gunzip"
+alias C="gzip"
+
+lence() {
+	ls -lagsF `whence $*`
+}
+yank() {
+	grep -n . $2 | grep ^$1:
+}
+pd() {
+	if [ $# -eq 0 ]; then
+		\cd
+	elif [ -f "$1" ]; then
+		\cd "`dirname \"$1\"`"
+	else
+		\cd "$1" $2
+	fi
+	case "$SHELL" in
+	*ksh)
+		DIR=`echo $PWD | sed "s@^$HOME@@"`
+		#DIR=${PWD#$HOME}
+		if [ -z "$DIR" ]; then
+			DIR="~";
+		elif [ "$PWD" != "$DIR" ]; then
+			DIR="~$DIR";
+		fi
+		if expr "$DIR" : ..................... >/dev/null 2>/dev/null
+		#if [ ${#DIR} -gt 20 ] 
+		then
+			typeset -R20 foo=$DIR
+			DIR="...$foo"
+			unset foo
+		fi
+		;; 
+	*bash)
+		DIR=`echo $PWD | sed "s@^$HOME@@"`
+		#DIR=${PWD#$HOME}
+		if [ -z "$DIR" ]; then
+			DIR="~";
+		elif [ "$PWD" != "$DIR" ]; then
+			DIR="~$DIR";
+		fi
+		if foo=`expr "$DIR" : '.....*\(..................\)$' 2>/dev/null`
+		then
+			DIR="...$foo"
+			unset foo
+		fi
+		;;
+	*)	
+		PS1="${SHORTHOST} ${SHELL} ${PWD}${ROOTPROMPT} $ "
+		;;
+	esac
+}
+
+fali() {
+	finger `ali $@ | sed -e 's/^.*<\([^>]*\)>.*/\1/'`
+}
+
+# NeXT Stuff
+NeXTtitle() {
+	echo "]0;$@\\"
+}
+
+# X-related aliases and functions
+alias ow='openwin -dev /dev/cgthree0 -dev /dev/cgsix0'
+xaddhost() {
+	xauth extract - $DISPLAY | rsh $@ /usr/local/X11/xauth merge -
+	echo $@ can now access display
+}
+xtitle() {
+	echo_no_nl  "]0;$@"
+}
+
+
+spawn() {
+	sh -c "$@ &"
+}
+
+addafter() { PATH=${PATH}:$1; echo $PATH ; }
+addbefore() { PATH=$1:${PATH}; echo $PATH ; }
+pathrm() { PATH=`echo $PATH | sed -e "s=^${1}:==;s=:${1}$==;s=:${1}:=:="` ; echo $PATH; }
+
+idle() {
+	(
+	while true
+	do
+		echo_no_nl .
+		sleep 300
+	done
+	)
+}
+
+manless() {
+	for file
+	do
+		if expr "$file" : '.*\.pod' 1>/dev/null 2>/dev/null 
+		then
+			pod2man $file | nroff -man | ${PAGER:-more}
+		elif expr "$file" : '.*\.p[lm]' 1>/dev/null 2>/dev/null 
+		then
+			pod2man $file | nroff -man | ${PAGER:-more}
+		elif [ -f /usr/bin/groff ]
+		then
+			groff -mandoc -T ascii $file | ${PAGER:-more} -r
+		else 
+			nroff -man $file | ${PAGER:-more}
+		fi
+	done
+}
+
+presub()
+{
+	if [ $# -lt 2 ] 
+	then
+		echo "$0: usage reqid prefix" 1>&2
+		return 1
+	fi
+
+	id=$1
+	prefix=$2
+
+	subj=`reqshow $id | grep '^Subject: \[DP Support #$id\]'`
+	if [ -z "$subj" ]
+	then
+		echo "$0: couldn't find subject on [DP Support #$id]" 1>&2
+		return 1
+	fi
+
+	set $subj
+	shift
+	req -subject "$prefix $@"
+}
+
+reqless()
+{
+	reqshow $@ | ${PAGER:-less}
+}
+
+reqforw()
+{
+	id=$SECONDS
+	tmp=${TMP:-/tmp}
+	reqshow $@ > $tmp/$id
+	forw +$tmp $id
+	rm -f $tmp/$id
+}
+
+reqrepl()
+{
+	id=$SECONDS
+	tmp=${TMP:-/tmp}
+	reqshow $@ > $tmp/$id
+	repl -filter reqrepl.filter -form reqreplcomps +$tmp $id
+	rm -f $tmp/$id
+}
+alias myq='q -owner wam -prio all'
+alias noq='q -unowned'
+
+inetlookup() {
+	nslookup ${@:-'-'} proxy1.network.fedex.com
+}
+
+arin() { 
+	if [ -x /usr/bin/fwhois ]
+	then
+		whois "${@}"@whois.arin.net
+	else
+		whois -h whois.arin.net "$@"
+	fi
+}
+
+ripe() {
+	if [ -x /usr/bin/fwhois ]
+	then
+		whois "${@}"@whois.ripe.net
+	else
+		whois -h whois.ripe.net "$@"
+	fi
+}
+
+nsi() {
+	if [ -x /usr/bin/fwhois ]
+	then
+		whois "${@}"@whois.networksolutions.com
+	else
+		whois -h whois.networksolutions.com "$@"
+	fi
+}
+regi() {
+	if [ -x /usr/bin/fwhois ]
+	then
+		whois "${@}"@whois.register.com
+	else
+		whois -h whois.register.com "$@"
+	fi
+}
+
+launch() {
+	 xterm -n $1 -T $1 -e ssh $@
+}
+
+fixterm() {
+	eval `resize`
+	echo -WINCH $$
+	tput init
+	reset
+	clear
+}
+
+alias r='fc -s'
+
+alias john="/home/wam/tools/john/run/john"
+
+alias t='telnet $IP'
+
+function cvsrev {
+	cvsdir="`dirname $2`/CVS/"
+	cvs -d `cat "$cvsdir"/Root` co -p -r $1 `cat $cvsdir/Repository`/`basename $2`
+}
+alias cvsup='cvs update'
+function cvsdiff {
+	cvs diff $@ | colordiff
+}
+
+function cvsuse {
+	libdir=$HOME/lib/cvs
+	if [ -f "${libdir}/cvs-$1" ]
+	then
+		. ${libdir}/cvs-$1
+		echo "Set CVSROOT=$CVSROOT, CVS_RSH=$CVS_RSH"
+	else
+		echo "CVS modules available:"
+		ls -C ${libdir} | sed -e 's/cvs-/    /g'
+	fi
+}
+
+function cvstags {
+	cvs log $@ | sed -n -e '/symbolic names:/,/keyword substitution:/ p' -e '/keyword substitution:/ d'
+}
+
+function lsmoddat {
+	datadir=archive/moddat/$IP
+	find $datadir -type f -print | xargs ls -1s
+}
+
+function moddat {
+	datadir=archive/moddat/$IP
+	for arg
+	do
+		case "$arg" in 
+		"rpc")		datafile="rpcclient-out";;
+		"smtp")		datafile="py-SMTP-out";;
+		"ftp")		datafile="py-FTP-out";;
+		*)		if [ -f "$datadir/${arg}-out" ]
+				then
+					datafile="${arg}-out"
+				elif [ -f "$datadir/${arg}" ]
+				then
+					datafile="${arg}"
+				fi
+				;;
+		esac
+		file="$datadir/$datafile" 
+		if [ -f "$file" ]
+		then
+			less "$file"
+		else
+			echo "moddat: no such moddat as $file" >&2
+			echo "moddat: options include:" >&2
+			(cd "$datadir" ; echo rpc * | fmt ;) >&2
+		fi
+	done
+}
+
+function mp {
+	local pics
+	local clips
+	slide='P=$1; shift; set _ -`expr "$P" : '\''-.\(.*\)'\''` ${1+"$@"}; shift'
+
+	remove=false
+	renumber=false
+	while [ $# -gt 0 ]
+	do
+		case "$1" in
+			"-r")	remove=true
+				shift
+				;;
+			"-r*")	remove=true
+				eval "$slide"
+				;;
+			"-R")	renumber=true
+				shift
+				;;
+			"-R*")	renumber=true
+				eval "$slide"
+				;;
+			"-h")	echo "mp: [-r] [-R] file[s]" 
+				echo "-r     prompt for removal after display of files"
+				echo "-R     renumber files before viewing"
+				return
+				;;
+			*)	break
+				;;
+			--)	shift
+				break
+				;;
+		esac
+	done
+	for file
+	do
+		case "$file" in
+		*/info|info)	continue ;;
+		*.jpg|*.jpeg|*.JPG|*.JPEG) 
+				pics=("${pics[@]}" "$file") ;;
+		*.wmv|*.mpg|*.avi|*.AVI|*.MPG|*.asf)
+				clips=("${clips[@]}" "$file") ;;
+		*)		file "$file" ;;
+		esac
+	done
+	if [ -n "${pics[*]}" ]
+	then
+		gqview "${pics[@]}"
+	fi
+	if [ -n "${clips[*]}" ]
+	then
+		mplayer -fs "${clips[@]}"
+	fi
+	if $remove ; then
+		read -p "Remove? [Y|n] "  answer
+		case "$answer" in
+		[yY]*|"")	rrm $@ ;;
+		*)		echo "keeping $@" ;;
+		esac
+	fi
+}
+
+alias xxe='/usr/local/xxe/bin/xxe'
+alias x5250='x3270 -model 2 -keymap 5250'
+alias xstart='sudo /etc/init.d/xfs stop ; sleep 1; sudo /etc/init.d/xfs start ; sleep 1 ; sudo /etc/init.d/dm start'
+
+alias proxy_on='gconftool-2 --type=bool --set  /system/http_proxy/use_http_proxy true'
+alias proxy_off='gconftool-2 --type=bool --set  /system/http_proxy/use_http_proxy false'
+alias start_work='xtitle "start work" ; sudo ifup eth0 && sudo /etc/init.d/iptables stop && sleep 1 && synergys -c $HOME/lib/synergy-work.conf && synergyc-restart nosferatu ; xterm -T "cartman (ssh forwards)" -e sudo ssh-remote -w & ( evolution-2.0 --offline & freemind & firefox-slide & ) 2>&1 >/dev/null'
+alias nocolor='pathrm /usr/local/lib/cw'
+
+ENV=$oldENV
