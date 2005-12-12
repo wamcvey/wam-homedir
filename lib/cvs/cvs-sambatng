@@ -1,0 +1,6 @@
+CVSROOT=:pserver:anoncvs@anoncvs.dcerpc.org:/home/cvsroot
+unset CVS_RSH
+export CVSROOT 
+echo Loaded: CVSROOT=$CVSROOT
+echo "now do a 'cvs login'.  Password is 'anoncvs'"
+echo "Module is one of: tng, hg, dcerpc-web"

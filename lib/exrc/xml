@@ -1,0 +1,33 @@
+" Wam's xml environment for vi.  Tested extensivily under nvi, moderatly 
+" under vim.  Thanks to ksb@fedex.com for starting me down this path with
+" his html macros
+"
+"
+" go into autoindent mode (wam's default, but good to be explicit)
+set ai 
+" set tabstop and shift width to 4 "spaces".
+set ts=4
+set sw=4
+"
+" these macros will balance xml tags for me
+" open a tag as normal, type something, lets say <xmltag then hit control-L
+" the macro will finish the start tag (by inserting a > symbol), then insert
+" a balanced end tag, and leave you in insert mode within the tag.
+map!  ><ENDTAG/>2T<"wy/[a-zA-Z0-9._:+-]*/ENDTAGdw"wpF>a
+" if you type '<' 'ctrl-K', it will do the same thing as above, but indent
+map!  ><ENDTAG/>2T<"wy/[a-zA-Z0-9._:+-]*/ENDTAGdw"wpF>aO	
+"
+" if you type '<' 'ctrl-L' or 'ctrl-K' then it will repeat the last
+" tag as before, either on the same line or indented
+map! < <>"wPf>s
+map! < <>"wPf>s
+"
+" skip over the next close tag and put me back into insert mode
+map!  />a
+"
+" insert an HTML header block (up through a title)
+map! gH <HTMLO<HEAD<TITLE
+" insert an BODY 
+map! gB <BODYO
+" add an anchor
+map! gA <A href=""></A>5hi

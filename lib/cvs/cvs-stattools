@@ -1,0 +1,3 @@
+CVS_RSH=ssh
+CVSROOT=:ext:cvs.ecsforge.cisco.com:/home/cvs/stattools
+export CVS_RSH CVSROOT

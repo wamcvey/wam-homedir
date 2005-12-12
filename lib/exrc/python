@@ -1,0 +1,7 @@
+set tabstop=4 shiftwidth=4 ai
+map!  #!/usr/bin/env python!!echo '\# %'o# A program to do something## William McVey <wam@cisco.com>!!date +"\# \%b \%e, \%Y"oif __name__ == '__main__':import getoptimport sys
+map ,n Gd1Gi
+map! : :	
+map!  import code;code.InteractiveConsole(locals=locals()).interact()
+set foldmethod=expr
+set foldexpr=getline(v:lnum)[0]==\"\\t\"

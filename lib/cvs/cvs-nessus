@@ -1,0 +1,6 @@
+# see http://www.nessus.org/cvs_manual.html
+CVSROOT=":pserver:anonymous@cvs.nessus.org:/usr/local/cvs"
+unset CVS_RSH
+export CVSROOT
+echo Loaded: CVSROOT=$CVSROOT
+echo "(now do a 'cvs login' and use pw = anon)"

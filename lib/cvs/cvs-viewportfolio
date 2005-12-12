@@ -1,0 +1,4 @@
+CVS_RSH=ssh 
+CVSROOT=:ext:wamcvey@cvs.viewportfolio.sourceforge.net:/cvsroot/viewportfolio
+export CVS_RSH CVSROOT
+echo Loaded: CVSROOT=$CVSROOT, CVS_RSH=$CVS_RSH

@@ -1,0 +1,3 @@
+cvs -q -z3
+diff -c3 
+update -d -I*.pyc -I*.pyo

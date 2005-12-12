@@ -1,0 +1,17 @@
+" wam's exrc for doing SPA reports (and other flowing text)
+"
+" wam normally uses autoindent (good for coding, generally bad for reports)
+set noai
+" autowrap text at appx 70 chars (10 chars from right margin)
+set wrapmargin=10
+"
+" type ,v to insert a check mark
+map! ,v <czeque> 
+" type ,t to insert a tab
+map! ,t <Tab>
+" Go to the findings and add a statement saying we didn't find anything
+map i ^c/<Findings>The Cisco NSEs did not identify any hosts running the % service at the time of internal assessment.?%s
+map e ^c/<Findings>The Cisco NSEs did not identify any hosts running the % service at the time of external assessment.?%s
+"
+" Put in today's date and indent (good for spa-logs)
+map! ,d !!dateo

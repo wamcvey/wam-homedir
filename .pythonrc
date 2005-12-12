@@ -1,0 +1,39 @@
+import sys
+import string
+import os
+try:
+	import readline
+except:
+	pass
+
+try:
+	import rlcompleter2
+	rlcompleter2.setup(histfn=None)
+	del rlcompleter2
+except:
+	try:
+		import rlcompleter
+	except:
+		pass
+
+from pydoc import help
+from pprint import pprint as p
+
+try:
+	import ultraTB
+	sys.excepthook = ultraTB.ColorTB()
+except:
+	pass
+
+readline.parse_and_bind("tab: complete")
+histfile = os.path.join(os.environ["HOME"], ".pyhist")
+try:
+	readline.read_history_file(histfile)
+except IOError:
+	pass
+import atexit
+atexit.register(readline.write_history_file, histfile)
+# del histfile
+
+print "imported: readline, rlcompleter, os, sys, string"
+print "          pydoc.help() as help(), and pprint.pprint as p()"

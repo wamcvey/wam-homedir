@@ -1,0 +1,3 @@
+CVSROOT=:pserver:anonymous@cvs.sourceforge.net:/cvsroot/collective
+export CVSROOT
+echo Loaded: CVSROOT=$CVSROOT, now 'cvs login' and 'cvs co PloneSoftwareCenter'

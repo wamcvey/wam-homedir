@@ -1,0 +1,3 @@
+CVS_RSH=
+CVSROOT=:pserver:anonymous@anoncvs.gnome.org:/cvs/gnome
+export CVS_RSH CVSROOT

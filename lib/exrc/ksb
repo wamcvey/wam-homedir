@@ -1,0 +1,22 @@
+set ai wi=38 terse
+map! gS /* */:map!  * :map! gC gEO* 
+map! gE :unmap! :map! gC gS
+map! gC gS
+map!  strerror(errno)
+map!  fprintf(stderr, "%s: ;: %s: %s\n", progname, ;, strerror(errno));F;
+map!  fprintf(stderr, "%s: ;: %s\n", progname, strerror(errno));F;
+map!  kayessbee
+map!  Kevin Braunsdorf
+map!  extern char *sys_errlist[];#define strerror(Me) (sys_errlist[Me])
+map!  #include 
+map!  #define 
+map! {} {}O
+map g :.,$w !awk '{ sum = sum + $1 ;} END {print sum ;}'
+map Q :r !sed -n -e '/--/,$p' ~/.sig
+map  /\<[ZXL][ZXL][ZXL]\>
+map!  ></>2T<"wyt>f/"wpF>a
+map! < <>"wPF<f>s
+map! gH <HTMLO<HEAD<TITLE
+map! gB <BODYO
+map! gR X-Request-Do: resolve
+map! gA <A href=""></A>5hi

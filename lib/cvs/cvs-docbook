@@ -1,0 +1,4 @@
+echo "Do a 'cvs login'. Modules include: 'slides', 'defguide'"
+CVSROOT=:pserver:anonymous@cvs.sourceforge.net:/cvsroot/docbook
+CVS_RSH=
+export CVS_RSH CVSROOT

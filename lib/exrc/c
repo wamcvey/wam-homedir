@@ -1,0 +1,18 @@
+" just in case I'm not in autoindent mode already
+set ai 
+set sw=8
+set ts=8
+" Many thanks to ksb@fedex.com for most of these C macros
+" gC opens a comment, gE ends a comment
+map! gS /* */:map!  * :map! gC gEO* 
+map! gE :unmap! :map! gC gS
+map! gC gS
+" simple expansions for things that I need to type a lot 
+map!  strerror(errno)
+map!  fprintf(stderr, "%s: ;: %s: %s\n", progname, ;, strerror(errno));F;
+map!  fprintf(stderr, "%s: ;: %s\n", progname, strerror(errno));F;
+map!  extern char *sys_errlist[];#define strerror(Me) (sys_errlist[Me])
+map!  #include 
+map!  #define 
+" open a balanced set of curlys
+map! {} {}O
