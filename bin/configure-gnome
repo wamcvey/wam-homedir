@@ -8,6 +8,7 @@
 # Basic behavior
 gconftool-2 --type=string --set /apps/metacity/general/focus_mode 'sloppy'
 gconftool-2 --type=int --set /apps/metacity/general/num_workspaces '8'
+gconftool-2 --type=bool --set /apps/nautilus/preferences/show_desktop 'false'
 
 # Basic navigation (global)
 gconftool-2 --type=string --set /apps/metacity/global_keybindings/switch_to_workspace_left '<Control>Left'
