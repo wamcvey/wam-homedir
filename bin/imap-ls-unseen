@@ -1,0 +1,119 @@
+#!/usr/bin/env python
+# imap-ls-unseen
+# A program to list a summary of the unseen messages from from an IMAP mbox
+# See http://www.faqs.org/rfcs/rfc2060.html for other interesting IMAP commands
+# to send
+#
+# William McVey <wam@cisco.com>
+# Apr  9, 2002
+
+import imaplib
+import sys
+import types
+
+def do_imap_unseen_list(server, port, user, pw, mailbox, body_chars, verbose=0):
+	try:
+		client=imaplib.IMAP4(server, port)
+		if verbose:
+			sys.stderr.write("status: logging in\n")
+		(errcode, data) = client.login(user, pw)
+		if verbose:
+			sys.stderr.write("response: %s %s\n" % (errcode, repr(data)))
+			sys.stderr.write("status: selecting INBOX\n")
+		(errcode, data) = client.select(mailbox=mailbox, readonly=1)
+		if verbose:
+			sys.stderr.write("response: %s %s\n" % (errcode, repr(data)))
+			sys.stderr.write("status: searching %s\n" % mailbox)
+		(errcode, data) = client.search("US-ASCII", 'UNSEEN')
+		if verbose:
+			sys.stderr.write("response: %s %s\n" % (errcode, repr(data)))
+		for message in data[0].split():
+			if verbose:
+				sys.stderr.write("status: fetching %s\n" % message)
+			(errcode, data) = client.fetch(message, '(BODY.PEEK[HEADER.FIELDS (FROM DATE SUBJECT)] BODY.PEEK[TEXT]<0.%d>)' % body_chars)
+			if verbose:
+				sys.stderr.write("response: %s %s\n" % (errcode, repr(data)))
+			print "%s\n%s\n\n" % (data[0][1].strip(),repr(data[1][1].strip()))
+			for response in data:
+				if type(response) is types.TupleType:
+					# print "%s" % response[1]
+					pass
+
+		if verbose:
+			sys.stderr.write("status: logging out%s\n")
+		(errcode, data) = client.logout()
+		if verbose:
+			sys.stderr.write("response: %s %s\n" % (errcode, repr(data)))
+		return 1
+	except client.error:
+		(trcbktype, value, tb) = sys.exc_info()
+		sys.stderr.write("Error: %s\n" % value)
+		return 0
+
+if __name__ == '__main__':
+	import getopt
+	import os, socket
+	import getpass
+
+	progname=os.path.basename(sys.argv[0])
+	use_mbox="INBOX"
+	verbose=0
+	body_chars=60
+
+	usage="""\
+%(progname)s: [-m mbox] [-b count] [-v] host[:port] ...
+%(progname)s: -h
+""" % locals()
+	help="""\
+-h        print this help message
+-m mbox   mailbox name (default %(use_mbox)s)
+-v        print verbose messages to stdout
+-b count  print count bytes worth of the message body (default %(body_chars)d)
+host      hostname of the mail server(s)
+port      port to query
+""" % locals()
+	try:
+		options, params = getopt.getopt(sys.argv[1:], "hm:vb:")
+	except:
+		sys.exit("%s: option error (try -h for help)\n" % progname)
+
+		
+	for option, arg in options:
+		if option == "-h":
+			sys.stderr.write(usage)
+			sys.stderr.write(help)
+			sys.exit(0)
+		if option == "-m":
+			use_mbox=arg
+		if option == "-b":
+			body_chars=int(arg)
+		if option == "-v":
+			verbose=1
+
+	default_user, default_pw=None, None
+	for hostspec in params:
+		hostport=hostspec.split(":", 1)
+		server=hostport[0]
+		if len(hostspec) == 2:
+			port=int(hostport[1])
+		else:
+			port=socket.getservbyname("imap", "tcp")
+		if default_user == None:
+			default_user=getpass.getuser()
+		user=raw_input("Username [default: %s]: " % default_user)
+		if user == "":
+			user=default_user
+		else:
+			default_user=user
+		if default_pw == None:
+			pw=getpass.getpass(prompt="Password:")
+			if pw != "":
+				default_pw=pw
+		else:
+			pw=getpass.default_getpass(prompt="Password [default: <the last password you used>]: ")
+			if pw == "":
+				pw=default_pw
+			else:
+				default_pw=pw
+
+		do_imap_unseen_list(server, port, user, pw, use_mbox, body_chars, verbose)
