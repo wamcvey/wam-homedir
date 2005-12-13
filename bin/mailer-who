@@ -1,0 +1,11 @@
+#!/bin/sh
+
+list=$1
+curl -s -S -u "$USER" 'http://mailer/protected-cgi-bin/WWWmajordomo?list='$1'&command=who' | \
+	dehtml | \
+	sed -n -e '/^[ 	]*$/d' \
+	  -e '1,/Members of list/ d' \
+	  -e '/Cisco Systems, Inc - Internal Use Only/,$ d' \
+	  -e "/^$1\$/ d" \
+	  -e '/check off members to be unsubscribed/ d' \
+	  -e 'p'
