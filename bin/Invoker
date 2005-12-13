@@ -1,0 +1,105 @@
+#!/bin/ksh 
+#
+# execute the appropriate system dependent binaries based on output from
+# uname -a
+#
+PATH=/bin:/usr/sbin:/sbin:/usr/bin:/etc:$PATH
+
+bin=~wam/bin
+prog=`basename $0`
+
+# God damn pdksh, I hate it.  (but it's better than csh I guess)
+# uname -a | read OS HOST REV VER ARCH
+OLDARGS=$@
+set `uname -a`
+OS=$1 HOST=$2 REV=$3 VER=$4 ARCH=$5
+
+case "$OS" in
+SunOS)	
+	case "$REV" in
+	4*)
+		case "$ARCH" in
+		sun4*)	t="sun4"
+			;;
+		sun3*)
+			t="sun3"
+			;;
+		*)      echo "$prog: unknown cpu/os type: OS=$1 HOST=$2 REV=$3 VER=$4 ARCH=$5" 1>&2
+			exit 127
+			;;
+		esac
+		;;
+	5*)
+		t="sun5"
+		;;
+	esac
+;;
+
+IRIX*)
+	case "$REV" in
+	4*)
+		t="irix4"
+		;;
+	5*)
+		t="irix5"
+		;;
+	*)      
+		echo "$prog: unknown cpu/os type: OS=$1 HOST=$2 REV=$3 VER=$4 ARCH=$5" 1>&2
+		exit 127
+		;;
+	esac
+;;
+
+HP-UX*)
+	case "$REV" in
+	*.09.*)
+		t=hp-9
+		;;
+	*)      
+		echo "$prog: unknown cpu/os type: OS=$1 HOST=$2 REV=$3 VER=$4 ARCH=$5" 1>&2
+		exit 127
+		;;
+	esac
+;;
+
+FreeBSD)
+	case "$ARCH" in
+	2.*)
+		t=freebsd-2
+		;;
+	3.*)
+		t=freebsd-3
+		;;
+	*)
+		echo "$prog: unknown cpu/os type: OS=$1 HOST=$2 REV=$3 VER=$4 ARCH=$5" 1>&2
+		exit 127
+		;;
+	esac
+;;
+
+Linux)	t=linux
+	;;
+
+AIX)
+	case "$VER" in
+	3)
+		t=aix-3
+		;;
+	*)      echo "$prog: unknown cpu/os type: OS=$1 HOST=$2 REV=$3 VER=$4 ARCH=$5" 1>&2
+		exit 127
+		;;
+	esac
+;;
+
+*)      echo "$prog: unknown cpu/os type: OS=$1 HOST=$2 REV=$3 VER=$4 ARCH=$5" 1>&2
+        exit 127
+;;
+esac
+
+
+[ "$prog" = "Invoker" ] && exec echo "$bin/.$t/"
+
+[ -f $bin/.$t/$prog ] || { echo "Invoker: $prog not compiled for this platform.  Please notify wam." 1>&2 ; exit 1 ; }
+
+eval exec $bin/.$t/$prog "$OLDARGS"
+
