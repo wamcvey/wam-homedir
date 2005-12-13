@@ -1,0 +1,10 @@
+#!/bin/sh
+# netscape-slide 	 William McVey - Feb 16, 1996
+# Stupid little script to redirect an open netscape browser to a
+# particular URL
+#
+# Complete details in what all can be done is at 
+# http://home.netscape.com/newsref/std/x-remote.html
+
+netscape -remote "openURL($1)" 2>/dev/null || sh -c "netscape $1 &"
+exit $?
