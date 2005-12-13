@@ -1,0 +1,60 @@
+#!/usr/bin/perl
+# Quick and dirty script to print out information of/hosts in a particular
+# CIDR netblock.  Mostly just wrapper around Net::Netmask.
+#
+# William McVey - Feb 1, 2000
+# $Id:$
+
+use lib '/usr/autospa/lib/perl5/site_perl/5.005';
+# temporarly look into wam's directory until the autospa path is standard
+use lib '/home/wam/lib/perl5/site_perl/5.005';
+
+use strict;
+use Getopt::Std;
+use Net::Netmask; 
+
+my $help_msg = << "END_OF_BLOCK" ;
+$0: [-i|-r] netblock [mask]
+$0: -h
+-i	print info about the netblock 
+-r	print the in-addr.arpa records for this netblock
+-h	this message
+END_OF_BLOCK
+
+my %CLI_args;		# command line argument hash (keeps 'use strict' happy)
+getopts("irh", \%CLI_args);
+if (exists $CLI_args{'h'}) {
+	print $help_msg;
+	exit 0; 
+}
+
+if (!defined $ARGV[0]) {
+	print $help_msg;
+	exit 1;
+}
+
+my ($netblock) =  new Net::Netmask(@ARGV);
+
+if (exists $CLI_args{'r'}) {
+	my (@InAddrInfo)=$netblock->inaddr();
+	while (my ($zone, $begin, $end) = splice(@InAddrInfo, 0, 3)) {
+		foreach ($begin ... $end) {
+			print $_, ".", $zone, "\n";
+		}
+	}
+	exit 0;
+}
+
+if (exists $CLI_args{'i'}) {
+	printf "%-15s %s\n", "Netblock:", $netblock->desc();
+	printf "%-15s %s\n", "Subnet mask:", $netblock->mask();
+	printf "%-15s %s\n", "Host mask:", $netblock->hostmask();
+	printf "%-15s %s\n", "Number of IPs:", $netblock->size();
+	printf "%-15s %s\n", "Broadcast addr:", $netblock->broadcast();
+	exit 0;
+}
+
+foreach ($netblock -> enumerate()) {
+	print $_, "\n";
+}
+exit 0; 
