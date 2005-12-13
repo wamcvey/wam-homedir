@@ -1,0 +1,57 @@
+#!/bin/sh
+# compare-stats
+# simple script to help in doing trending in spa reports
+# If you can believe it, it started out as a simple one liner I 
+# kept typing in.  Eventually I just kept adding feature upon
+# feature.
+#
+# Oct 21, 2000
+# William McVey
+#
+
+echo_no_nl() {
+	ECHO_TEST=`echo -n foo |wc -w`
+	if [ $ECHO_TEST -ne 2 ] ; then
+		echo -n "$*"
+	else
+		echo "$*\c"
+	fi
+}
+
+
+prompt() {
+	if tty 2>/dev/null >/dev/null
+	then
+		echo_no_nl "data_from_before data_now: "
+	fi
+}
+
+prompt
+while read before now
+do
+	# we can handle simple cases easily
+	if [ "$now" -eq "$before" ]
+	then
+		echo "0% change"
+		prompt
+		continue
+	fi
+	if [ "$before" -eq "0" ]
+	then
+		echo "n/a"
+		prompt
+		continue
+	fi
+	percent=`echo "($now - $before)/$before *100"|bc -l`
+	positive=`echo "if ($percent > 0) {1}" | bc -l`
+	if [ 1 -eq "$positive" ]
+	then
+		change=increase
+	else
+		change=decrease
+		percent=`expr "$percent" : "-\(.*\)"`
+	fi
+	printf "%3.1f%% %s\n" $percent $change
+	prompt
+done
+exit 0
