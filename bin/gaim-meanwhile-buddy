@@ -1,0 +1,5 @@
+#!/bin/sh
+for uid
+do
+	echo "uid=${uid},ou=active,ou=employees,ou=people,o=cisco.com"
+done
