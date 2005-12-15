@@ -102,8 +102,13 @@ XTerm*VT100.Translations:	#override \
 	Shift<Key>Right:	scroll-forw(1,line)	\n\
 	Shift<Key>Up:		scroll-back(1,page)	\n\
 	Shift<Key>Down:		scroll-forw(1,page)
-! XTerm*font:			fixed
+#ifdef (WIDTH == 1600)
+! large resolution yields large fonts
 XTerm*font:			12x24
+#else
+XTerm*font:			fixed
+#endif
+
 XTerm*font3:			fixed
 XTerm*fontMenu*font3*Label:	fixed
 XTerm*font4:			-adobe-*-medium-r-normal-*-20-*-*-*-*-*-*-*
