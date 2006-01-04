@@ -391,6 +391,11 @@ function mp {
 	done
 	for file
 	do
+		if [ ! -s "$file" ]
+		then
+			echo "skipping empty: '$file'" >&2
+			continue
+		fi
 		case "$file" in
 		*/info|info)	continue ;;
 		*.jpg|*.jpeg|*.JPG|*.JPEG) 
