@@ -1,0 +1,81 @@
+#!/bin/sh
+# ssh-remote
+# Just a small wrapper to ssh to manage my port forwards if I'm root
+# (primarly cause I'm too damn lazy to type these in all the time).
+#
+# ssh-remote [-v] [-b] [remotehost]
+# -b	Bounce through crypt...
+# 
+# William McVey <wam@cisco.com>
+# Dec 10, 2000
+
+ssh_host=ssh-sj1.cisco.com
+ssh_user=wam
+bounce_host="crypt.spa-ops.com"
+mail_host=3rdclass
+cvs_host=spacvs
+sametime_host=sametime-im.cisco.com
+
+if [ "$1" = "-v" ]
+then
+	SSH_ARGS="-v"
+	shift
+fi
+
+BOUNCE=false
+if [ "$1" = "-b" ]
+then
+	BOUNCE=true
+	shift
+fi
+
+LOCALSSH_REDIR_PORT=`expr $RANDOM + 20000`
+# Set up my port forwardings if I ssh as root (need to be root in order to
+# allocate privileged ports)
+if [ `whoami` = "root" ]
+then
+	cat <<! >&2
+Forwarding:
+	localhost:25,110,143,993 to ${mail_host}
+	localhost:1533 to ${sametime_host}:1533
+	localhost:8080 to web proxy
+	localhost:8088 to toc.oscar.aol.com
+	localhost:5050 to scs.yahoo.com:5050
+	localhost:2022 to spat:22 
+	localhost:2522 to ${cvs_host}:22
+	${ssh_host}:$LOCALSSH_REDIR_PORT to localhost:22
+!
+	bounce_im="-L8088:toc.oscar.aol.com:8088 -L5050:scs.msg.yahoo.com:5050" #  -L5050:scs.yahoo.com:5050"
+	# mail_im="-L25:${mail_host}:25 -L110:${mail_host}:110 -L143:${mail_host}:143 -L993:${mail_host}:993"
+	SSH_ARGS="$SSH_ARGS $mail_im -L8080:localhost:80  -L2022:spat:22 -L2522:${cvs_host}:22 -L1533:${sametime_host}:1533 ${bounce_im} -R${LOCALSSH_REDIR_PORT}:localhost:22"
+	bounce_smtp=`expr $RANDOM + 10240`
+	bounce_pop=`expr $bounce_smtp + 1`
+	bounce_imap=`expr $bounce_smtp + 2`
+	bounce_imaps=`expr $bounce_smtp + 3`
+	bounce_http=`expr $bounce_smtp + 4`
+	bounce_spat=`expr $bounce_smtp + 5`
+	bounce_cvs=`expr $bounce_smtp + 6`
+	bounce_sametime=`expr $bounce_smtp + 7`
+	BOUNCE_FIRSTHOP_ARGS="-A -L25:$bounce_host:$bounce_smtp -L110:$bounce_host:$bounce_pop -L143:$bounce_host:$bounce_imap -L993:$bounce_host:$bounce_imaps -L8080:$bounce_host:$bounce_http -L1533:$bounce_host:$bounce_sametime $bounce_im -L2022:$bounce_host:$bounce_spat -L2522:$bounce_host:$bounce_cvs"
+	BOUNCE_SECONDHOP_ARGS="-A -g -L${bounce_smtp}:${mail_host}:25 -L${bounce_pop}:${mail_host}:110 -L${bounce_imap}:${mail_host}:143 -L${bounce_imaps}:${mail_host}:993 -L${bounce_sametime}:${sametime_host}:1533 -L${bounce_spat}:spat:22 -L${bounce_cvs}:${cvs_host}:22 -L${bounce_http}:localhost:80"
+fi
+
+if [ "$1" != "" ]
+then
+	dest="ssh $@"
+fi
+
+if $BOUNCE
+then
+	# hardcoded -p 80 is a bug
+	exec ssh -t -l $ssh_user -p 443 $BOUNCE_FIRSTHOP_ARGS $bounce_host ssh -t -l $ssh_user $BOUNCE_SECONDHOP_ARGS $ssh_host ${dest}
+fi
+ssh -g $ssh_host $SSH_ARGS -t -l $ssh_user $dest
+
+
+#if [ "$1" = "" ]
+#then
+#	ssh $ssh_host $SSH_ARGS -t -l $ssh_user
+#else
+#	ssh $ssh_host $SSH_ARGS -t -l $ssh_user ssh $@
+#fi
