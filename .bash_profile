@@ -5,17 +5,18 @@ umask 022
 
 # For when I'm travelling
 # TZ='America/New_York'; export TZ		# EST
-TZ='America/Chicago'; export TZ		# CST
+# TZ='America/Chicago'; export TZ		# CST
+TZ="CST"
 
 # XXX quick hack for now
 # . $HOME/bin/kill-locale
 
 PATH=${HOME}/bin
 for dir in \
-	/usr/local/lib/cw \
 	/usr/local/bin /opt/local/bin \
 	/usr/local/sbin /opt/local/sbin \
 	/usr/local/etc /opt/local/etc \
+	/usr/cisco/bin /usr/cisco/sbin /router/bin \
 	/usr/gnu/bin /usr/local/gnu \
 	/usr/local/lib \
 	/usr/X11R6/bin /p/X11R6 /usr/local/X11 /opt/x11r5/bin \
