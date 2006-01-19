@@ -1,6 +1,6 @@
 #!/bin/sh
 echo_no_nl() {
-    ECHO_TEST=$(echo -n foo |wc -w) 
+    ECHO_TEST=`echo -n foo |wc -w` 
     if [ $ECHO_TEST -ne 2 ] 
     then
 	echo_no_nl() {
