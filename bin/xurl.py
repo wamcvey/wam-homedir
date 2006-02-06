@@ -1,57 +1,57 @@
-#!/bin/sh
-HOME=${HOME:-/export/home/wam}
-PATH=$HOME/bin:/usr/local/bin:/usr/local/etc:/opt/local/bin:/opt/local/etc:/usr/local/lib:/bin:/etc:/usr/sbin:/sbin:/usr/bin:$PATH
-export PATH
-export HOME
+#!/usr/bin/env python
 
-cd $HOME/projs/cvs-changes
-rm -f cvslog.txt errors
+"""A program to do something
 
-if [ "$1" = "-n" ];
-then
-	mail_it=false
-	shift
-else
-	mail_it=true
-fi
+Detailed documentation
+"""
+
+__author__ =	"William McVey"
+__date__ = 	"24 May, 2004"
+__revision__ =	"$Id:$"
 
 
-now=`strftime "%c"`
-#before=`strftime -s "NOW - ${1:-1} DAYS" "%c %Z"` 
-#cvsdate=-d\'${before}\<${now}\'
-before=`strftime -s "NOW - ${1:-1} DAYS" "%c"`
+import os
+import sys
+import BeautifulSoup
+import urlparse
 
-for dir in *
-do
-	if [ ! -d "$dir" ]
-	then
-		continue
-	fi
-	rm -f changes-$dir
-	(
-	cd $dir
-	cvs -q update -dP >/dev/null 2>>../errors
-	cvs2cl --stdout -l "-d'$before<$now'" 2>>../errors > ../changes-$dir
-	#cvs2cl -f ../changes-$dir -l "${cvsdate}" 2>/dev/null
-	)
-	if [ -s changes-$dir ]
-	then
-		echo "CHANGES in $dir" >> cvslog.txt
-		echo "========================" >> cvslog.txt
-		cat changes-$dir >> cvslog.txt
-		echo >> cvslog.txt
-		echo >> cvslog.txt
-	fi
-	rm -f changes-$dir
-done
+class HTML(BeautifulSoup.BeautifulSoup):
+	def __init__(self):
+		BeautifulSoup.BeautifulSoup.__init__(self)
 
-if [ -s cvslog.txt ]
-then
-	if $mail_it
-	then
-		mailx -s "cvs logs from $before to $now" spacvs-autospa@cisco.com < cvslog.txt
-	else
-		cat cvslog.txt
-	fi
-fi
+	def urls(self):
+		urls = []
+		try:
+			base = self.fetch(name="base")[0]["href"]
+		except:
+			base = ""
+		for anchor in self.fetch("a", {"href": '%%'}):
+			url = urlparse.urljoin(base, anchor["href"])
+			urls.append(url)
+		return urls
 
+if __name__ == '__main__':
+	import sys
+	import os
+	from optparse import OptionParser       # aka Optik
+
+	Progname=os.path.basename(sys.argv[0])
+	Usage="""\
+%prog usage: XXX:
+%prog usage: -h
+%prog usage: -V 
+"""
+	optparser = OptionParser(usage=Usage, version="%prog: $Id:$" )
+	# optparser.add_option("-v", "--verbose", dest = "verbose",
+	#   action="store_true", help="be verbose")
+	#optparser.add_option("-N", "--name", dest="var_n", 
+	#  action= "store" | "append" | "store_true" | "store_false" 
+	#  type = "int"
+	#  default="foo", metavar="SOME_STRING", help="store a string")
+	(options, params) = optparser.parse_args()
+
+	p = HTML()
+	p.feed(sys.stdin.read())
+
+	for url in p.urls():
+		print url
