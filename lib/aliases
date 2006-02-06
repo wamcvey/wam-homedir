@@ -304,6 +304,9 @@ alias cvsup='cvs update'
 function cvsdiff {
 	cvs diff $@ | colordiff
 }
+function svndiff {
+	svn diff $@ | colordiff
+}
 
 function cvsuse {
 	libdir=$HOME/lib/cvs
