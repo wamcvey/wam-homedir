@@ -14,6 +14,7 @@ import os
 import sys
 import BeautifulSoup
 import urlparse
+import re
 
 class HTML(BeautifulSoup.BeautifulSoup):
 	def __init__(self):
@@ -25,7 +26,7 @@ class HTML(BeautifulSoup.BeautifulSoup):
 			base = self.fetch(name="base")[0]["href"]
 		except:
 			base = ""
-		for anchor in self.fetch("a", {"href": '%%'}):
+		for anchor in self.fetch("a", {"href": re.compile('.+')}):
 			url = urlparse.urljoin(base, anchor["href"])
 			urls.append(url)
 		return urls
