@@ -32,12 +32,14 @@ gconftool-2 --type=string --set /apps/metacity/global_keybindings/run_command_3 
 gconftool-2 --type=string --set /apps/metacity/global_keybindings/run_command_4 'XF86Search'
 gconftool-2 --type=string --set /apps/metacity/global_keybindings/run_command_5 '<Shift>XF86Mail'
 gconftool-2 --type=string --set /apps/metacity/global_keybindings/run_command_6 'XF86Stop'
+gconftool-2 --type=string --set /apps/metacity/global_keybindings/run_command_7 'F12'
 gconftool-2 --type=string --set /apps/metacity/keybinding_commands/command_1 'xterm'
 gconftool-2 --type=string --set /apps/metacity/keybinding_commands/command_2 'evolution mailto:'
 gconftool-2 --type=string --set /apps/metacity/keybinding_commands/command_3 'firefox-slide'
 gconftool-2 --type=string --set /apps/metacity/keybinding_commands/command_4 'xterm'
 gconftool-2 --type=string --set /apps/metacity/keybinding_commands/command_5 'evolution'
 gconftool-2 --type=string --set /apps/metacity/keybinding_commands/command_6 'xscreensaver-command --lock'
+gconftool-2 --type=string --set /apps/metacity/keybinding_commands/command_7 'xterm'
 
 
 # Kill the desktop icons
