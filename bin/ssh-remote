@@ -12,7 +12,7 @@
 ssh_host=ssh-sj1.cisco.com
 ssh_user=wam
 bounce_host="crypt.spa-ops.com"
-mail_host=3rdclass
+mail_host=email.cisco.com
 cvs_host=spacvs
 sametime_host=sametime-im.cisco.com
 
