@@ -45,7 +45,7 @@ def do_imap_unseen_list(server, port, user, pw, mailbox, body_chars, verbose=0):
 		if verbose:
 			sys.stderr.write("response: %s %s\n" % (errcode, repr(data)))
 		return 1
-	except client.error:
+	except:
 		(trcbktype, value, tb) = sys.exc_info()
 		sys.stderr.write("Error: %s\n" % value)
 		return 0
