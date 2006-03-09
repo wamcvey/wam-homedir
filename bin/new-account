@@ -21,14 +21,15 @@ fi
 
 cd $HOME
 svn co https://svn.wamber.net/svn/wam-homedir/trunk
-rsync -avP --backup --backup-dir backup  trunk .
+mkdir backup
+rsync -avP --backup --backup-dir backup  trunk/ .
 
 echo "Replaced the following files with 'standard' ones"
 find backup -print
 
 if [ "$gnome" != "" ]
 then
-	. $HOME/configure-gnome
+	. $HOME/bin/configure-gnome
 fi
 
 . $HOME/.bash_profile			# mostly just to look for errors
