@@ -1,0 +1,34 @@
+#!/bin/sh
+# setup a new account
+# William McVey <wam@wamber.net>
+#
+# $Id:$
+# March 9, 2006
+
+rsync=`which rsync`
+svn=`which svn`
+gnome=`which gnome-session`
+if [ "$rsync" = "" ] ; then
+	echo "$0: no rsync on this host in $PATH, giving up now" >&2
+	exit 1
+fi
+
+if [ "$svn" = "" ] ; then
+	echo "$0: no svn on this host in $PATH, giving up now" >&2
+	exit 1
+	
+fi
+
+cd $HOME
+svn co https://svn.wamber.net/svn/wam-homedir/trunk
+rsync -avP --backup --backup-dir backup  trunk .
+
+echo "Replaced the following files with 'standard' ones"
+find backup -print
+
+if [ "$gnome" != "" ]
+then
+	. $HOME/configure-gnome
+fi
+
+. $HOME/.bash_profile			# mostly just to look for errors
