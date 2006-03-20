@@ -42,7 +42,7 @@ class DND2TxtApp:
 	
 	def on_drag_data_received(self, widget, dragctx, x_loc, y_loc, selection, info, timestamp):
 		self.drop_text = selection.get_text().rstrip('\n\r')
-		self.drop_buffer.set_text(self.drop_text)
+		self.drop_buffer.set_text("")
 		print self.drop_text
 		sys.stdout.flush()
 		
