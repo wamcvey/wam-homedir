@@ -15,7 +15,14 @@ import sys
 import logging
 import re
 
-firefox_path = "/usr/local/firefox/firefox"
+firefox_path = None
+for path in ("/usr/local/firefox/firefox", "/usr/X11R6/bin/firefox",
+             "/usr/local/bin/firefox", "/usr/bin/firefox"):
+	if os.path.exists(path):
+		firefox_path = path
+		break
+if not firefox_path:
+	sys.exit("%s: Firefox not found in known location" % sys.argv[0])
 
 badurl_re = re.compile(r"^[a-zA-Z]+://[^/]+$")
 
