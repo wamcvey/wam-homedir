@@ -154,6 +154,15 @@ xtitle() {
 	echo_no_nl  "]0;$@"
 }
 
+after() {
+	while ps -elf | grep -v "grep " | grep -q "$1"
+	do
+		echo_no_nl "." 2>&1
+		sleep 5
+	done
+	shift
+	$@
+}
 
 spawn() {
 	sh -c "$@ &"
