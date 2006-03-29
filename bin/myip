@@ -1,4 +1,7 @@
 #!/bin/sh
+# myip- show's my current IP address (usefull for scripts)
+#
+# $Id:$
 
 result=`ifconfig $1 | sed -ne 's/.*inet addr:\([^ ]*\) .*$/\1/p'`
 
