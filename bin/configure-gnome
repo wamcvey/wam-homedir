@@ -53,4 +53,23 @@ gconftool-2 --type=string --set $METACITY/keybinding_commands/command_5 'evoluti
 gconftool-2 --type=string --set $METACITY/keybinding_commands/command_6 'xscreensaver-command --lock'
 gconftool-2 --type=string --set $METACITY/keybinding_commands/command_7 'xterm'
 
+# Setting of fonts
+#
+if [ "`which fc-list 2>/dev/null`" == "" ]
+then
+	echo "$0: fc-list not installed. Install fontconfig" >&2
+	exit 1
+fi
+
+if fc-list | grep -q -i gentium
+then
+	gconftool-2 --type=bool --set $METACITY/general/titlebar_uses_system_font 'false'
+	gconftool-2 --type=string --set $METACITY/general/titlebar_font 'Gentium Italic 12'
+	gconftool-2 --type=string --set /apps/nautilus/preferences/desktop_font 'Gentium 12'
+	# Until Gentium has a bold font face, can't use it as default font
+	# cause some apps (notably evolution) convey useful info with bold
+	gconftool-2 --type=string --set /desktop/gnome/interface/font_name 'Century Schoolbook L, 12'
+else
+	echo "Gentium font not installed. Download from http://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&item_id=Gentium_linux" >&2
+fi
 
