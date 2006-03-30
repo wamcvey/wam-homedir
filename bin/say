@@ -1,0 +1,18 @@
+#!/bin/sh
+# say - small usability wrapper around festival's text to speach capability
+# $Id:$
+#
+# William McVey <wam@cisco.com>
+
+
+if [ $# -gt 0 ]
+then
+	echo $@ | festival --tts
+else
+	# read/say one line at a time, as festival tries to read it all
+	# and then say
+	while read line
+	do
+		echo $line | festival --tts
+	done
+fi
