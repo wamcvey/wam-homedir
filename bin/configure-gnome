@@ -54,7 +54,7 @@ gconftool-2 --type=string --set $METACITY/keybinding_commands/command_6 'xscreen
 gconftool-2 --type=string --set $METACITY/keybinding_commands/command_7 'xterm'
 
 # change caps-lock to a control
-gconftool-2 --type=string --set $GNOME/peripherals/keyboard/kbd/options 'ctrl	ctrl:nocaps'
+gconftool-2 --type=list --list-type=string --set $GNOME/peripherals/keyboard/kbd/options '[ctrl	ctrl:nocaps]'
 
 
 # Setting of fonts
