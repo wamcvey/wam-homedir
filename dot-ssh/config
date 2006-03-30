@@ -12,6 +12,7 @@ Host socks
 	DynamicForward 1080
 
 Host wam2
+	ForwardX11 yes
 	Hostname localhost
 	User wam2
 
