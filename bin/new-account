@@ -5,6 +5,8 @@
 # $Id:$
 # March 9, 2006
 
+REPO=https://svn.wamber.net/svn/wam-homedir/
+
 rsync=`which rsync`
 svn=`which svn`
 gnome=`which gnome-session`
@@ -19,13 +21,20 @@ if [ "$svn" = "" ] ; then
 	
 fi
 
+if [ "$1" = "" ] ; then
+	echo "$0: specify branch you'd like to install as first parameter:" >&2
+	echo "	`svn ls $REPO/branches`" >&2
+	exit 1
+fi
+
 cd $HOME
-svn co https://svn.wamber.net/svn/wam-homedir/trunk
-mkdir backup
-rsync -avP --backup --backup-dir backup  trunk/ .
+svn co https://svn.wamber.net/svn/wam-homedir/branches/$1 branch-$1
+backup="backup-$$"
+mkdir $backup || ( echo "$0: couldn't create backup dir: $backup">&2; exit 1; )
+rsync -avP --backup --backup-dir $backup branch-$1/ .
 
 echo "Replaced the following files with 'standard' ones"
-find backup -print
+find $backup -print
 
 if [ "$gnome" != "" ]
 then
