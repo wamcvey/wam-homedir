@@ -33,6 +33,8 @@ backup="backup-$$"
 mkdir $backup || ( echo "$0: couldn't create backup dir: $backup">&2; exit 1; )
 rsync -avP --backup --backup-dir $backup branch-$1/ .
 
+$HOME/bin/svn-fix-dotfiles
+
 echo "Replaced the following files with 'standard' ones"
 find $backup -print
 
