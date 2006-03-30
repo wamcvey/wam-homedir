@@ -1,0 +1,4 @@
+#!/bin/sh
+# cli wrapper for ie via crossover
+
+/home/wam/.cxoffice/win98/desktopdata/cxmenu/StartMenu/Programs/Internet+Explorer $@

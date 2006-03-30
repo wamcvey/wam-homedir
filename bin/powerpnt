@@ -1,0 +1,4 @@
+#!/bin/sh
+# cli wrapper for PowerPoint via crossover
+
+/home/wam/.cxoffice/win2000/desktopdata/cxmenu/StartMenu/Programs/Microsoft+Office/Microsoft+Office+PowerPoint+2003 $@

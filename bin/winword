@@ -1,0 +1,4 @@
+#!/bin/sh
+# cli wrapper for MS Word via crossover
+
+/home/wam/.cxoffice/win2000/desktopdata/cxmenu/StartMenu/Programs/Microsoft+Office/Microsoft+Office+Word+2003 $@
