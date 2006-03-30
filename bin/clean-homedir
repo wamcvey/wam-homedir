@@ -1,0 +1,27 @@
+#!/bin/sh
+# clean-homedir - script to clean the cruft that accumalates in a home directory
+# $Id:$
+#
+# William McVey <wam@cisco.com>
+# Mar 30, 2006
+
+while [ $# -gt 0 ]
+do
+	case "$1" in
+	-f|-i|-if|-fi)
+		RMFLAGS="$RMFLAGS $1"
+		shift
+		continue
+		;;
+	*)	break
+		;;
+	esac
+	echo foo
+done
+home=${1:-${HOME}}
+
+echo "Cleaning firefox cache" >&2
+find $home/.mozilla/firefox/*/Cache* -type f -print0 | xargs -0 rm $RMFLAGS
+
+echo "Cleaning Java deployment cache" >&2
+find $home/.java/deployment/cache -type f -print0 | xargs -0 rm $RMFLAGS
