@@ -53,6 +53,10 @@ gconftool-2 --type=string --set $METACITY/keybinding_commands/command_5 'evoluti
 gconftool-2 --type=string --set $METACITY/keybinding_commands/command_6 'xscreensaver-command --lock'
 gconftool-2 --type=string --set $METACITY/keybinding_commands/command_7 'xterm'
 
+# change caps-lock to a control
+gconftool-2 --type=string --set $GNOME/peripherals/keyboard/kbd/options 'ctrl	ctrl:nocaps'
+
+
 # Setting of fonts
 #
 if [ "`which fc-list 2>/dev/null`" == "" ]
@@ -64,7 +68,7 @@ fi
 if fc-list | grep -q -i gentium
 then
 	gconftool-2 --type=bool --set $METACITY/general/titlebar_uses_system_font 'false'
-	gconftool-2 --type=string --set $METACITY/general/titlebar_font 'Gentium Italic 12'
+	gconftool-2 --type=string --set $METACITY/general/titlebar_font 'Bitstream Vera Sans Oblique 14'
 	gconftool-2 --type=string --set /apps/nautilus/preferences/desktop_font 'Gentium 12'
 	# Until Gentium has a bold font face, can't use it as default font
 	# cause some apps (notably evolution) convey useful info with bold
