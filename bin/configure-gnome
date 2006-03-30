@@ -15,7 +15,7 @@ WINDOW_KEYS=/apps/metacity/window_keybindings
 gconftool-2 --type=string --set /apps/metacity/general/focus_mode 'sloppy'
 gconftool-2 --type=int --set $METACITY/general/num_workspaces '8'
 gconftool-2 --type=bool --set /apps/nautilus/preferences/show_desktop 'true'
-gconftool-2 --type=string --set /apps/gnome-session/options/splash_image '/home/wam/lib/images/noodledoodle1600_1200.jpg'
+gconftool-2 --type=string --set /apps/gnome-session/options/splash_image '/home/wam/lib/images/backgrounds/noodledoodle1600_1200.jpg'
 gconftool-2 --type=string --set $GNOME/background/primary_color '#000000' # black
 
 # Preferred Apps
