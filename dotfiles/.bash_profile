@@ -19,8 +19,6 @@ for dir in \
 	/usr/cisco/bin /usr/cisco/sbin /router/bin \
 	/usr/gnu/bin /usr/local/gnu \
 	/usr/local/lib \
-	/usr/X11R6/bin /p/X11R6 /usr/local/X11 /opt/x11r5/bin \
-	/usr/bin/X11 /opt/X11/x11r5/bin /usr/openwin/bin \
 	/usr/local/news /usr/local/perl /usr/local/tcl \
 	/usr/local/tex/bin \
 	/usr/local/misc \
@@ -29,6 +27,8 @@ for dir in \
 	/usr/local/xep/bin /usr/local/xep \
 	/bin /etc /usr/etc /usr/sbin /sbin /usr/bin \
 	/usr/ucb /usr/bsd \
+	/usr/X11R6/bin /p/X11R6 /usr/local/X11 /opt/x11r5/bin \
+	/usr/bin/X11 /opt/X11/x11r5/bin /usr/openwin/bin \
 	/usr/local/spa \
 	/usr/autospa/bin /usr/autospa/scripts \
 	/usr/local/spa-report/bin \
