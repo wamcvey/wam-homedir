@@ -1,0 +1,51 @@
+#!/bin/sh
+# report-svn-changes - summarizes changes in a subversion repository
+# $Id:$
+# 
+# William McVey <wam@cisco.com>
+# Mar 31, 2006
+#
+# Usage:
+# report-svn-changes REPOSITORY_OR_PATH [NUM_DAYS_TO_REPORT_ON]
+
+# Include this into cron with a config similar to:
+# 3 0 * * 1 report-svn-changes local:///path_to_repos 3
+# 3 0 * * 2-5 report-svn-changes local:///path_to_repo 1
+
+mail_recip=stat-tools-dev@cisco.com 
+
+HOME=${HOME:-/export/home/wam}
+PATH=$HOME/bin:/usr/local/bin:/usr/local/etc:/opt/local/bin:/opt/local/etc:/usr/local/lib:/bin:/etc:/usr/sbin:/sbin:/usr/bin:$PATH
+export PATH
+export HOME
+tmp_file=`mktemp svnlog.XXXXXXX` || exit 1
+
+if [ "$1" = "-n" ];
+then
+	mail_it=false
+	shift
+else
+	mail_it=true
+fi
+
+repos="${1:-.}"
+shift
+
+
+now=`strftime "%F"`
+#before=`strftime -s "NOW - ${1:-1} DAYS" "%c %Z"` 
+#cvsdate=-d\'${before}\<${now}\'
+before=`strftime -s "NOW - ${1:-1} DAYS" "%FT%H:%M"`
+
+svn log -v -r "{$before}:HEAD" > $tmp_file
+
+if grep -q -v "^-*$" $tmp_file
+then
+	if $mail_it
+	then
+		mailx -s "svn logs from $before to $now of $repos" $mail_recip < $tmp_file
+	else
+		cat $tmp_file
+	fi
+fi
+rm $tmp_file
