@@ -66,13 +66,9 @@ while (my $entry = <>) {
     printf "%s  %s\n", $tstamp, $hacker;
 
   } elsif ($this_line_empty) {
-
     print "\n";
-
   } else {
-
-    print "\t$entry";
-
+    print "    $entry";
   }
 
   $last_line_empty = $this_line_empty;
