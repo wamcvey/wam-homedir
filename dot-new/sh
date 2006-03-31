@@ -11,6 +11,11 @@
 progname=`basename $0`
 usage="$progname: usage [-bhO] [-f arg] [files]"
 
+# how to slide a single letter option off the beginning of a bundle
+# -barf -> -arf
+param='if [ $# -lt 2 ]; then echo "$progname: missing value for $1" 1>&2 ; exit 1; fi'
+slide='P=$1; shift; set _ -`expr "$P" : '\''-.\(.*\)'\''` ${1+"$@"}; shift'
+
 # default values for all the flags, or leave unset for a ${flag-value) form
 # BFLAG=false
 # FFLAG=default-value
