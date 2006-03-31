@@ -3,49 +3,126 @@
 # $Id:$
 # 
 # William McVey <wam@cisco.com>
-# Mar 31, 2006
+# March 31, 2006
 #
-# Usage:
-# report-svn-changes REPOSITORY_OR_PATH [NUM_DAYS_TO_REPORT_ON]
 
 # Include this into cron with a config similar to:
 # 3 0 * * 1 report-svn-changes local:///path_to_repos 3
 # 3 0 * * 2-5 report-svn-changes local:///path_to_repo 1
 
-mail_recip=stat-tools-dev@cisco.com 
+MAIL_RECIP=stat-tools-dev@cisco.com 
 
-HOME=${HOME:-/export/home/wam}
+# our program name and usage message
+progname=`basename $0`
+usage="$progname: usage [-nr] [-m EMAIL] REPOS_OR_PATH [DAYS]"
+
+# how to slide a single letter option off the beginning of a bundle
+# -barf -> -arf
+slide='P=$1; shift; set _ -`expr "$P" : '\''-.\(.*\)'\''` ${1+"$@"}; shift'
+param='if [ $# -lt 2 ]; then echo "$progname: missing value for $1" 1>&2 ; exit 
+1; fi'
+
+
+HOME=${HOME:-/home/wam}
 PATH=$HOME/bin:/usr/local/bin:/usr/local/etc:/opt/local/bin:/opt/local/etc:/usr/local/lib:/bin:/etc:/usr/sbin:/sbin:/usr/bin:$PATH
-export PATH
-export HOME
-tmp_file=`mktemp svnlog.XXXXXXX` || exit 1
+export PATH HOME
+tmp_cl_file=`mktemp svnlog.XXXXXXX` || exit 1
+MAIL_FILE=`mktemp svnlog.XXXXXXX` || exit 1
 
-if [ "$1" = "-n" ];
-then
-	mail_it=false
-	shift
-else
-	mail_it=true
-fi
 
-repos="${1:-.}"
-shift
+mail_it=true
+group_sub=false
+# get the options from the command line (+ any variables)
+while [ $# -gt 0 ]
+do
+        case "$1" in
+        -n)	mail_it=false
+                shift
+                ;;
+	-n*)	mail_it=false
+		eval "$slide"
+		;;
+        -r)	group_sub=true
+                shift
+                ;;
+	-r*)	group_sub=true
+		eval "$slide"
+		;;
+	-m)	eval "$param"
+		MAIL_RECIP=$2
+		shift; shift
+		;;
+        #-u*)
+        #        UNIQDIR=`expr "$1" : '-.\(.*\)'`
+        #        shift
+        #        ;;
+        --)
+                shift
+                break
+                ;;
+        -h|-h*)
+                cat <<HERE
+$usage
+-m EMAIL    an alternate email address to send to (default: $MAIL_RECIP)
+-n          don't send mail
+-r          group changes by the subdirectories of the repository
+            otherwise, changes to repository are listed chronologically)
+HERE
+                exit 0
+                ;;
+        -*)
+                echo "$usage" 1>&2 
+                exit 1
+                ;;
+        *)
+                # process and continue for intermixed options & args
+                break
+                ;;
+        esac
+done
 
+REPOS="${1:-.}"
+DAYS="${2:-2}"
 
 now=`strftime "%F"`
-#before=`strftime -s "NOW - ${1:-1} DAYS" "%c %Z"` 
-#cvsdate=-d\'${before}\<${now}\'
-before=`strftime -s "NOW - ${1:-1} DAYS" "%FT%H:%M"`
+before=`strftime -s "NOW - ${DAYS} DAYS" "%FT%H:%M"`
 
-svn log -v -r "{$before}:HEAD" > $tmp_file
+if $group_sub
+then
+	svn ls $REPOS | while read sub
+	do
+		SUB_REPOS="$REPOS/$sub"
+		svn log -v -r "{$before}:HEAD" "${SUB_REPOS}" > $tmp_cl_file
+		if grep -q -v '^-*$' $tmp_cl_file
+		then
+			echo "CHANGES in $sub" >> $MAIL_FILE
+			echo "========================" >> $MAIL_FILE
+			svn-gnuify-changelog < $tmp_cl_file >> $MAIL_FILE
+			echo >> $MAIL_FILE
+			echo >> $MAIL_FILE
+		fi
+	done
+else
+	svn log -v -r "{$before}:HEAD" "${REPOS}" > $tmp_cl_file
+	if grep -q -v '^-*$' $tmp_cl_file
+	then
+		echo "CHANGES in $REPOS" >> $MAIL_FILE
+		echo "========================" >> $MAIL_FILE
+		svn-gnuify-changelog < $tmp_cl_file >> $MAIL_FILE
+	fi
+fi
 
-if grep -q -v "^-*$" $tmp_file
+if [ -s $MAIL_FILE ]
 then
 	if $mail_it
 	then
-		mailx -s "svn logs from $before to $now of $repos" $mail_recip < $tmp_file
+		mailx -s "svn logs from $before to $now of $repos" $mail_recip < $MAIL_FILE
 	else
-		cat $tmp_file
+		echo "============================================================"
+		echo "svn logs from $before to $now of $REPOS" 
+		echo "============================================================"
+		echo 
+		cat $MAIL_FILE
 	fi
 fi
-rm $tmp_file
+rm $MAIL_FILE $tmp_cl_file
