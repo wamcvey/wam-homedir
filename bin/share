@@ -1,6 +1,7 @@
 #!/bin/sh
 # share -
 # Small commandline option wrapper around NT's 'net use' command.
+# $Id$
 #
 # William McVey
 # March 28, 2001
