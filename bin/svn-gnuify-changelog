@@ -19,7 +19,7 @@ my %hackers = (
     "evance"       => 'Eric Vance <evance@cisco.com>',
     "msteinko"     => 'Mike Steinkoenig <msteinko@cisco.com>',
     "dspak"        => 'David Spak <dspak@cisco.com>',
-    "(no author)"  => 'No author - SVN automation",
+    "(no author)"  => 'No author - SVN automation',
 );
 
 my $parse_next_line = 0;
