@@ -1,0 +1,69 @@
+@{}#!/bin/sh python
+# @(BASE) - a progam to do [ZZZ:something]
+# $Id:$
+#
+# @(NAME)
+# @(DAY) @(MONTH), @(YEAR)
+# 
+
+
+# our program name and usage message
+progname=`basename $0`
+usage="$progname: usage [-bhO] [-f arg] [files]"
+
+# default values for all the flags, or leave unset for a ${flag-value) form
+# BFLAG=false
+# FFLAG=default-value
+
+# get the options from the command line (+ any variables)
+while [ $# -gt 0 ]
+do
+        case "$1" in
+        -u)
+                eval "$param"
+                UNIQDIR=$2
+                shift ; shift
+                ;;
+        -u*)
+                UNIQDIR=`expr "$1" : '-.\(.*\)'`
+                shift
+                ;;
+        -O)     CURDIR=true
+                shift
+                ;;
+        --)
+                shift
+                break
+                ;;
+        -h|-h*)
+                cat <<HERE
+$usage
+O               drop files into the current directory
+u dir           Use dir as a uniqing hierarchy
+urls            Snarf from these urls
+HERE
+                exit 0
+                ;;
+        -*)
+                echo "$usage" 1>&2 
+                exit 1
+                ;;
+        *)
+                # process and continue for intermixed options & args
+                break
+                ;;
+        esac
+done
+
+# get the files left on the line
+if [ $# -eq 0 ]
+then
+        echo "$progname: requires urls to be specified on commandline"
+        exit 1
+fi
+
+while [ $# -gt 0 ]
+do
+	XXX: do something 
+done
+exit 0
