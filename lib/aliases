@@ -440,7 +440,7 @@ alias xstart='sudo /etc/init.d/xfs stop ; sleep 1; sudo /etc/init.d/xfs start ; 
 
 alias proxy_on='gconftool-2 --type=bool --set  /system/http_proxy/use_http_proxy true'
 alias proxy_off='gconftool-2 --type=bool --set  /system/http_proxy/use_http_proxy false'
-alias start_work='xtitle "start work" ; sudo ifup eth0 && sudo /etc/init.d/iptables stop && sleep 1 && synergys -c $HOME/lib/synergy-work.conf && synergyc-restart nosferatu ; xterm -T "cartman (ssh forwards)" -e sudo ssh-remote -w & ( evolution-2.0 --offline & freemind & firefox-slide & ) 2>&1 >/dev/null'
+alias start_work='xtitle "start work" ; synergys -c $HOME/lib/synergy-work.conf && synergyc-restart bruha ; xterm -T "cartman (socks forwards)" -e ssh -D 1081 cartman.servercoop.net & ( evolution --offline & freemind & firefox & ) 2>&1 >/dev/null'
 alias nocolor='pathrm /usr/local/lib/cw'
 
 ENV=$oldENV
