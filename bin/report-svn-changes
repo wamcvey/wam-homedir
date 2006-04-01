@@ -98,8 +98,6 @@ then
 			echo "CHANGES in $sub" >> $MAIL_FILE
 			echo "========================" >> $MAIL_FILE
 			svn-gnuify-changelog < $tmp_cl_file >> $MAIL_FILE
-			echo >> $MAIL_FILE
-			echo >> $MAIL_FILE
 		fi
 	done
 else
@@ -109,6 +107,7 @@ else
 		echo "CHANGES in $REPOS" >> $MAIL_FILE
 		echo "========================" >> $MAIL_FILE
 		svn-gnuify-changelog < $tmp_cl_file >> $MAIL_FILE
+		echo >> $MAIL_FILE
 	fi
 fi
 
