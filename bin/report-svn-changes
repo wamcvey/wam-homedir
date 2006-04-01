@@ -115,7 +115,7 @@ if [ -s $MAIL_FILE ]
 then
 	if $mail_it
 	then
-		mailx -s "svn logs from $before to $now of $repos" $mail_recip < $MAIL_FILE
+		mailx -s "svn logs from $before to $now of $REPOS" $MAIL_RECIP < $MAIL_FILE
 	else
 		echo "============================================================"
 		echo "svn logs from $before to $now of $REPOS" 
