@@ -9,7 +9,7 @@ Host reverse-ssh
 
 Host socks
 	Hostname cartman.servercoop.net
-	DynamicForward 1080
+	DynamicForward 1081
 
 Host wam2
 	ForwardX11 yes
