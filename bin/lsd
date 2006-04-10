@@ -3,4 +3,4 @@
 
 ARGS=${@:-.}
 # ls -dF `find $ARGS -maxdepth 1 -type d -print`
-find $ARGS -maxdepth 1 -type d -print | ls_display
+find $ARGS -maxdepth 1 -type d -print | sed -e "s@^${ARGS}/*@@" -e "/^$/d" | ls_display
