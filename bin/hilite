@@ -13,6 +13,7 @@ usage="$progname: usage [-c color] [-n] pattern [files]"
 param='if [ $# -lt 2 ]; then echo "$progname: missing value for $1" 1>&2 ; exit 
 1; fi'
 print_only_matches=false
+use_embedded_pattern=false
 while [ $# -gt 0 ]
 do
 	case "$1" in
@@ -29,11 +30,21 @@ do
 		print_only_matches=true
 		shift
 		;;
+	-p)
+		use_embedded_pattern=true
+		shift
+		;;
+	-u)
+		SED_OPTS="${SED_OPTS} -u"
+		shift
+		;;
 	-h|-h*)
 	cat <<HERE
 $usage
 c color         choose a color to use to markup text
 n               only output the lines matching the pattern
+u               unbuffered/minimal buffered support (see sed -u)
+p               only colorize the specified subpattern as specified via \(...\)
 pattern         a (sed based) regex to hilight as a color
 HERE
 		exit 0
@@ -54,9 +65,14 @@ then
 	PATTERN_SUFFIX="p"
 fi
 
-pattern=$1
+if $use_embedded_pattern
+then
+	pattern="$1"
+else
+	pattern="\($1\)"
+fi
 shift
 
 escape=`color ${color:-"red"}`
 off=`color off`
-sed ${SED_OPTS} -e "s@\($pattern\)@${escape}\1${off}@g${PATTERN_SUFFIX}" $@
+sed ${SED_OPTS} -e "s@$pattern@${escape}\1${off}@g${PATTERN_SUFFIX}" $@
