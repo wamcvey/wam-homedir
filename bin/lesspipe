@@ -47,9 +47,6 @@ case "$1" in
 *.gz)
 	$GZCAT $1 2> /dev/null || echo "lesspipe: can't find $GZCAT" 1>&2
 	;;
-*.zip)
-	$UNZIP -l $1 2> /dev/null
-	;;
 *.jar)
 	$JAR tvf $1 2> /dev/null
 	;;
@@ -57,13 +54,13 @@ case "$1" in
 	base=`expr "$1" : '\(.*\)::'`
 	dehtml $base | less
 	;;
-*.zip::*)
+*.zip|*.xpi)
+	$UNZIP -l $1 2> /dev/null
+	;;
+*.zip::*|*.xpi::*)
 	base=`expr "$1" : '\(.*\)::'`
 	subfile=`expr "$1" : '.*::\(.*\)'`
 	$UNZIP -p $base $subfile 2> /dev/null
-	;;
-*.jar)
-	$JAR tvf $1 2> /dev/null
 	;;
 esac
 exit 0
