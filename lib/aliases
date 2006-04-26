@@ -443,7 +443,30 @@ alias xstart='sudo /etc/init.d/xfs stop ; sleep 1; sudo /etc/init.d/xfs start ; 
 
 alias proxy_on='gconftool-2 --type=bool --set  /system/http_proxy/use_http_proxy true'
 alias proxy_off='gconftool-2 --type=bool --set  /system/http_proxy/use_http_proxy false'
-alias start_work='xtitle "start work" ; synergys -c $HOME/lib/synergy-work.conf && synergyc-restart bruha ; xterm -T "cartman (socks forwards)" -e ssh -D 1081 cartman.servercoop.net & ( evolution --offline --screen 1 & freemind & firefox & ) 2>&1 >/dev/null'
-alias nocolor='pathrm /usr/local/lib/cw'
+
+start_work() {
+	xtitle "start work"
+	synergys -c $HOME/lib/synergy-work.conf && synergyc-restart bruha
+	( 
+	  xterm -T "cartman (socks forwards)" \
+	        -e ssh -D 1081 cartman.servercoop.net &
+	  xterm -display :0.1 -fn -misc-fixed-*-r-*-*-18-120-*-*-c-*-*-* \
+	        -T "pycmail log" -geometry 176x24+0+0 \
+		-e bash --login -c "watch_mailfilter" &
+	  xterm -display :0.1 -T "getmail" -e getmail -r getmail-cisco.rc &
+	  evolution --offline --screen 1 &
+	  freemind &
+	  firefox &
+	) >/dev/null 2>&1 
+}
+
+watch_mailfilter() {
+	# defined as a function so it can be invoked from a bash -c,
+	# as in: xterm -e bash --login -c "watch_mailfilter"
+	tail -f $HOME/Mail/pycmail.log | \
+	hilite -c blue -u -p "Filtered to: \(.*\)" | \
+	hilite -u -c red "/home/wam/Mail/Cisco/wam-default" | \
+	hilite -u -c yellow -p "Subject=\(.*\)"
+}
 
 ENV=$oldENV
