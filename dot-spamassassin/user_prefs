@@ -16,6 +16,8 @@
 #
 # score SYMBOLIC_TEST_NAME n.nn
 
+ok_locales en
+
 # Speakers of Asian languages, like Chinese, Japanese and Korean, will almost
 # definitely want to uncomment the following lines.  They will switch off some
 # rules that detect 8-bit characters, which commonly trigger on mails using CJK
@@ -26,6 +28,7 @@
 # score UPPERCASE_50_75		0
 # score UPPERCASE_75_100	0
 score BAYES_99 			4.0
-score HTML_90_100		0.5
+score HTML_90_100		1.0
+score HTML_80_90		0.75
 score HTML_IMAGE_RATIO_02	0.5
 score MIME_BOUND_NEXTPART	0.5
