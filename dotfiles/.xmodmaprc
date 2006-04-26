@@ -1,0 +1,32 @@
+! Activate the special keys on the left of the A31p
+!
+keycode 236 = XF86Mail
+keycode 178 = XF86HomePage
+keycode 229 = XF86Search
+keycode 230 = XF86Favorites
+keycode 231 = XF86Refresh
+keycode 232 = XF86Stop
+
+! map the sleep key on the microsoft keyboard to Stop (bound to screensaver)
+keycode 223 = XF86Stop
+
+! And the two special ones on the right above the arrows
+!
+keycode 234 = XF86Back
+keycode 233 = XF86Forward
+! And the damn Fn key that is where Control should be
+!
+keycode 227 = XF86User1KB
+
+! Turn Caps Lock into Control
+!remove Lock = Caps_Lock
+!keysym Caps_Lock = Control_L
+!add Control = Control_L
+
+! add Control = XF86User1KB
+
+! Turn the useless Windoze key on the Dell to Meta
+keycode 115 = Meta_L
+
+! Turn on the numlock on an T43P
+keycode 77 = Num_Lock
