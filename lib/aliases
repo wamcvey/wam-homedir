@@ -153,6 +153,13 @@ xaddhost() {
 xtitle() {
 	echo_no_nl  "]0;$@"
 }
+xtabtitle() {
+	echo_no_nl  "]61;$@"
+}
+newtab() {
+	# open up a new tab in mrxvt
+	echo_no_nl  "]63;${@:-newtab}"
+}
 
 after() {
 	while ps -elf | grep -v "grep " | grep -q "$1"
@@ -420,8 +427,10 @@ function mp {
 		*)		file "$file" ;;
 		esac
 	done
+
 	if [ -n "${pics[*]}" ]
 	then
+		unset pics[0] # empty string
 		gqview "${pics[@]}"
 	fi
 	if [ -n "${clips[*]}" ]
