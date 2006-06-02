@@ -1,0 +1,44 @@
+/* Design & Code (c) Company Name, Inc. */
+html, body { padding: 0; margin: 0; }
+body {
+	font: normal 12px/1.5em "Lucida Grande", "Verdana", sans-serif;
+	background: #fff;
+}
+
+
+/* Headings H1-H6 */
+h1 { }
+
+h2 { }
+
+h3 { }
+
+h4 { }
+
+h5 { }
+
+h6 { }
+
+
+
+
+
+/* Paragraph and Link Styles */
+p { }
+
+p a { }
+	
+	
+	
+	
+	
+/* Lists and Navigation */
+
+
+
+
+
+
+
+
+
