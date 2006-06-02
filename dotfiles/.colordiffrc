@@ -1,0 +1,3 @@
+# Set banner=no to suppress authorship info at top of
+# colordiff output
+banner=no
