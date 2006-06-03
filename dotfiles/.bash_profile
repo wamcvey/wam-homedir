@@ -110,10 +110,10 @@ case "$SHELL" in
 *bash)
 	# The brackets indicate escape codes so command editing doesn't get
 	# screwed up
-	PS1='\[`color blue`\]${USERAT}${SHORTHOST} ${DIR}\[`color off`\] ${ROOTPROMPT} '
+	PS1='\[`color yellow`\]${USERAT}${SHORTHOST} ${DIR}\[`color off`\] ${ROOTPROMPT} '
 	;;
 *ksh|sh)
-	PS1='`color blue`${USERAT}${SHORTHOST} ${DIR}`color off` ${ROOTPROMPT} '
+	PS1='`color yellow`${USERAT}${SHORTHOST} ${DIR}`color off` ${ROOTPROMPT} '
 	;;
 *)
 	PS1='${USERAT}${SHORTHOST} ${DIR} ${ROOTPROMPT} '
