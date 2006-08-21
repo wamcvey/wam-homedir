@@ -96,7 +96,7 @@ do
 
 	urlpath=`expr "$URL" : 'http://\([^?]*\)'`
 	#urldir=`dirname $urlpath`
-	urldir=`expr "$URL" : 'http://\(.*\)/'`
+	urldir=`expr "$URL" : 'http://\([^?]*\)/'`
 	urlmachine=`expr "$URL" : 'http://\([^/]*\)'`
 
 	if echo $URL | egrep -q -i $PATTERN
