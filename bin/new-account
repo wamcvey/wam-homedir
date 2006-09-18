@@ -23,7 +23,7 @@ fi
 
 if [ "$1" = "" ] ; then
 	echo "$0: specify branch you'd like to install as first parameter:" >&2
-	echo "	`svn ls $REPO/branches`" >&2
+	echo "	" `svn ls $REPO/branches` >&2
 	exit 1
 fi
 
