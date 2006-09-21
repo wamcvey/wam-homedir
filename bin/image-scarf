@@ -16,7 +16,7 @@ slide='P=$1; shift; set _ -`expr "$P" : '\''-.\(.*\)'\''` ${1+"$@"}; shift'
 param='if [ $# -lt 2 ]; then echo "$progname: missing value for $1" 1>&2 ; exit 1; fi'
 
 PATTERN='jpg$|zip$|mpeg$|mp.$|asf$|\.avi|ren$|aza$|xxx$|pdf$|.txt$|.egg$|\.[0-9]*$|flx$|wmv$'
-CURL_OPTS="-L"
+CURL_OPTS="-L ${CURL_OPTS}"
 BROWSER_EMULATE='-A Mozilla/4.05 [en] (X11; U; Linux 2.0.32 i586)'
 
 # default values for all the flags, or leave unset for a ${flag-value) form
@@ -34,6 +34,9 @@ do
 		eval "$param"
 		UNIQDIR=$2
 		shift ; shift
+		;;
+	-p)	PATTERN="$PATTERN|${2}"
+		shift; shift
 		;;
 	-u*)
 		UNIQDIR=`expr "$1" : '-.\(.*\)'`
@@ -59,9 +62,11 @@ do
 	-h|-h*)
 		cat <<HERE
 $usage
-O		drop files into the current directory
-u dir		Use dir as a uniqing hierarchy
-urls		Snarf from these urls
+O               drop files into the current directory
+u dir           Use dir as a uniqing hierarchy
+p PATTERN       Add PATTERN to the list of patterns to match against (can be
+                used multiple times)
+urls            Snarf from these urls
 HERE
 		exit 0
 		;;
