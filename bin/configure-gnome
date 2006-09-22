@@ -79,7 +79,8 @@ gconftool-2 --type=string --set $METACITY/keybinding_commands/command_7 "${TERM_
 gconftool-2 --type=list --list-type=string --set $GNOME/peripherals/keyboard/kbd/options '[ctrl	ctrl:nocaps]'
 
 # turn off keyboard repeat
-gconftool-2 --type=bool --set $GNOME/peripherals/keyboard/rate 'false'
+# turning off keyboard repeat wasn't such a hot idea.
+# gconftool-2 --type=bool --set $GNOME/peripherals/keyboard/rate 'false'
 
 
 # Setting of fonts
