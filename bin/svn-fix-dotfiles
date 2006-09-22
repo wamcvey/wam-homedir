@@ -6,16 +6,14 @@ then
 	exit 1
 fi
 
-cd $HOME/.dotfiles
-find . ! -type d -print -o -name .svn -prune| while read file
+find $HOME/.dotfiles/ ! -type d -print -o -name .svn -prune| while read file
 do
-	if [ -h "$HOME/$file" ] ; then
+	basefile=`basename "${file}"`
+	if [ -h "$HOME/$basefile" ] ; then
 		continue
 	fi
-	if [ -e "$HOME/$file" ] ; then
-		mkdir -p "$1"
-		cd $HOME
-		mv "$HOME/$file" "$1"
+	if [ -e "$HOME/$basefile" ] ; then
+		mv "$HOME/$basefile" "$1"
 	fi
-	ln -s "$HOME/.dotfiles/$file" "$HOME/$file" 
+	ln -s "$file" "$HOME" 
 done
