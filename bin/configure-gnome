@@ -1,11 +1,23 @@
 #!/bin/sh
 # configure metacity with wam's preferred bindings
-# $Id:$
+# $Id$
 
 GNOME=/desktop/gnome
 METACITY=/apps/metacity
+COMPIZ=/apps/metacity/general/allscreens/options
 GLOBAL_KEYS=/apps/metacity/global_keybindings
 WINDOW_KEYS=/apps/metacity/window_keybindings
+
+# I prefer mrxvt, but fallback to xterm if it's unavailable
+if which mrxvt >/dev/null 2>&1 
+then
+	TERM_PROG=mrxvt
+	TERM_EXEC_ARG="-e"
+else
+	echo "Using xterm for term emulator as mrxvt is unavailable" >&2
+	TERM_PROG=xterm
+	TERM_EXEC_ARG="-e"
+fi
 
 # window manager do I want to use 
 # default is fine for me for now
@@ -18,12 +30,19 @@ gconftool-2 --type=bool --set $METACITY/general/auto_raise 'false'
 gconftool-2 --type=bool --set $METACITY/general/raise_on_click 'false'
 gconftool-2 --type=string --set $METACITY/general/action_double_click_titlebar 'toggle_shade'
 gconftool-2 --type=bool --set /apps/nautilus/preferences/show_desktop 'true'
-gconftool-2 --type=string --set /apps/gnome-session/options/splash_image '/home/wam/lib/images/backgrounds/noodledoodle1600_1200.jpg'
+gconftool-2 --type=string --set /apps/gnome-session/options/splash_image "$HOME/lib/images/backgrounds/noodledoodle1600_1200.jpg"
 gconftool-2 --type=string --set $GNOME/background/primary_color '#000000' # black
 
+# compiz
+gconftool-2 --type=string --set $COMPIZ/click_to_focus 'false'
+
+# deskbar
+gconftool-2 --type=string --set /apps/deskbar/keybinding 'Menu'
+
+
 # Preferred Apps
-gconftool-2 --type=string --set /desktop/gnome/applications/terminal/exec 'xterm'
-gconftool-2 --type=string --set -- /desktop/gnome/applications/terminal/exec_arg '-e'
+gconftool-2 --type=string --set /desktop/gnome/applications/terminal/exec $TERM_PROG
+gconftool-2 --type=string --set -- /desktop/gnome/applications/terminal/exec_arg $TERM_EXEC_ARG
 
 # Basic navigation (global)
 gconftool-2 --type=string --set $GLOBAL_KEYS/switch_to_workspace_left '<Control>Left'
@@ -48,16 +67,19 @@ gconftool-2 --type=string --set $GLOBAL_KEYS/run_command_4 'XF86Search'
 gconftool-2 --type=string --set $GLOBAL_KEYS/run_command_5 '<Shift>XF86Mail'
 gconftool-2 --type=string --set $GLOBAL_KEYS/run_command_6 'XF86Stop'
 gconftool-2 --type=string --set $GLOBAL_KEYS/run_command_7 'F12'
-gconftool-2 --type=string --set $METACITY/keybinding_commands/command_1 'xterm'
+gconftool-2 --type=string --set $METACITY/keybinding_commands/command_1 "${TERM_PROG}"
 gconftool-2 --type=string --set $METACITY/keybinding_commands/command_2 'evolution mailto:'
 gconftool-2 --type=string --set $METACITY/keybinding_commands/command_3 'firefox-slide'
-gconftool-2 --type=string --set $METACITY/keybinding_commands/command_4 'xterm'
+gconftool-2 --type=string --set $METACITY/keybinding_commands/command_4 "${TERM_PROG}"
 gconftool-2 --type=string --set $METACITY/keybinding_commands/command_5 'evolution'
 gconftool-2 --type=string --set $METACITY/keybinding_commands/command_6 'xscreensaver-command --lock'
-gconftool-2 --type=string --set $METACITY/keybinding_commands/command_7 'xterm'
+gconftool-2 --type=string --set $METACITY/keybinding_commands/command_7 "${TERM_PROG}"
 
 # change caps-lock to a control
 gconftool-2 --type=list --list-type=string --set $GNOME/peripherals/keyboard/kbd/options '[ctrl	ctrl:nocaps]'
+
+# turn off keyboard repeat
+gconftool-2 --type=bool --set $GNOME/peripherals/keyboard/rate 'false'
 
 
 # Setting of fonts
