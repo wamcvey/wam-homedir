@@ -1,0 +1,87 @@
+mrxvt*foreground: green
+mrxvt*tabForeground: green
+mrxvt*itabForeground: yellow
+mrxvt*loginShell: true
+mrxvt*tabBackground: darkslategrey
+mrxvt*initTermNumber:  2
+mrxvt*scrollTtyOutputInhibit: true
+mrxvt*scrollTtyKeypress: true
+mrxvt*saveLines: 20000
+
+mrxvt*cutChars:	 \ #"&()*,;<=>?@[]{|}/.
+
+! transparency
+mrxvt*transparent: true
+mrxvt*backgroundFade: 50
+mrxvt*fading: 30
+mrxvt*transparentTabbar: true
+
+! hotkeys
+mrxvt*hotkey*FuncName:		Ctrl+Shift+v
+mrxvt*hotkey*NextTab:		Next
+mrxvt*hotkey*PrevTab:		Prior
+mrxvt*hotkey*Tab1:		Ctrl+1
+mrxvt*hotkey*Tab2:		Ctrl+2
+mrxvt*hotkey*Tab3:		Ctrl+3
+mrxvt*hotkey*Tab4:		Ctrl+4
+mrxvt*hotkey*Tab5:		Ctrl+5
+mrxvt*hotkey*PasteSel:         Ctrl+Insert
+
+! old xterm configs
+XTerm*LoginShell:		true
+XTerm*SaveLines:		20000
+XTerm*ScrollBar:		false
+XTerm*scrollTtyOutput:		false
+XTerm*scrollKey:		true
+XTerm*VisualBell:		false
+XTerm*titeInhibit:		false
+XTerm*UtmpInhibit:		false
+XTerm*pointerColorBackground:	white
+XTerm*zIconBeep:		1
+!  suitable for low res fonts, but not with big fonts
+!  Alt <Key> 2:		set-vt-font(d)
+XTerm*VT100.Translations:	#override \
+	Meta<Key>1:		set-vt-font(1)	\n\
+	Meta<Key>2:		set-vt-font(3)	\n\
+	Meta<Key>3:		set-vt-font(6)	\n\
+	Ctrl <Key> 1:		set-vt-font(1)	\n\
+	Ctrl <Key> 2:		set-vt-font(3)	\n\
+	Ctrl <Key> 3:		set-vt-font(6)	\n\
+	Alt <Key> 1:		set-vt-font(1)	\n\
+	Alt <Key> 2:		set-vt-font(3)	\n\
+	Alt <Key> 3:		set-vt-font(6)	\n\
+	Meta<Key>z:		secure()	\n\
+	<Key>F10:		secure()	\n\
+	<Key>F9:		create-menu(vtMenu)	\n\
+	<Key>F20:		select-cursor-start() \
+				select-cursor-end(PRIMARY, CUT_BUFFER0) \n\
+	<Key>F18:		insert-selection(PRIMARY, CUT_BUFFER0) \n\
+	Shift<Key>Left:		scroll-back(1,line)	\n\
+	Shift<Key>Right:	scroll-forw(1,line)	\n\
+	Shift<Key>Up:		scroll-back(1,page)	\n\
+	Shift<Key>Down:		scroll-forw(1,page)
+#if (WIDTH == 1600)
+! large resolution yields large fonts
+XTerm*font:			12x24
+#else
+XTerm*font:			fixed
+#endif
+
+XTerm*font3:			fixed
+XTerm*fontMenu*font3*Label:	fixed
+XTerm*font4:			-adobe-*-medium-r-normal-*-20-*-*-*-*-*-*-*
+XTerm*fontMenu*font4*Label:	Adobe20
+! XTerm*fontMenu*font6*Label:	blind
+! XTerm*font6:			12x24
+XTerm*fontMenu*font6*Label:	fixed18
+XTerm*font6:			-misc-fixed-*-r-*-*-18-120-*-*-c-*-*-*
+XTerm*termName:			xterm
+#ifndef COLOR
+!XTerm*background:		white
+!XTerm*foreground:		black
+#else
+! XTerm*background:		black
+/* XTerm*foreground:		wheat1 */
+! XTerm*foreground:		green2
+#endif	/* COLOR */
+
