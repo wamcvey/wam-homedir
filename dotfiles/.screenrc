@@ -1,0 +1,15 @@
+# no annoying audible bell
+vbell on
+
+# detach on hangup
+autodetach on
+
+# don't display the copyright page
+startup_message off
+
+# make the shell in every window a login shell
+shell -$SHELL
+
+# more scroll history
+defscrollback 1000
+
