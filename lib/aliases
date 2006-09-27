@@ -61,6 +61,9 @@ echo_no_nl() {
 #
 alias cd=pd
 alias emc2=emc2lookup
+mkcd() {
+	mkdir "$1" && cd "$1"
+}
 
 #listing aliases
 if ls --color=auto >/dev/null 2>/dev/null
@@ -422,7 +425,7 @@ function mp {
 		*/info|info)	continue ;;
 		*.jpg|*.jpeg|*.JPG|*.JPEG) 
 				pics=("${pics[@]}" "$file") ;;
-		*.wmv|*.mpg|*.avi|*.AVI|*.MPG|*.asf)
+		*.wmv|*.WMV|*.mpg|*.MPG|*.mpeg|*.MPEG|*.avi|*.AVI|*.asf|*.ASF)
 				clips=("${clips[@]}" "$file") ;;
 		*)		file "$file" ;;
 		esac
@@ -455,6 +458,9 @@ alias proxy_off='gconftool-2 --type=bool --set  /system/http_proxy/use_http_prox
 
 start_work() {
 	xtitle "start work"
+	iface=`iwconfig 2>&1 | awk '/eth.*no wireless extensions/ {print $1}'`
+	echo "Starting networking on $iface" >&2
+	sudo dhclient $iface
 	synergys -c $HOME/lib/synergy-work.conf && synergyc-restart bruha
 	( mrxvt -display :0.1 -fn -misc-fixed-*-r-*-*-18-120-*-*-c-*-*-* \
 	  	--title 'mail processing' -geometry 176x24+0+0 \
