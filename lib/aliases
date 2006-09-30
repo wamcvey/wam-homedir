@@ -425,7 +425,7 @@ function mp {
 		*/info|info)	continue ;;
 		*.jpg|*.jpeg|*.JPG|*.JPEG) 
 				pics=("${pics[@]}" "$file") ;;
-		*.wmv|*.WMV|*.mpg|*.MPG|*.mpeg|*.MPEG|*.avi|*.AVI|*.asf|*.ASF)
+		*.wmv|*.WMV|*.mpg|*.MPG|*.mpeg|*.MPEG|*.avi|*.AVI|*.asf|*.ASF|*.mp4|*.MP4)
 				clips=("${clips[@]}" "$file") ;;
 		*)		file "$file" ;;
 		esac
