@@ -1,0 +1,26 @@
+import logging, sys, os
+try:
+
+	sys.path.insert(1, os.path.join(USERHOME, "lib", "mail"))
+	import pycmailrc
+
+	logging.basicConfig(filename="/home/wam/Mail/pycmail.log",
+	   level=logging.INFO,
+	   format="%(asctime)s %(name)s[%(process)d]: %(message)s")
+	log = logging.getLogger("pycmail")
+
+	default = MailDir(pycmailrc.DefaultFolder)
+
+	folders = pycmailrc.filter_mail(to=ADDRLIST_TO, cc=ADDRLIST_CC, 
+	                      from_addr=ADDR_FROM[1], msg=mailmsg)
+	Set(*map(MailDir, folders))
+except:
+	log.error("caught exception", exc_info=True)
+	exc_type, exc_value, exc_tb = sys.exc_info()
+	Debug("ADDRLIST_TO=%s" % ADDRLIST_TO, 2)
+	Debug("ADDRLIST_CC=%s" % ADDRLIST_CC, 2)
+	Debug("ADDR_FROM[1]=%s" % ADDR_FROM[1], 2)
+	Debug("Subject=%s" % mailmsg['Subject'], 2)
+	Debug("%s" % mailmsg, 20)
+	raise exc_type, exc_value
+Stop()

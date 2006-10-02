@@ -1,0 +1,25 @@
+[retriever]
+type = SimpleIMAPRetriever
+server = email.cisco.com
+username = wam
+# mailboxes = ("INBOX", "Calendar",)
+mailboxes = ("INBOX",)
+
+[destination]
+type = MDA_external
+path = /usr/bin/pycmail
+arguments = ("-c", "~/lib/mail/pycmailrc")
+
+[options]
+# read_all = True
+delete = True
+read_all = False
+# delete_after = 2
+delivered_to = False
+message_log = ~/Mail/getmail.log
+
+[filter-1-spamassassin]
+type = Filter_external
+path = /usr/bin/spamassassin
+exitcodes_drop = ()
+# arguments = ()
