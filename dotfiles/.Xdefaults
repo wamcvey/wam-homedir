@@ -122,9 +122,11 @@ XTerm*termName:			xterm
 XTerm*background:		white
 XTerm*foreground:		black
 #else
-XTerm*background:		black
+! XTerm*background:		black
 /* XTerm*foreground:		wheat1 */
-XTerm*foreground:		green2
+!XTerm*foreground:		green2
+XTerm*foreground:		#00ff00
+XTerm*background:		#000000
 #endif	/* COLOR */
 
 SPA_Term*foreground:		yellow
