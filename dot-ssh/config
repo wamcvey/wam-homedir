@@ -1,5 +1,9 @@
 NoHostAuthenticationForLocalhost yes
 
+Host *
+ControlMaster auto
+ControlPath ~/.ssh/master-%r@%h:%p
+
 Host silver.he.net
 	Protocol 1
 
@@ -47,6 +51,10 @@ Host pegasus.spa-ops.com pegasus3 pegasus
 	ForwardX11 yes
 	ForwardAgent yes
 
+Host garibaldi
+	ForwardAgent yes
+	Hostname 10.89.138.20
+
 Host mallard mallard.spa-ops.com
 	ForwardX11 yes
 	ForwardAgent yes
@@ -63,3 +71,7 @@ Host ProbeCatcher.spaops.com
 Host matt-mcs
 	User stat
 	Hostname 10.89.138.13
+
+Host spak
+	Port 22333
+	Hostname halifax.dyndns.org
