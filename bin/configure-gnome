@@ -55,7 +55,14 @@ gconftool-2 --type=string --set $WINDOW_KEYS/move_to_workspace_left '<Control><A
 gconftool-2 --type=string --set $WINDOW_KEYS/move_to_workspace_right '<Control><Alt>Right'
 gconftool-2 --type=string --set $WINDOW_KEYS/move_to_workspace_up '<Control><Alt>Up'
 gconftool-2 --type=string --set $WINDOW_KEYS/move_to_workspace_down '<Control><Alt>Down'
-gconftool-2 --type=string --set $WINDOW_KEYS/raise_or_lower '<Shift>F1'
+if [ `hostname` = 'bruha' ]
+then
+	# Using synergy to access this host, <Shift>F1 keystroke gets 
+	# interpretted by the X Server as F13
+	gconftool-2 --type=string --set $WINDOW_KEYS/raise_or_lower 'F13'
+else
+	gconftool-2 --type=string --set $WINDOW_KEYS/raise_or_lower '<Shift>F1'
+fi
 gconftool-2 --type=string --set $WINDOW_KEYS/minimize '<Shift>F2'
 gconftool-2 --type=string --set $WINDOW_KEYS/toggle_maximized '<Shift>F3'
 
