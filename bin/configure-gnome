@@ -5,6 +5,7 @@
 GNOME=/desktop/gnome
 METACITY=/apps/metacity
 COMPIZ=/apps/metacity/general/allscreens/options
+GNOMETERM=/apps/gnome-terminal
 GLOBAL_KEYS=/apps/metacity/global_keybindings
 WINDOW_KEYS=/apps/metacity/window_keybindings
 
@@ -88,6 +89,13 @@ gconftool-2 --type=list --list-type=string --set $GNOME/peripherals/keyboard/kbd
 # turn off keyboard repeat
 # turning off keyboard repeat wasn't such a hot idea.
 # gconftool-2 --type=bool --set $GNOME/peripherals/keyboard/rate 'false'
+
+# If I have to use gnome-terminal, might as well make it at least tolerable
+gconftool-2 --type=string --set $GNOMETERM/profiles/Default/background_color "#000000"
+gconftool-2 --type=string --set $GNOMETERM/profiles/Default/foreground_color "#00FF00"
+gconftool-2 --type=bool --set $GNOMETERM/profiles/Default/use_theme_colors 'false'
+gconftool-2 --type=string --set $GNOMETERM/profiles/Default/palette '#000000000000:#CDCB00000000:#0000CDCB0000:#CDCBCDCB0000:#1E1A908FFFFF:#CDCB0000CDCB:#0000CDCBCDCB:#E5E2E5E2E5E2:#4CCC4CCC4CCC:#FFFF00000000:#0000FFFF0000:#FFFFFFFF0000:#46458281B4AE:#FFFF0000FFFF:#0000FFFFFFFF:#FFFFFFFFFFFF'	# xterm pallette
+gconftool-2 --type=bool --set $GNOMETERM/profiles/Default/login_shell 'true'
 
 
 # Setting of fonts
