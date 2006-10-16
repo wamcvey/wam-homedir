@@ -19,7 +19,7 @@ class @(BASE):
 		self.log = logging.getLogger(self.__class__.__name__)
 
 def main(argv=sys.argv, Progname=None):
-	from optparse import OptionParser       # aka Optik
+	from optparse import OptionParser, SUPPRESS_HELP       # aka Optik
 
 	# set up commandline arguments
 	if not Progname:
@@ -32,9 +32,9 @@ def main(argv=sys.argv, Progname=None):
 	optparser.add_option("-V", "--version", action="version",
 	  help="show program's version number and exit")
 	optparser.add_option("-d", "--debug", dest = "debug", 
-	  action="store_true", help="log debugging messages")
-	#optparser.add_option("-v", "--verbose", dest = "verbose",
-	# action="store_true", help="be verbose")
+	  action="store_true", help=SUPPRESS_HELP)
+	optparser.add_option("-v", "--verbose", dest = "verbose",
+	  action="store_true", help="be verbose")
 	#optparser.add_option("-N", "--name", dest="var_n", 
 	# action= "store" | "append" | "store_true" | "store_false" 
 	# type = "int"
@@ -43,7 +43,12 @@ def main(argv=sys.argv, Progname=None):
 
 	# set up logging environment
 	root_log = logging.getLogger()          # grab the root logger
-	root_log.setLevel((logging.INFO, logging.DEBUG)[options.debug == True])
+	if options.debug:
+		root_log.setLevel(logging.DEBUG)
+	elif options.verbose:
+		root_log.setLevel(logging.INFO)
+	else:
+		root_log.setLevel(logging.WARN)
 	handler = logging.StreamHandler()
 	# handler = logging.FileHandler(options.logfile) 
 	logformat = "%(name)s: %(levelname)s: %(message)s"
