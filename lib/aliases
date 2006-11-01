@@ -458,11 +458,19 @@ alias proxy_off='gconftool-2 --type=bool --set  /system/http_proxy/use_http_prox
 
 start_work() {
 	xtitle "start work"
+	if [ "$1" = "primary" ]
+	then
+		disp=
+		screen=
+	else
+		disp="-display :0.1"
+		screen="--screen 1"
+	fi
 	iface=`iwconfig 2>&1 | awk '/eth.*no wireless extensions/ {print $1}'`
 	echo "Starting networking on $iface" >&2
 	sudo dhclient $iface
 	synergys -c $HOME/lib/synergy-work.conf && synergyc-restart bruha
-	( mrxvt -display :0.1 -fn -misc-fixed-*-r-*-*-18-120-*-*-c-*-*-* \
+	( mrxvt $disp -fn -misc-fixed-*-r-*-*-18-120-*-*-c-*-*-* \
 	  	--title 'mail processing' -geometry 176x24+0+0 \
 	  	-tnum 3 \
 		-vt0.e 'ssh -D 1081 cartman.servercoop.net' \
@@ -473,10 +481,10 @@ start_work() {
 		-vt2.tt 'getmail cisco' \
 		-vt2.e 'getmail -r getmail-cisco.rc'  \
 		-vt2.tt 'getmail cisco' &
-	  evolution --offline --screen 1 &
+	  evolution --offline $screen &
 	  freemind &
 	  firefox &
-	  gaim --display :0.1 &
+	  gaim $disp &
 	) >/dev/null 2>&1 
 }
 
