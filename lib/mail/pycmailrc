@@ -9,14 +9,16 @@ try:
 	   format="%(asctime)s %(name)s[%(process)d]: %(message)s")
 	log = logging.getLogger("pycmail")
 
-	default = MailDir(pycmailrc.DefaultFolder)
+	default = MailDir(pycmailrc.DefaultFolder(defines=DEFINES))
+	#default = MailDir(pycmailrc.DefaultFolder)
 
 	folders = pycmailrc.filter_mail(to=ADDRLIST_TO, cc=ADDRLIST_CC, 
-	                      from_addr=ADDR_FROM[1], msg=mailmsg)
+	                      from_addr=ADDR_FROM[1], msg=mailmsg, defines=DEFINES)
 	Set(*map(MailDir, folders))
 except:
 	log.error("caught exception", exc_info=True)
 	exc_type, exc_value, exc_tb = sys.exc_info()
+	Debug("DEFINES=%s" % `DEFINES`, 2)
 	Debug("ADDRLIST_TO=%s" % ADDRLIST_TO, 2)
 	Debug("ADDRLIST_CC=%s" % ADDRLIST_CC, 2)
 	Debug("ADDR_FROM[1]=%s" % ADDR_FROM[1], 2)
