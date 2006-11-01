@@ -8,7 +8,7 @@ mailboxes = ("INBOX",)
 [destination]
 type = MDA_external
 path = /usr/bin/pycmail
-arguments = ("-c", "~/lib/mail/pycmailrc")
+arguments = ("-D", "CISCO", "-c", "~/lib/mail/pycmailrc")
 
 [options]
 # read_all = True
