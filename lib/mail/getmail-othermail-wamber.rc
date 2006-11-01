@@ -1,0 +1,26 @@
+[retriever]
+type = SimpleIMAPRetriever
+server = cartman.servercoop.net
+username = othermail@wamber.net
+# mailboxes = ("INBOX", "Calendar",)
+# mailboxes = ("INBOX.download",)
+mailboxes = ("INBOX",)
+
+[destination]
+type = MDA_external
+path = /usr/bin/pycmail
+arguments = ("-D", "WAMBER", "-c", "~/lib/mail/pycmailrc")
+
+[options]
+# read_all = True
+delete = True
+read_all = False
+# delete_after = 2
+delivered_to = False
+message_log = ~/Mail/wamber-getmail.log
+
+[filter-1-spamassassin]
+type = Filter_external
+path = /usr/bin/spamassassin
+exitcodes_drop = ()
+# arguments = ()
