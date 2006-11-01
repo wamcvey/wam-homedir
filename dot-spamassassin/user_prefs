@@ -32,3 +32,15 @@ score HTML_90_100		1.0
 score HTML_80_90		0.75
 score HTML_IMAGE_RATIO_02	0.5
 score MIME_BOUND_NEXTPART	0.5
+
+blacklist_to inouoe@wamber.net
+blacklist_to ifriends@wamber.net
+blacklist_to lolita@wamber.net
+blacklist_to fay@wamber.net
+blacklist_to winifred@wamber.net
+blacklist_to inouoe@wamber.net
+blacklist_to networkexploits@wamber.net
+blacklist_to porno-norporno.com@wamber.net
+blacklist_to systemtoolbox@wamber.net
+blacklist_to x10@wamber.net
+
