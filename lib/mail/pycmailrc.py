@@ -21,8 +21,12 @@ WamberDir = lambda *x: os.path.join(HomeDir, "Mail", "Wamber", *x)
 
 # Specific special folders
 SpamFolder = GenericDir("SPAM")
-DefaultFolder = CiscoDir("wam-default")
-# DefaultFolder = WamberDir("wamber-default")
+
+def DefaultFolder(defines):
+	if "CISCO" in defines:
+		return CiscoDir("wam-default")
+	else:
+		return WamberDir("wamber-default")
 
 # These match on either recipients or sender (Mapped to lower case)
 MailingListMappings = {
@@ -166,7 +170,7 @@ def AddrToFolder(addr):
 	return MailingListMappings.get(addr.lower(), None)
 
 
-def filter_mail(to, cc, from_addr, msg):
+def filter_mail(to, cc, from_addr, msg, defines=[]):
 	log = logging.getLogger("pycmail.filter_mail")
 	log.info("From=%s, To=%s, Cc=%s, Subject=%s",
 		 from_addr, to, cc, `msg.get('Subject', "")`)
@@ -184,7 +188,7 @@ def filter_mail(to, cc, from_addr, msg):
 			folder = AddrToFolder(from_addr)
 			if folder: dests.add(folder)
 	if not dests:
-		dests.add(DefaultFolder)
+		dests.add(DefaultFolder(defines))
 	log.info("Filtered to: %s", ", ".join(dests))
 	return dests
 
@@ -208,29 +212,17 @@ def main(argv=sys.argv, Progname=None):
 	  action="store_true", help="log debugging messages")
 	optparser.add_option("-f", "--file", dest = "file", 
 	  action="store_true", help="evaluate files, not email addresses")
-	#optparser.add_option("-v", "--verbose", dest = "verbose",
-	# action="store_true", help="be verbose")
-	#optparser.add_option("-N", "--name", dest="var_n", 
-	# action= "store" | "append" | "store_true" | "store_false" 
-	# type = "int"
-	# default="foo", metavar="SOME_STRING", help="store a string")
 	(options, params) = optparser.parse_args(argv[1:])
 
 	# set up logging environment
 	root_log = logging.getLogger()          # grab the root logger
 	root_log.setLevel((logging.INFO, logging.DEBUG)[options.debug == True])
 	handler = logging.StreamHandler()
-	# handler = logging.FileHandler(options.logfile) 
 	logformat = "%(name)s: %(levelname)s: %(message)s"
 	handler.setFormatter(logging.Formatter(logformat))
-	# logformat = "%(asctime)s %(levelname)s:%(name)s:%(message)s"
-	#handler.setFormatter(logging.Formatter(logging.BASIC_FORMAT))
 	root_log.addHandler(handler)
 	log = logging.getLogger(Progname)
 
-	#if options.var_n:
-	#	# do something
-	
 	for param in params:
 		if options.file:
 			mailmsg = rfc822.Message(file(param))
