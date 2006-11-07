@@ -172,11 +172,11 @@ def AddrToFolder(addr):
 
 def filter_mail(to, cc, from_addr, msg, defines=[]):
 	log = logging.getLogger("pycmail.filter_mail")
-	log.info("From=%s, To=%s, Cc=%s, Subject=%s",
-		 from_addr, to, cc, `msg.get('Subject', "")`)
 
 	if msg.has_key('X-Spam-Flag'):
-		log.info("Filtered to: %s", SpamFolder)
+		log.info("From=%s, To=%s, Cc=%s, Subject=%s, Filtered=%s",
+			 from_addr, to, cc, `msg.get('Subject', "")`,
+			 SpamFolder)
 		return [SpamFolder]
 	dests= set()
 	for addr in chain(to, cc):
@@ -189,7 +189,8 @@ def filter_mail(to, cc, from_addr, msg, defines=[]):
 			if folder: dests.add(folder)
 	if not dests:
 		dests.add(DefaultFolder(defines))
-	log.info("Filtered to: %s", ", ".join(dests))
+	log.info("From=%s, To=%s, Cc=%s, Subject=%s, Filtered=%s",
+		 from_addr, to, cc, `msg.get('Subject', "")`, ", ".join(dests))
 	return dests
 
 
