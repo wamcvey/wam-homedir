@@ -4,7 +4,7 @@
 umask 022
 
 # For when I'm travelling
-# TZ='America/New_York'; export TZ		# EST
+TZ='America/New_York'; export TZ		# EST
 # TZ='America/Chicago'; export TZ		# CST
 TZ="CST"
 
