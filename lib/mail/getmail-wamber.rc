@@ -1,7 +1,7 @@
 [retriever]
 type = SimpleIMAPRetriever
 server = cartman.servercoop.net
-username = othermail@wamber.net
+username = wam@wamber.net
 # mailboxes = ("INBOX", "Calendar",)
 # mailboxes = ("INBOX.download",)
 mailboxes = ("INBOX",)
@@ -9,7 +9,7 @@ mailboxes = ("INBOX",)
 [destination]
 type = MDA_external
 path = /usr/bin/pycmail
-arguments = ("-c", "~/lib/mail/pycmailrc")
+arguments = ("-c", "~/lib/mail/pycmailrc", "-D", "WAMBER")
 
 [options]
 # read_all = True
