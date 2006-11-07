@@ -492,9 +492,9 @@ watch_mailfilter() {
 	# defined as a function so it can be invoked from a bash -c,
 	# as in: xterm -e bash --login -c "watch_mailfilter"
 	tail -f $HOME/Mail/pycmail.log | \
-	hilite -c blue -u -p "Filtered to: \(.*\)" | \
 	hilite -u -c red "/home/wam/Mail/Cisco/wam-default" | \
-	hilite -u -c yellow -p "Subject=\(.*\)"
+	hilite -u -c yellow -p "Subject=\(.*\)" | \
+	hilite -c cyan -u -p "Filtered=\(.*\)"
 }
 
 ENV=$oldENV
