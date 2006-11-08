@@ -27,10 +27,11 @@ ok_locales en
 # score UPPERCASE_25_50		0
 # score UPPERCASE_50_75		0
 # score UPPERCASE_75_100	0
-score BAYES_99 			4.0
+score BAYES_99 			4.5
 score HTML_90_100		1.0
 score HTML_80_90		0.75
 score HTML_IMAGE_RATIO_02	0.5
+score HTML_MESSAGE		0.5
 score MIME_BOUND_NEXTPART	0.5
 
 blacklist_to inouoe@wamber.net
