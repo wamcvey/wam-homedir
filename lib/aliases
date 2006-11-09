@@ -493,6 +493,7 @@ watch_mailfilter() {
 	# as in: xterm -e bash --login -c "watch_mailfilter"
 	tail -f $HOME/Mail/pycmail.log | \
 	hilite -u -c red "/home/wam/Mail/Cisco/wam-default" | \
+	hilite -u -c red -p "From=.*\(SPAM\)" | \
 	hilite -u -c yellow -p "Subject=\(.*\)" | \
 	hilite -c cyan -u -p "Filtered=\(.*\)"
 }
