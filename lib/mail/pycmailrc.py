@@ -140,6 +140,8 @@ MailingListMappings = {
 	"partypoker@wamber.net":	WamberDir("Topic", "Poker"),
 	"nvnews.net@wamber.net":	WamberDir("Membership", "nvidia-news-forum"),
 	"server-coop@yahoogroups.com":	WamberDir("Lists", "Server-COOP"),
+	"straightrazorplace@yahoogroups.com": 
+	                                WamberDir("Lists", "StraightRazorPlace"),
 
 	# - Wamber vendors
 	"nerdbooks-dot-com@wamber.net":	WamberDir("Vendors", "NerdBooks.com"),
