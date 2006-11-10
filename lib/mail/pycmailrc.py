@@ -143,6 +143,7 @@ MailingListMappings = {
 
 	# - Wamber vendors
 	"nerdbooks-dot-com@wamber.net":	WamberDir("Vendors", "NerdBooks.com"),
+	"wam-wholelattelove@wamber.net": WamberDir("Vendors", "WholeLatteLove.com"),
 	"rei@wamber.net":		WamberDir("Vendors", "REI.com"),
 	"walgreens@wamber.net":		WamberDir("Vendors", "Walgreens.com"),
 	"discovercard@wamber.net":	WamberDir("Vendors", "Discovercard.com"),
