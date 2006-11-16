@@ -131,7 +131,7 @@ done
 export PYTHONPATH
 PYTHONSTARTUP=$HOME/.pythonrc
 
-for dir in /usr/local/java /usr/local/jdk /usr/java
+for dir in /usr/local/java /usr/local/jdk /usr/java /usr/lib/jvm/java-1.5.0-sun
 do
 	if [ -d "$dir" ]; then
 		JAVA_HOME=$dir 
