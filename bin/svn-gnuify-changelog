@@ -12,13 +12,14 @@
 require 5.0;
 use strict;
 
+cisco="cisco.com" # keep the spam robots from harvesting the addrs
 my %hackers = (
-    "wam"          => 'William McVey <wam@cisco.com>',
-    "balinsky"     => 'Andy Balinsky <balinsky@cisco.com>',
-    "ecarter"      => 'Earl Carter <ecarter@cisco.com>',
-    "evance"       => 'Eric Vance <evance@cisco.com>',
-    "msteinko"     => 'Mike Steinkoenig <msteinko@cisco.com>',
-    "dspak"        => 'David Spak <dspak@cisco.com>',
+    "wam"          => 'William McVey <wam@%s>' % cisco,
+    "balinsky"     => 'Andy Balinsky <balinsky@%s>' % cisco,
+    "ecarter"      => 'Earl Carter <ecarter@%s>' % cisco,
+    "evance"       => 'Eric Vance <evance@%s>' % cisco,
+    "msteinko"     => 'Mike Steinkoenig <msteinko@%s>' % cisco,
+    "dspak"        => 'David Spak <dspak@%s>' % cisco,
     "(no author)"  => 'No author - SVN automation',
 );
 
