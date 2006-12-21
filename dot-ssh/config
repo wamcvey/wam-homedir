@@ -1,4 +1,5 @@
 NoHostAuthenticationForLocalhost yes
+HashKnownHosts no
 
 Host *
 ControlMaster auto
