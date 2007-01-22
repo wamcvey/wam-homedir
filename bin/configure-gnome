@@ -100,7 +100,7 @@ gconftool-2 --type=bool --set $GNOMETERM/profiles/Default/login_shell 'true'
 
 # Setting of fonts
 #
-if [ "`which fc-list 2>/dev/null`" == "" ]
+if [ "`which fc-list 2>/dev/null`" = "" ]
 then
 	echo "$0: fc-list not installed. Install fontconfig" >&2
 	exit 1
