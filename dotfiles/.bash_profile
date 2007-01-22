@@ -190,11 +190,12 @@ alias ls="/bin/ls -F"
 if [ -z "$TERM" ]
 then
 	eval `tset -s -Q -m 'unknown:?vt100' -m 'network:?xterm' -m 'dialup:cons25'`
+	# we do the stty on seperate lines so if one bombs out,
+	# it doesn't affect others
+	stty kill "^U" intr "^C" erase "^H" susp "^Z" 
+	stty werase "^W"
+	stty status "^T" 2> /dev/null
 fi
-# we do the stty on seperate lines so if one bombs out it doesn't affect others
-stty kill "^U" intr "^C" erase "^H" susp "^Z" 
-stty werase "^W"
-stty status "^T" 2> /dev/null
 set +o noglob 
 set -o vi 
 set -o viraw 2> /dev/null
