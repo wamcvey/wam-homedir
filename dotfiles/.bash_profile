@@ -143,7 +143,7 @@ done
 MINICOM='-o'
 export MINICOM
 
-[ "${PWD}" == "${HOME}" ] && DIR='~'
+[ "${PWD}" = "${HOME}" ] && DIR='~'
 TAPE=/dev/rmt/3mn
 #RNINIT='-m -M -s -e -q' 
 TRNINIT='-B -t -p -s -M -m'
