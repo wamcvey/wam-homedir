@@ -25,6 +25,10 @@ mrxvt*hotkey*Tab2:		Ctrl+2
 mrxvt*hotkey*Tab3:		Ctrl+3
 mrxvt*hotkey*Tab4:		Ctrl+4
 mrxvt*hotkey*Tab5:		Ctrl+5
+mrxvt*hotkey*Tab6:		Ctrl+6
+mrxvt*hotkey*Tab7:		Ctrl+7
+mrxvt*hotkey*Tab8:		Ctrl+8
+mrxvt*hotkey*Tab9:		Ctrl+9
 mrxvt*hotkey*PasteSel:         Ctrl+Insert
 
 ! old xterm configs
