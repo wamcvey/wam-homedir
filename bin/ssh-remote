@@ -15,7 +15,7 @@ ssh_user=wam
 bounce_host="crypt.spa-ops.com"
 # mail_host=3rdclass
 mail_host=email.cisco.com
-cvs_host=spacvs
+cvs_host=stat.cisco.com
 sametime_host=sametime-im.cisco.com
 # share_open_port_option="-g"
 
@@ -32,7 +32,7 @@ fi
 
 if [ "$1" = "-w" ] 
 then
-	ssh -D1081 -L25:localhost:25 -L110:localhost:110 -L143:localhost:143 -L993:localhost:993 -L8080:localhost:80  -L2022:spat:22 -L8088:toc.oscar.aol.com:8088 -L5050:scs.msg.yahoo.com:5050 -L80:filetransfer.msg.yahoo.com:80 -L3128:localhost:3128 -l wam cartman.servercoop.net 
+	ssh -D1081 -L25:localhost:25 -L110:localhost:110 -L143:localhost:143 -L993:localhost:993 -L8080:localhost:80  -L2022:stat:22 -L8088:toc.oscar.aol.com:8088 -L5050:scs.msg.yahoo.com:5050 -L80:filetransfer.msg.yahoo.com:80 -L3128:localhost:3128 -l wam cartman.servercoop.net 
 	exit 0
 fi
 
@@ -50,28 +50,30 @@ if [ `whoami` = "root" ]
 then
 	cat <<! >&2
 Forwarding:
+	localhost:1080 to SOCKS
 	localhost:25,110,143,993 to ${mail_host}
 	localhost:1533 to ${sametime_host}:1533
 	localhost:8080 to web proxy
 	localhost:8088 to toc.oscar.aol.com
 	localhost:5050 to scs.yahoo.com:5050
-	localhost:2022 to spat:22 
+	localhost:2022 to stat:22 
 	localhost:2522 to ${cvs_host}:22
 	${ssh_host}:$LOCALSSH_REDIR_PORT to localhost:22
 !
 	bounce_im="-L8088:toc.oscar.aol.com:8088 -L5050:scs.msg.yahoo.com:5050" #  -L5050:scs.yahoo.com:5050"
-	SSH_ARGS="$SSH_ARGS -L25:${mail_host}:25 -L110:${mail_host}:110 -L143:${mail_host}:143 -L993:${mail_host}:993 -L8080:localhost:80  -L2022:spat:22 -L2522:${cvs_host}:22 -L1533:${sametime_host}:1533 ${bounce_im} -R${LOCALSSH_REDIR_PORT}:localhost:22"
+	SSH_ARGS="-D1080 $SSH_ARGS"
+	SSH_ARGS="$SSH_ARGS -L25:${mail_host}:25 -L110:${mail_host}:110 -L143:${mail_host}:143 -L993:${mail_host}:993 -L8080:localhost:80  -L2022:stat:22 -L2522:${cvs_host}:22 -L1533:${sametime_host}:1533 ${bounce_im} -R${LOCALSSH_REDIR_PORT}:localhost:22"
 	SSH_ARGS="$SSH_ARGS -L902:immune.cisco.com:902"
 	bounce_smtp=`expr $RANDOM + 10240`
 	bounce_pop=`expr $bounce_smtp + 1`
 	bounce_imap=`expr $bounce_smtp + 2`
 	bounce_imaps=`expr $bounce_smtp + 3`
 	bounce_http=`expr $bounce_smtp + 4`
-	bounce_spat=`expr $bounce_smtp + 5`
+	bounce_stat=`expr $bounce_smtp + 5`
 	bounce_cvs=`expr $bounce_smtp + 6`
 	bounce_sametime=`expr $bounce_smtp + 7`
-	BOUNCE_FIRSTHOP_ARGS="-A -L25:$bounce_host:$bounce_smtp -L110:$bounce_host:$bounce_pop -L143:$bounce_host:$bounce_imap -L993:$bounce_host:$bounce_imaps -L8080:$bounce_host:$bounce_http -L1533:$bounce_host:$bounce_sametime $bounce_im -L2022:$bounce_host:$bounce_spat -L2522:$bounce_host:$bounce_cvs"
-	BOUNCE_SECONDHOP_ARGS="-A ${share_open_port_option} -L${bounce_smtp}:${mail_host}:25 -L${bounce_pop}:${mail_host}:110 -L${bounce_imap}:${mail_host}:143 -L${bounce_imaps}:${mail_host}:993 -L${bounce_sametime}:${sametime_host}:1533 -L${bounce_spat}:spat:22 -L${bounce_cvs}:${cvs_host}:22 -L${bounce_http}:localhost:80"
+	BOUNCE_FIRSTHOP_ARGS="-A -L25:$bounce_host:$bounce_smtp -L110:$bounce_host:$bounce_pop -L143:$bounce_host:$bounce_imap -L993:$bounce_host:$bounce_imaps -L8080:$bounce_host:$bounce_http -L1533:$bounce_host:$bounce_sametime $bounce_im -L2022:$bounce_host:$bounce_stat -L2522:$bounce_host:$bounce_cvs"
+	BOUNCE_SECONDHOP_ARGS="-A ${share_open_port_option} -L${bounce_smtp}:${mail_host}:25 -L${bounce_pop}:${mail_host}:110 -L${bounce_imap}:${mail_host}:143 -L${bounce_imaps}:${mail_host}:993 -L${bounce_sametime}:${sametime_host}:1533 -L${bounce_stat}:stat:22 -L${bounce_cvs}:${cvs_host}:22 -L${bounce_http}:localhost:80"
 fi
 
 if [ "$1" != "" ]
