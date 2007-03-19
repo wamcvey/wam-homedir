@@ -47,7 +47,7 @@ do
 	basefile=`expr "${file}" : "${LOCAL}\(.*\)"`
 	if cmp -s "$file" "$REM/$basefile"
 	then
-		rm $RMFLAGS $file
+		rm $RMFLAGS "$file"
 	else
 		echo "keeping $file"
 	fi
