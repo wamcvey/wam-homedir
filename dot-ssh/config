@@ -4,6 +4,7 @@ HashKnownHosts no
 Host *
 ControlMaster auto
 ControlPath ~/.ssh/master-%r@%h:%p
+HashKnownHosts no
 
 Host silver.he.net
 	Protocol 1
@@ -15,6 +16,15 @@ Host reverse-ssh
 Host socks
 	Hostname cartman.servercoop.net
 	DynamicForward 1081
+
+Host stat
+	ForwardAgent yes
+
+Host ssh-rtp1.cisco.com
+	ForwardAgent yes
+
+Host ssh-sj1.cisco.com
+	ForwardAgent yes
 
 Host wam2
 	ForwardX11 yes
@@ -52,10 +62,6 @@ Host pegasus.spa-ops.com pegasus3 pegasus
 	ForwardX11 yes
 	ForwardAgent yes
 
-Host garibaldi
-	ForwardAgent yes
-	Hostname 10.89.138.20
-
 Host mallard mallard.spa-ops.com
 	ForwardX11 yes
 	ForwardAgent yes
@@ -76,3 +82,19 @@ Host matt-mcs
 Host spak
 	Port 22333
 	Hostname halifax.dyndns.org
+
+# WAM's STAT test network
+Host garibaldi
+	ForwardAgent yes
+	Hostname 10.89.138.20
+
+Host sheridan
+	ForwardAgent yes
+	Hostname 10.89.138.30
+
+Host ivanova
+	ForwardAgent yes
+	Hostname 10.89.138.40
+
+Host cel
+	Hostname 64.101.182.254 
