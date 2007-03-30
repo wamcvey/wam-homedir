@@ -1,0 +1,4 @@
+#!/bin/sh
+#
+shift
+ssh -p 2022 localhost $@
