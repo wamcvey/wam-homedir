@@ -342,6 +342,19 @@ function cvsuse {
 	fi
 }
 
+function svnuse {
+	libdir=$HOME/lib/svn
+	if [ -f "${libdir}/svn-$1" ]
+	then
+		set -x
+		. ${libdir}/svn-$1
+		set +x
+	else
+		echo "SVN modules available:"
+		ls -C ${libdir} | sed -e 's/svn-/    /g'
+	fi
+}
+
 function cvstags {
 	cvs log $@ | sed -n -e '/symbolic names:/,/keyword substitution:/ p' -e '/keyword substitution:/ d'
 }
@@ -479,12 +492,12 @@ start_work() {
 		-vt1.tt 'pycmail' \
 		-vt2.e 'getmail -r getmail-cisco.rc' \
 		-vt2.tt 'getmail cisco' \
-		-vt2.e 'getmail -r getmail-cisco.rc'  \
-		-vt2.tt 'getmail cisco' &
+		-vt3.e 'getmail -r getmail-cisco.rc'  \
+		-vt3.tt 'getmail cisco' &
 	  evolution --offline $screen &
 	  freemind &
 	  firefox &
-	  gaim $disp &
+	  gaim ${disp:+-display} &	# double the dashes, if set
 	) >/dev/null 2>&1 
 }
 
