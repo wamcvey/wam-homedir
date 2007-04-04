@@ -491,9 +491,7 @@ start_work() {
 		-vt1.e 'bash --login -c "watch_mailfilter" ' \
 		-vt1.tt 'pycmail' \
 		-vt2.e 'getmail -r getmail-cisco.rc' \
-		-vt2.tt 'getmail cisco' \
-		-vt3.e 'getmail -r getmail-cisco.rc'  \
-		-vt3.tt 'getmail cisco' &
+		-vt2.tt 'getmail cisco' &
 	  evolution --offline $screen &
 	  freemind &
 	  firefox &
