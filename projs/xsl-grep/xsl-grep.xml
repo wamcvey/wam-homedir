@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+"http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
+<refentry id="xsl-grep">
+  <refmeta>
+    <refentrytitle>xsl-grep</refentrytitle>
+
+    <manvolnum>1</manvolnum>
+  </refmeta>
+
+  <refnamediv>
+    <refname>xsl-grep</refname>
+
+    <refpurpose>do commandline searches on an xml document</refpurpose>
+  </refnamediv>
+
+  <refsynopsisdiv>
+    <synopsis><command>xsl-grep</command><cmdsynopsis><arg><option>-k</option></arg><group><arg
+            choice="plain"><option>-a</option> ATTRIBUTE</arg><arg
+            choice="plain"><option>-c</option></arg></group><arg><option>--ns</option><replaceable>NS</replaceable>=<replaceable>URL</replaceable></arg><arg
+          rep="repeat"><option>-A</option> XPATH_EXPR</arg><sbr /><arg><option>-d</option> DELIMETER</arg><arg
+          choice="plain"><replaceable>XPATH_EXPRESSION</replaceable></arg><arg
+          choice="plain">FILE.XML</arg></cmdsynopsis><cmdsynopsis><arg><option>-V</option></arg></cmdsynopsis><cmdsynopsis><arg><option>-h</option></arg></cmdsynopsis></synopsis>
+  </refsynopsisdiv>
+
+  <refsect1>
+    <title>Description</title>
+
+    <para>Provides a commandline interface to processing dynamically created
+    XSL stylesheets which evaluate an XPATH expression and return, by default,
+    the text components of the matching nodes.</para>
+
+    <variablelist>
+      <varlistentry>
+        <term>-a ATTRIBUTE</term>
+
+        <listitem>
+          <para>rather than returning the text components of the matching
+          nodes, just return the specified attribute name of the matching
+          node</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>-A XPATH_EXPR</term>
+
+        <listitem>
+          <para>after performing the primary XPATH evaluation, perform
+          subsequent requests relative to the first set of matching nodes. If
+          multiple <option>-A</option> options are provided, they all are
+          processed relative to the primary XPATH query (in other words,
+          multiple <option>-A</option> options are iterative rather than
+          cumaltive.)</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>-c</term>
+
+        <listitem>
+          <para>rather than returning the text components of the matching
+          nodes, return an the entire XML tree of all matchine
+          elements.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>-d DELIMETER</term>
+
+        <listitem>
+          <para>specify the delimeter used to join the results of
+          <option>-A</option> options</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>-h</term>
+
+        <listitem>
+          <para>print a short synopsis of the commandline usage</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>-k</term>
+
+        <listitem>
+          <para>do not delete the dynamically created stylesheet after
+          performing the query, and print the path of the stylesheet to
+          <filename>STDERR</filename>. This is particularly useful if you wish
+          to use <command>xsl-grep</command> to generate a basic query, but
+          wish to then edit the dynamic stylesheet to give you detailed
+          control of the queries or output formatting.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>-ns NS=URL</term>
+
+        <listitem>
+          <para>define a namespace prefix to use in the queries. The default
+          namespace can be defined by specifying an empty
+          <parameter>NS</parameter> prefix. See the examples section to see
+          the utility in this. Common namespaces (currently XSL and FO) are
+          predefined.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><option>-V</option></term>
+
+        <listitem>
+          <para>print version information of the tool</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </refsect1>
+
+  <refsect1>
+    <title>Examples</title>
+
+    <para><command>xsl-grep</command> can pull out attribute values from
+    matched nodes:<example>
+        <title>List all URLs from a SPARX document</title>
+
+        <programlisting>$ xsl-grep -a url '//ulink' <filename>FILE.xml
+</filename></programlisting>
+      </example></para>
+
+    <para>It can process all kinds of XPATH specifications, not just element
+    paths.<example>
+        <title>List all comments from a SPARX document (include the comment
+        markup)</title>
+
+        <programlisting>$ xsl-grep -c '//comment()' <filename>FILE.xml
+</filename></programlisting>
+      </example></para>
+
+    <para>XPATH expressions support conditional functions, such as string
+    processing.<example>
+        <title>List all vulnerability titles that start with 'HTTP-'</title>
+
+        <programlisting>$ xsl-grep "//vuln[starts-with(@tag,'HTTP-')]/vulntitle" FILE.xml
+</programlisting>
+      </example></para>
+
+    <para>Once a nodeset is found, subsequent searches relative to each of the
+    matched nodes can be searched for as well. The results will be delimited
+    by a specified value (or colon, if no delimeter is set).<example>
+        <title>List all service identifiers and titles</title>
+
+        <programlisting>$ xsl-grep -A title -a name "//service" FILE.xml
+</programlisting>
+      </example>Note that followup expressions which search for attributes
+    must use the XPATH syntax for getting the attribute path (and not the
+    <command>xsl-grep</command> <option>-a</option> option).<example>
+        <title>List all vulns and associated services that have a finding but
+        no recommendation</title>
+
+        <programlisting>$ xsl-grep -a tag -A "../@name" \
+           "//vuln[string-length(vulnrecommendation)=0]" FILE.xml
+</programlisting>
+      </example></para>
+
+    <para>By default, <command>xsl-grep</command> searches are not specified
+    within a namespace. When searching a document a defined default namespace,
+    or when searching for elements outside of the default namespace, you must
+    specify the namespace you want to query in your invocation.<example>
+        <title>Find the path to all XInclude references</title>
+
+        <programlisting>$ xsl-grep -a href --ns xi=http://www.w3.org/2001/XInclude \
+           '//xi:include'  FILE.XML
+</programlisting>
+      </example></para>
+  </refsect1>
+
+  <refsect1>
+    <title>Bugs</title>
+
+    <para>As much as I'd like it to be, <command>xsl-grep</command> is not
+    perfect. The following are the known bugs which have not been corrected.
+    If it's in this list, it is likely that they won't get fixed anytime soon
+    either.<itemizedlist>
+        <listitem>
+          <para>Some people might look at the results of
+          <command>xsl-grep</command> with the <option>-c</option> option and
+          be tempted to consider this a valid (well, at least well formed) XML
+          document suitable for further processing in a pipeline fashion. This
+          is often the case; however, be careful to remember that an XML
+          document has exactly 1 root element, and the results of the
+          <option>-c</option> option will include <emphasis>all</emphasis>
+          matching nodes.</para>
+        </listitem>
+
+        <listitem>
+          <para>The command currently can't process an XML file provided on
+          <filename>STDIN.</filename> This might not be too hard to fix, if
+          anyone wants this feature, let me know.</para>
+        </listitem>
+      </itemizedlist></para>
+  </refsect1>
+
+  <refsect1>
+    <title>Author</title>
+
+    <para>Written by William McVey <email>wam@cisco.com</email></para>
+  </refsect1>
+
+  <refsect1>
+    <title>See Also</title>
+
+    <para><ulink url="http://www.w3schools.com/xpath/default.asp">XPATH
+    Tutorial</ulink>, <command>xsltproc</command></para>
+  </refsect1>
+</refentry>
