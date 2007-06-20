@@ -1,3 +1,6 @@
+! menu definitions are found in here.
+mrxvt*path:	/home/wam/lib/mrxvt:/etc/mrxvt
+
 mrxvt*foreground: green
 mrxvt*tabForeground: green
 mrxvt*itabForeground: yellow
