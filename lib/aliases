@@ -400,6 +400,7 @@ function mp {
 
 	remove=false
 	renumber=false
+	x11=false
 	while [ $# -gt 0 ]
 	do
 		case "$1" in
@@ -415,9 +416,16 @@ function mp {
 			"-R*")	renumber=true
 				eval "$slide"
 				;;
+			"-X")   x11=true
+				shift
+				;;
+			"-X*")  x11=true
+				eval "$slide"
+				;;
 			"-h")	echo "mp: [-r] [-R] file[s]" 
 				echo "-r     prompt for removal after display of files"
 				echo "-R     renumber files before viewing"
+				echo "-X     use xv mplayer vid out "
 				return
 				;;
 			*)	break
@@ -451,7 +459,12 @@ function mp {
 	fi
 	if [ -n "${clips[*]}" ]
 	then
-		mplayer -fs "${clips[@]}"
+		if $x11
+		then
+			mplayer -vo xv  -fs "${clips[@]}"
+		else
+			mplayer -fs "${clips[@]}"
+		fi
 	fi
 	if $remove ; then
 		read -p "Remove? [Y|n] "  answer
@@ -471,10 +484,10 @@ alias proxy_off='gconftool-2 --type=bool --set  /system/http_proxy/use_http_prox
 
 start_work() {
 	xtitle "start work"
-	if [ "$1" = "primary" ]
+	if [ "$1" = "primary" ] || [ "$1" = "home" ]
 	then
-		disp=
-		screen=
+		unset disp
+		unset screen
 	else
 		disp="-display :0.1"
 		screen="--screen 1"
@@ -482,21 +495,26 @@ start_work() {
 	iface=`iwconfig 2>&1 | awk '/eth.*no wireless extensions/ {print $1}'`
 	echo "Starting networking on $iface" >&2
 	sudo dhclient $iface
-	synergys -c $HOME/lib/synergy-work.conf && synergyc-restart bruha
-	( mrxvt $disp -fn -misc-fixed-*-r-*-*-18-120-*-*-c-*-*-* \
-	  	--title 'mail processing' -geometry 176x24+0+0 \
-	  	-tnum 3 \
-		-vt0.e 'ssh -D 1081 cartman.servercoop.net' \
-		-vt0.tt 'socks tunnel' \
-		-vt1.e 'bash --login -c "watch_mailfilter" ' \
-		-vt1.tt 'pycmail' \
-		-vt2.e 'getmail -r getmail-cisco.rc' \
-		-vt2.tt 'getmail cisco' &
-	  evolution --offline $screen &
+	# synergys -c $HOME/lib/synergy-work.conf && synergyc-restart bruha &
+	#profiles include: 2: Socks, 3: pycmail, 1: bash,
+	mrxvt_args="$disp -fn -misc-fixed-*-r-*-*-18-120-*-*-c-*-*-* \
+	  	--title 'work terms' -geometry 176x24+0+0 \
+		-ip 2,3,1"
+	if [ "$1" = "home" ] ; then
+		#profiles include: 2: Socks, 3: pycmail, 1: bash, 4: ssh-remote
+		mrxvt_args="$mrxvt_args -ip 2,3,1,4"
+		synergyc 10.10.10.20
+		echo mrxvt args: $mrxvt_args
+		sudo $HOME/bin/toggle-ssh-forwards on
+	fi 
+	(
+	  eval mrxvt $mrxvt_args &
+	  evolution $screen &
 	  freemind &
 	  firefox &
-	  gaim ${disp:+-display} &	# double the dashes, if set
-	) >/dev/null 2>&1 
+	  gaim ${disp:+-$disp} &	# double the dashes, if set
+	) 
+	# >/dev/null 2>&1 
 }
 
 watch_mailfilter() {
