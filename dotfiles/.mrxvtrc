@@ -19,6 +19,12 @@ Mrxvt.profile3.tabTitle:	pycmail
 Mrxvt.profile3.command:		bash --login -c "watch_mailfilter"
 Mrxvt.profile4.tabTitle:	ssh-remote stat
 Mrxvt.profile4.command:		sudo /home/wam/bin/ssh-remote stat
+Mrxvt.profile4.holdExit:	True
+
+# ! Mrxvt.xft:			1
+# ! Mrxvt.xftFont:			Bitstream Vera Sans Mono
+# ! Mrxvt.xftSize:			18
+# ! Mrxvt.xftAntialias:		1
 
 
 ! transparency
