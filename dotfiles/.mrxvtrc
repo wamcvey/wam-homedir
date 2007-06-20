@@ -2,19 +2,34 @@ mrxvt*foreground: green
 mrxvt*tabForeground: green
 mrxvt*itabForeground: yellow
 mrxvt*loginShell: true
-mrxvt*tabBackground: darkslategrey
-mrxvt*initTermNumber:  2
+Mrxvt.initProfileList:	1,1
 mrxvt*scrollTtyOutputInhibit: true
 mrxvt*scrollTtyKeypress: true
 mrxvt*saveLines: 20000
-
 mrxvt*cutChars:	 \ #"&()*,;<=>?@[]{|}/.
+
+! profiles
+Mrxvt.profile0.tabTitle:        Term
+Mrxvt.profile1.tabTitle:        Bash
+Mrxvt.profile1.command:		/bin/bash --login -i
+Mrxvt.profile1.holdExit:	False
+Mrxvt.profile2.tabTitle:	SOCKS cartman
+Mrxvt.profile2.command:		ssh -D 1081 cartman.servercoop.net
+Mrxvt.profile3.tabTitle:	pycmail
+Mrxvt.profile3.command:		bash --login -c "watch_mailfilter"
+Mrxvt.profile4.tabTitle:	ssh-remote stat
+Mrxvt.profile4.command:		sudo /home/wam/bin/ssh-remote stat
+
 
 ! transparency
 mrxvt*transparent: true
 mrxvt*backgroundFade: 50
+mrxvt*itabBackground: black
 mrxvt*fading: 30
 mrxvt*transparentTabbar: true
+Mrxvt.transparentScrollbar:     True
+
+! mrxvt*tabBackground: darkslategrey
 
 ! hotkeys
 mrxvt*hotkey*FuncName:		Ctrl+Shift+v
@@ -30,6 +45,10 @@ mrxvt*hotkey*Tab7:		Ctrl+7
 mrxvt*hotkey*Tab8:		Ctrl+8
 mrxvt*hotkey*Tab9:		Ctrl+9
 mrxvt*hotkey*PasteSel:         Ctrl+Insert
+mrxvt*hotkey*LeftMoveTab:	Alt+Left		
+mrxvt*hotkey*RightMoveTab:	Alt+Right		
+
+
 
 ! old xterm configs
 XTerm*LoginShell:		true
