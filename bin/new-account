@@ -5,7 +5,7 @@
 # $Id:$
 # March 9, 2006
 
-REPO=https://svn.wamber.net/svn/wam-homedir/
+REPO=svn+ssh://svn.wamber.net/svn/wam-homedir/
 
 rsync=`which rsync`
 svn=`which svn`
@@ -28,7 +28,7 @@ if [ "$1" = "" ] ; then
 fi
 
 cd $HOME
-svn co https://svn.wamber.net/svn/wam-homedir/branches/$1 branch-$1
+svn co $REPO/branches/$1 branch-$1
 backup="backup-$$"
 mkdir $backup || ( echo "$0: couldn't create backup dir: $backup">&2; exit 1; )
 rsync -avP --backup --backup-dir $backup branch-$1/ .
