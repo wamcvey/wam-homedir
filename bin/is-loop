@@ -2,13 +2,18 @@
 
 while [ $# -gt 0 ]
 do
-	if expr "$1" : "-.*" >/dev/null
-	then
+	case "$1" in
+	-P)	ISOPTIONS="$ISOPTIONS $1 $2"
+		shift
+		shift
+		;;
+	-*)
 		ISOPTIONS="$ISOPTIONS $1"
 		shift
-	else
-		break
-	fi
+		;;
+	*)	break
+		;;
+	esac
 done
 
 if [ $# -gt 0 ]
@@ -20,7 +25,7 @@ then
 	exit
 fi
 
-while read -p URL?\  -e  url first last template
+while read -p URL?\   url first last template
 do
 	if [ "$url" = "range" ]
 	then
