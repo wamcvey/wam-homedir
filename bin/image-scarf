@@ -8,7 +8,7 @@
 
 # our program name and usage message
 progname=`basename $0`
-usage="$progname: usage [-bhO] [-f arg] [files]"
+usage="$progname: usage [-bhO] [-P sockshost:port] [-f arg] [files]"
 
 # how to slide a single letter option off the beginning of a bundle
 # -barf -> -arf
@@ -36,6 +36,9 @@ do
 		shift ; shift
 		;;
 	-p)	PATTERN="$PATTERN|${2}"
+		shift; shift
+		;;
+	-P)	CURL_OPTS="$CURL_OPTS --socks $2"
 		shift; shift
 		;;
 	-u*)
