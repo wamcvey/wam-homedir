@@ -1,6 +1,14 @@
 #!/bin/sh
 # you'd be surprised how often you want to ls just the directories
 
+if [ "$1" = "-a" ]
+then
+	name=""
+	shift
+else
+	name='! -name \.\*'
+fi
+
 ARGS=${@:-.}
 # ls -dF `find $ARGS -maxdepth 1 -type d -print`
-find $ARGS -maxdepth 1 -type d -print | sed -e "s@^${ARGS}/*@@" -e "/^$/d" | sort | ls_display
+eval find $ARGS -maxdepth 1 $name -type d  -print | sed -e "s@^${ARGS}/*@@" -e "/^$/d" | sort | ls_display
