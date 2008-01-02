@@ -1,4 +1,9 @@
 #!/bin/sh
 #
-shift
+if [ $# -gt 0 ]
+then
+	# shift off the 'hostname' argument of the ssh invocation, since our
+	# destination is fixed.
+	shift 
+fi
 ssh -p 2022 localhost $@
