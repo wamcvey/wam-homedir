@@ -27,8 +27,11 @@ class HTML(BeautifulSoup.BeautifulSoup):
 		except:
 			base = ""
 		for anchor in self.fetch("a", {"href": re.compile('.+')}):
-			url = urlparse.urljoin(base, anchor["href"])
-			urls.append(url)
+			try:
+				url = urlparse.urljoin(base, anchor["href"])
+				urls.append(url)
+			except:
+				pass
 		return urls
 
 if __name__ == '__main__':
