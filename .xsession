@@ -1,6 +1,6 @@
 #!/bin/sh
 
-. $HOME/.bash_profile
+# . $HOME/.bash_profile
 
 # Set up some paths and envinvorment variables useful for running X
 if [ -d /usr/openwin ]
