@@ -1,9 +1,14 @@
 # dynamic files that don't need to get tracked
+.cache
 *.swp
+.ICEauthority
 .sudo_as_admin_successful
 .lesshst
+.gksu.lock
+.esd_auth
 .Xauthority
 .bash_history
-.thumbnails/
+.thumbnails
+.thumbnails/*
 .xsession-errors
 
