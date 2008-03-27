@@ -1,0 +1,9 @@
+[user]
+	name = William McVey
+	email = wam@cisco.com
+[color]
+	diff = auto
+	status = auto
+[color "status"]
+	changed = yellow
+	untracked = cyan
