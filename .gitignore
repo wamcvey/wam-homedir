@@ -1,5 +1,15 @@
+# Files/paths that are more sensitive than I want laying around my repository
+bin/aironet-config.sh
+lib/wamber_wpa_supplicant.conf
+.ssh/id_dsa
+.ssh/identity
+
+# hierachies that deserve their own repository
+projs
+
 # dynamic files that don't need to get tracked
 .cache
+recently-used.xbel
 *.swp
 .ICEauthority
 .sudo_as_admin_successful
@@ -11,4 +21,6 @@
 .thumbnails
 .thumbnails/*
 .xsession-errors
+recently-used.xbel
+.viminfo
 
