@@ -6,7 +6,6 @@ umask 022
 # For when I'm travelling
 # TZ='America/New_York'; export TZ		# EST
 # TZ='America/Chicago'; export TZ		# CST
-TZ="CST"
 
 # XXX quick hack for now
 # . $HOME/bin/kill-locale
@@ -83,12 +82,10 @@ else
 fi
 SHORTHOST=${HOST%%.*}
 #LD_LIBRARY_PATH=/usr/lib:/usr/local/X11/lib:/usr/x11r5/lib:/usr/openwin/lib
-LESSOPEN="| lesspipe %s"
-LESS="-CedmPm?f%f:<stdin>. ?eeof:?pb%pb:\?.\%. ?lb%lb."
+
 NAME="William McVey"
 # XAUTHORITY=${HOME}/.Xauthority
 ORGANIZATION="Cisco Systems"
-RSYNC_RSH=ssh ; export RSYNC_RSH
 PAGER=$( which less 2>/dev/null ) || \
 	PAGER=`which more 2>/dev/null ` || \
 	( PAGER=/bin/cat && echo "No pager found.  Using /bin/cat." >&2 /dev/tty ; )
@@ -140,19 +137,33 @@ do
 	fi
 done
 
+
+[ "${PWD}" = "${HOME}" ] && DIR='~'
+VISUAL=vi
+
+#
+# Application specific environment variables
+#
+
+ENTOMB=yes ; export ENTOMB
+GIT_PAGER="less -r" ; export GIT_PAGER
+LESSOPEN="| lesspipe %s" 
+LESS="-CedmPm?f%f:<stdin>. ?eeof:?pb%pb:\?.\%. ?lb%lb." 
+export LESSOPEN LESS
+
+RSYNC_RSH=ssh ; export RSYNC_RSH
+
+#RNINIT='-m -M -s -e -q' 
+TRNINIT='-B -t -p -s -M -m'
+export RNINIT TRNINIT
+
 MINICOM='-o'
 export MINICOM
 
-[ "${PWD}" = "${HOME}" ] && DIR='~'
-TAPE=/dev/rmt/3mn
-#RNINIT='-m -M -s -e -q' 
-TRNINIT='-B -t -p -s -M -m'
-VISUAL=vi
-
-# Application specific environment variables
-ENTOMB=yes
 XKEYSYMDB=/usr/X11R6/lib/X11/XKeysymDB
 XNLSPATH=/usr/X11R6/lib/X11/netscape/nls
+export XNLSPATH XKEYSYMDB
+
 if [ -d ${HOME}/.app-defaults ] ; then
 	XAPPLRESDIR=${HOME}/.app-defaults/
 	export XAPPLRESDIR
@@ -166,23 +177,13 @@ then
 	PATH=${PATH}:${HOME}/tools/forrest/bin
 fi
 
-MOZILLA_FIVE_HOME=/usr/local/firefox
-MOZ_PROGRAM="$MOZILLA_FIVE_HOME/firefox"
-export MOZILLA_FIVE_HOME MOZ_PROGRAM
-LD_LIBRARY_PATH=$MOZILLA_FIVE_HOME:${LD_LIBRARY_PATH:-/usr/lib}
-
-PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
-export PKG_CONFIG_PATH 
-
 GDFONTPATH=/mnt/windows/windows/Fonts:/usr/X11R6/lib/X11/fonts/mozilla-fonts:/usr/X11R6/lib/X11/fonts/TTF:/usr/X11R6/lib/X11/fonts/Type1:$HOME/.cxoffice/dotwine/fake_windows/Windows/Fonts
 export GDFONTPATH
 
-export BASH_ENV CDPATH DISPLAY EDITOR ENTOMB ENV LD_LIBRARY_PATH LASER \
-	LESS \
-	LESSOPEN HISTSIZE HISTFILE HOST MANPATH NAME ORGANIZATION PS1 USER \
+export BASH_ENV CDPATH DISPLAY EDITOR ENV LD_LIBRARY_PATH \
+	HISTSIZE HISTFILE HOST MANPATH NAME ORGANIZATION PS1 USER \
 	PRINTER PAGER PATH PYTHONSTARTUP  RNINIT TRNINIT SHELL SHORTHOST \
-	TAPE TMP TERM TERMCAP \
-	VISUAL XAUTHORITY XNLSPATH XKEYSYMDB
+	TMP TERM TERMCAP VISUAL XAUTHORITY
 
 alias ls="/bin/ls -F"
 
