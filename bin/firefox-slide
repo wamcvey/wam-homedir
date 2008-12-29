@@ -15,26 +15,26 @@ import sys
 import logging
 import re
 
+logging.basicConfig(level=logging.DEBUG, stream=sys.stderr)
+
 firefox_path = None
-for path in ("/usr/local/firefox/firefox", "/usr/X11R6/bin/firefox",
-             "/usr/local/bin/firefox", "/usr/bin/firefox"):
+for path in ("/usr/local/firefox/firefox", 
+             "/usr/local/bin/firefox",
+	     "/usr/bin/firefox",
+	     "/usr/X11R6/bin/firefox",):
 	if os.path.exists(path):
 		firefox_path = path
 		break
 if not firefox_path:
 	sys.exit("%s: Firefox not found in known location" % sys.argv[0])
+logging.info("Found firefox at: %s", firefox_path)
 
 badurl_re = re.compile(r"^[a-zA-Z]+://[^/]+$")
 
 def open_window():
-	cmd = 'xfeDoCommand(openBrowser)'
-	os.system(
-	  '%(firefox)s -a firefox -remote "%(cmd)s" || %(firefox)s' % {
-	  "firefox": firefox_path, 
-	  "cmd": cmd,
-	  }
-	)
-	
+	cmd = '%(firefox)s -a firefox -remote "xfeDoCommand(openBrowser)" || %(firefox)s' % {"firefox": firefox_path,}
+	logging.info("Launching: %r" % cmd)
+	os.system(cmd)
 
 def open_page(url, tab=False):
 	if os.path.exists(url):
