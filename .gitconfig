@@ -7,3 +7,8 @@
 [color "status"]
 	changed = yellow
 	untracked = cyan
+
+[alias]
+	ci = commit
+[tar]
+	umask = user
