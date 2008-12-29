@@ -146,7 +146,7 @@ VISUAL=vi
 #
 
 ENTOMB=yes ; export ENTOMB
-GIT_PAGER="less -r" ; export GIT_PAGER
+GIT_PAGER="less -RFX" ; export GIT_PAGER
 LESSOPEN="| lesspipe %s" 
 LESS="-CedmPm?f%f:<stdin>. ?eeof:?pb%pb:\?.\%. ?lb%lb." 
 export LESSOPEN LESS
@@ -246,6 +246,10 @@ _optcomplete()
 	OPTPARSE_AUTO_COMPLETE=1 $1 ) )
 }
 
+if [ -f /usr/local/django-trunk/extras/django_bash_completion ]
+then
+	. /usr/local/django-trunk/extras/django_bash_completion
+fi
 
 . ${HOME}/lib/aliases
 
