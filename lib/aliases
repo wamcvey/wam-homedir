@@ -154,14 +154,19 @@ xaddhost() {
 	echo $@ can now access display
 }
 xtitle() {
-	echo_no_nl  "]0;$@"
+	# Default compile time option of mrxvt v0.5.2 causes escape 0 to
+	# only set the the tab title
+	# echo_no_nl  "]0;$@"
+	echo_no_nl  "]60;$@"	# set window title
+	echo_no_nl  "]1;$@"		# set icon title
 }
 xtabtitle() {
 	echo_no_nl  "]61;$@"
 }
 newtab() {
 	# open up a new tab in mrxvt
-	echo_no_nl  "]63;${@:-newtab}"
+	# echo_no_nl  "]63;${@:-newtab}"
+	echo "newtab: disabled as of mrxvt v0.5.0" >&2
 }
 
 after() {
@@ -401,6 +406,7 @@ function mp {
 	remove=false
 	renumber=false
 	x11=false
+	mplayer=`which mplayer32 || which mplayer`
 	while [ $# -gt 0 ]
 	do
 		case "$1" in
@@ -455,15 +461,16 @@ function mp {
 	if [ -n "${pics[*]}" ]
 	then
 		unset pics[0] # empty string
-		gqview "${pics[@]}"
+		viewer=`which gqview || which gthumb`
+		$viewer "${pics[@]}"
 	fi
 	if [ -n "${clips[*]}" ]
 	then
 		if $x11
 		then
-			mplayer -vo xv  -fs "${clips[@]}"
+			$mplayer -vo xv  -fs "${clips[@]}"
 		else
-			mplayer -fs "${clips[@]}"
+			$mplayer -fs "${clips[@]}"
 		fi
 	fi
 	if $remove ; then
