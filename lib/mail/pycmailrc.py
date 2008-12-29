@@ -24,7 +24,7 @@ SpamFolder = GenericDir("SPAM")
 
 def DefaultFolder(defines):
 	if "CISCO" in defines:
-		return CiscoDir("wam-default")
+		return CiscoDir("INBOX", "wam-default")
 	else:
 		return WamberDir("wamber-default")
 
@@ -183,11 +183,11 @@ def AddrToFolder(addr):
 def filter_mail(to, cc, from_addr, msg, defines=[]):
 	log = logging.getLogger("pycmail.filter_mail")
 
-	if msg.has_key('X-Spam-Flag'):
-		log.info("From=%s, To=%s, Cc=%s, Subject=%s, Filtered=%s",
-			 from_addr, to, cc, `msg.get('Subject', "")`,
-			 SpamFolder)
-		return [SpamFolder]
+	#if msg.has_key('X-Spam-Flag'):
+	#	log.info("From=%s, To=%s, Cc=%s, Subject=%s, Filtered=%s",
+	#		 from_addr, to, cc, `msg.get('Subject', "")`,
+	#		 SpamFolder)
+	#	return [SpamFolder]
 	dests= set()
 	for addr in chain(to, cc):
 		folder = AddrToFolder(addr)
