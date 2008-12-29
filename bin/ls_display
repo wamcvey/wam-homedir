@@ -15,6 +15,23 @@ __revision__ =	"$Id:$"
 import os
 import sys
 
+def get_column_count():
+	"""Tries to find the number of columns on the current display
+
+	Can raise an exception if the columns can't be found
+	"""
+	try:
+		# The 'import' of curses is not in outer scope since some
+		# platforms don't have 'curses' module and I want to catch
+		# that in my application code, not on import of my module
+		import curses			
+		win = curses.initscr()
+		(y, cols)  = win.getmaxyx()
+		curses.endwin()
+	except:
+		cols=int(os.environ['COLUMNS'])
+	return cols
+
 if __name__ == '__main__':
 	import sys
 	import os
@@ -29,16 +46,15 @@ if __name__ == '__main__':
 	optparser = OptionParser(usage=Usage, version="%prog: $Id:$" )
 	optparser.add_option("-s", "--sort", dest = "sort",
 	   action="store_true", help="sort input data")
+	optparser.add_option("-c", "--columns", dest="columns",
+	   action="store", type="int", help="specify number of columns available to fill")
 	(options, params) = optparser.parse_args()
 
-	try:
-		import curses
-		win = curses.initscr()
-		(y, cols)  = win.getmaxyx()
-		curses.endwin()
-	except:
+	if options.columns:
+		cols = options.columns
+	else:
 		try:
-			cols=int(os.environ['COLUMNS'])
+			cols = get_column_count()
 		except:
 			sys.exit("%s: Couldn't determine number of columns" % Progname)
 
@@ -64,17 +80,17 @@ if __name__ == '__main__':
 	if options.sort:
 		data.sort()
 
-	if cols/shortest > len(data):
+	if cols//shortest > len(data):
 		max_columns = len(data)
 	else:
-		max_columns = cols/shortest
+		max_columns = cols//shortest
 	
 	good_rows = 0
 	for column_attempt in range(max_columns, 1,  -1):
 		# trying to find the number of columns of data we can
 		# display
 		data_slices=[]
-		slice_len=len(data) / column_attempt
+		slice_len=len(data) // column_attempt
 		if len(data) % column_attempt != 0:
 			slice_len += 1
 		if len(range(0, len(data), slice_len)) < column_attempt:
