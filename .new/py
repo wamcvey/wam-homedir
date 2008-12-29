@@ -5,7 +5,7 @@
 [ZZZ: Detailed documentation]
 """
 
-__author__ =	"@(NAME)"
+__author__ =	"William McVey <wam@@cisco.com>"
 __date__ = 	"@(DAY) @(MONTH), @(YEAR)"
 __revision__ =	"$Id:$"
 
