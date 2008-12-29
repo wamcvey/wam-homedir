@@ -4,13 +4,21 @@ lib/wamber_wpa_supplicant.conf
 .ssh/id_dsa
 .ssh/identity
 
+
 # hierachies that deserve their own repository
 projs
 
 # dynamic files that don't need to get tracked
+.pyhist
+.tomboy.log
+.tomboy
+.Trash
+.adobe
+.since
 .cache
 recently-used.xbel
 *.swp
+*.pyc
 .ICEauthority
 .sudo_as_admin_successful
 .lesshst
@@ -23,4 +31,5 @@ recently-used.xbel
 .xsession-errors
 recently-used.xbel
 .viminfo
-
+.asoundrc
+.asoundrc.asoundconf
