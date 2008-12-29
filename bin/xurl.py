@@ -12,26 +12,23 @@ __revision__ =	"$Id:$"
 
 import os
 import sys
-import BeautifulSoup
+import lxml.etree
 import urlparse
 import re
 
-class HTML(BeautifulSoup.BeautifulSoup):
-	def __init__(self):
-		BeautifulSoup.BeautifulSoup.__init__(self)
+class HTML:
+	def __init__(self, text):
+		self.tree = lxml.etree.HTML(text)
 
 	def urls(self):
 		urls = []
 		try:
-			base = self.fetch(name="base")[0]["href"]
+			base = tree.find("base").attrib["href"]
 		except:
 			base = ""
-		for anchor in self.fetch("a", {"href": re.compile('.+')}):
-			try:
-				url = urlparse.urljoin(base, anchor["href"])
-				urls.append(url)
-			except:
-				pass
+		for anchor in self.tree.xpath("//a[@href]"):
+			url = urlparse.urljoin(base, anchor.attrib["href"])
+			urls.append(url)
 		return urls
 
 if __name__ == '__main__':
@@ -54,8 +51,6 @@ if __name__ == '__main__':
 	#  default="foo", metavar="SOME_STRING", help="store a string")
 	(options, params) = optparser.parse_args()
 
-	p = HTML()
-	p.feed(sys.stdin.read())
-
+	p = HTML(sys.stdin.read())
 	for url in p.urls():
 		print url
