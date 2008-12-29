@@ -1,0 +1,15 @@
+#!/bin/sh
+LIB=$HOME/lib/mail
+LOGFILE=$HOME/Mail/pycmail.log
+
+if [ ! -f $LIB/getmail-$1.rc ]
+then
+	echo "Known mail configs include:"
+	ls $LIB/getmail-*.rc  | sed -e 's/.*getmail-\([^.]*\)\.rc/	\1/g'
+	exit 1
+fi
+
+since -n $LOGFILE
+getmail -g $LIB -r getmail-$1.rc
+since $LOGFILE | sed -ne 's/.*Filtered=//p' | sort | uniq -c | sort -n
+
