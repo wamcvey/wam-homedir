@@ -18,8 +18,8 @@ read_all = False
 delivered_to = False
 message_log = ~/Mail/getmail.log
 
-[filter-1-spamassassin]
-type = Filter_external
-path = /usr/bin/spamassassin
-exitcodes_drop = ()
+# [filter-1-spamassassin]
+# type = Filter_external
+# path = /usr/bin/spamassassin
+# exitcodes_drop = ()
 # arguments = ()
