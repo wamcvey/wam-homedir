@@ -1,5 +1,8 @@
+#!/usr/bin/env python
 import xlrd
 import os
+import sys
+
 
 # Pulled from http://gizmojo.org/software/excelmailer/
 # Inspiration: http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/483742
@@ -27,11 +30,9 @@ class readexcel(object):
             for row in xls.iter_dict(sname):
                 print row
     """ 
-    def __init__(self, filename):
+    def __init__(self, *args, **kwargs):
         """ Wraps an XLRD book """
-        if not os.path.isfile(filename):
-            raise ValueError, "%s is not a valid filename" % filename
-        self.book = xlrd.open_workbook(filename)
+        self.book = xlrd.open_workbook(*args, **kwargs)
         self.sheet_keys = {}
     def is_data_row(self, sheet, i):
         values = sheet.row_values(i)
@@ -105,3 +106,96 @@ class readexcel(object):
             if self.is_data_row(sheet, i): 
                 yield self._parse_row(sheet, i, date_as_tuple)
 
+
+
+def main(argv=sys.argv, Progname=None):
+    from optparse import OptionParser, SUPPRESS_HELP       # aka Optik
+    import csv
+    import logging
+
+    # set up commandline arguments
+    if not Progname:
+        Progname=os.path.basename(argv[0])
+    Usage="%prog usage: [-l] [-S SHEET_NAME|-s SHEET_IDX|-a] Excel_File\n" \
+          "%prog usage: -h\n" \
+          "%prog usage: -V" 
+    optparser = OptionParser(usage=Usage, version="%prog: $Id:$" )
+    optparser.remove_option("--version")    # we add our own that knows -V
+    optparser.add_option("-V", "--version", action="version",
+      help="show program's version number and exit")
+    optparser.add_option("-d", "--debug", dest = "debug", 
+      action="store_true", help=SUPPRESS_HELP)
+    optparser.add_option("-v", "--verbose", dest = "verbose",
+      action="store_true", help="be verbose")
+    optparser.add_option("-a", dest = "all_sheets",
+      action="store_true", help="Dump all sheets")
+    optparser.add_option("-s", "--sheet-num", dest = "sheet_num",
+      action="store", type="int", default=0,
+      help="sheet number to dump (first sheet is 0)")
+    optparser.add_option("-S", "--sheet-name", dest = "sheet_name",
+      action="store", help="sheet name to dump")
+    optparser.add_option("-l", "--list", dest = "list_sheets",
+      action="store_true", help="list sheets in the file")
+    #optparser.add_option("-N", "--name", dest="var_n", 
+    # action= "store" | "append" | "store_true" | "store_false" 
+    # type = "int"
+    # default="foo", metavar="SOME_STRING", help="store a string")
+    (options, params) = optparser.parse_args(argv[1:])
+
+    # set up logging environment
+    root_log = logging.getLogger()          # grab the root logger
+    if options.debug:
+        root_log.setLevel(logging.DEBUG)
+    elif options.verbose:
+        root_log.setLevel(logging.INFO)
+    else:
+        root_log.setLevel(logging.WARN)
+    handler = logging.StreamHandler()
+    # handler = logging.FileHandler(options.logfile) 
+    logformat = "%(name)s: %(levelname)s: %(message)s"
+    handler.setFormatter(logging.Formatter(logformat))
+    # logformat = "%(asctime)s %(levelname)s:%(name)s:%(message)s"
+    #handler.setFormatter(logging.Formatter(logging.BASIC_FORMAT))
+    root_log.addHandler(handler)
+    log = logging.getLogger(Progname)
+
+    if len(params) != 1:
+        log.error("Must provide a filename to an Excel document to read from")
+        sys.exit(1)
+    xls = readexcel(params[0])
+
+    writer = csv.writer(sys.stdout)
+
+    sheet_names = xls.book.sheet_names()
+    if options.list_sheets:
+        print "\n".join(["%d. %s" % x for x in enumerate(sheet_names)])
+        sys.exit(0)
+    if options.all_sheets:
+    	for sheet_name in sheet_names:
+          for row in xls.iter_list(sheet_name):
+              try:
+                writer.writerow(row)
+              except:
+                pass
+        sys.exit(0)
+    if options.sheet_name:
+        sheet_name = options.sheet_name
+    elif options.sheet_num:
+        sheet_name = sheet_names[options.sheet_num]
+    else:
+    	log.error("Must specify a sheet name (-S), number (-s) or -a option to dump all")
+	sys.exit(1)
+    for row in xls.iter_list(sheet_name):
+        writer.writerow(row)
+
+if __name__ == '__main__':
+    progname=os.path.basename(sys.argv[0])
+    try:
+        main()
+    except SystemExit, value:
+        sys.exit(value)
+    except:
+        (exc_type, exc_value, exc_tb) = sys.exc_info()
+        sys.excepthook(exc_type, exc_value, exc_tb) # if debugging
+        sys.exit("%s: %s: %s" % (progname, exc_type.__name__, exc_value))
+    sys.exit(0)
