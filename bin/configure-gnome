@@ -31,7 +31,7 @@ gconftool-2 --type=bool --set $METACITY/general/auto_raise 'false'
 gconftool-2 --type=bool --set $METACITY/general/raise_on_click 'false'
 gconftool-2 --type=string --set $METACITY/general/action_double_click_titlebar 'toggle_shade'
 gconftool-2 --type=bool --set /apps/nautilus/preferences/show_desktop 'true'
-gconftool-2 --type=string --set /apps/gnome-session/options/splash_image "$HOME/lib/images/backgrounds/noodledoodle1600_1200.jpg"
+# gconftool-2 --type=string --set /apps/gnome-session/options/splash_image "$HOME/lib/images/backgrounds/noodledoodle1600_1200.jpg"
 gconftool-2 --type=string --set $GNOME/background/primary_color '#000000' # black
 
 # compiz
