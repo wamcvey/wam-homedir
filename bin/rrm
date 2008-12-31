@@ -1,14 +1,21 @@
 #!/bin/sh
 
+RM_OPT=
 rm_path() {
 	if [ -f "$1" ]
 	then
-		rm "$1" && echo rm "$1"
+		rm $RM_OPT "$1" && echo rm $RM_OPT "$1"
 	elif [ -d "$1" ]
 	then
 		rmdir "$1"  2>/dev/null && echo rmdir "$1"
 	fi
 }
+
+if [ "$1" = "-f" ]
+then
+	RM_OPT="-f"
+	shift
+fi
 
 for path
 do
