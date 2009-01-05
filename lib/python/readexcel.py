@@ -127,6 +127,8 @@ def main(argv=sys.argv, Progname=None):
       action="store_true", help=SUPPRESS_HELP)
     optparser.add_option("-v", "--verbose", dest = "verbose",
       action="store_true", help="be verbose")
+    optparser.add_option("--dict", dest = "dict_output", 
+      action="store_true", help = "output as a keyed dictionary")
     optparser.add_option("-a", dest = "all_sheets",
       action="store_true", help="Dump all sheets")
     optparser.add_option("-s", "--sheet-num", dest = "sheet_num",
@@ -170,23 +172,27 @@ def main(argv=sys.argv, Progname=None):
     if options.list_sheets:
         print "\n".join(["%d. %s" % x for x in enumerate(sheet_names)])
         sys.exit(0)
-    if options.all_sheets:
-    	for sheet_name in sheet_names:
-          for row in xls.iter_list(sheet_name):
-              try:
-                writer.writerow(row)
-              except:
-                pass
-        sys.exit(0)
     if options.sheet_name:
-        sheet_name = options.sheet_name
+        do_sheets = [options.sheet_name,]
     elif options.sheet_num:
-        sheet_name = sheet_names[options.sheet_num]
+        do_sheets = [sheet_names[options.sheet_num]]
+    elif options.all_sheets:
+        do_sheets = sheet_names
     else:
     	log.error("Must specify a sheet name (-S), number (-s) or -a option to dump all")
 	sys.exit(1)
-    for row in xls.iter_list(sheet_name):
-        writer.writerow(row)
+    for sheet_name in sheet_names:
+	if options.dict_output:
+	    for row in xls.iter_dict(sheet_name):
+	        print repr(row)
+	else:
+	    for row in xls.iter_list(sheet_name):
+		try:
+		    writer.writerow(row)
+		except:
+		    log.error("couldn't write row: %r", row)
+		    raise
+    sys.exit(0)
 
 if __name__ == '__main__':
     progname=os.path.basename(sys.argv[0])
