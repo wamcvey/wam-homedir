@@ -104,7 +104,7 @@ if __name__ == '__main__':
 			for colmember in data_slice:
 				if len(colmember) > col_max:
 					col_max = len(colmember)
-			data_slices.append(map(lambda x: x.ljust(col_max), data_slice))
+			data_slices.append([x.ljust(col_max) for x in data_slice])
 
 		good_rows = 1
 		for row_attempt in map(None, *data_slices):
