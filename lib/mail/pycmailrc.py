@@ -28,25 +28,47 @@ def DefaultFolder(defines):
 	else:
 		return WamberDir("wamber-default")
 
+JunkOriginators = set([
+	"ip@ip.org.tr",
+	"newsletter@jobseekerweekly.com",
+	"info@mafruce.com",
+	"wtc01@wasotraining.net",
+	"lumiere@planet.tn",
+	'bilgi@ip.org.tr',
+	'info@bluesuninfo.com',
+	'dci@dcionline.com.br',
+	'info@lounge125.com',
+	'vip@soundforceprod.com',
+	'tjslist@aol.com',
+	'tooluxe@edt02.net',
+	'dell_epp@dellhome.usa.dell.com',
+	'dell@dellhome.usa.dell.com',
+	'noreply@thefederalmarketplace.com',
+	'feedback@einnews.com',
+	'eda_news_letter@edacafe.com',
+])
+
 # These match on either recipients or sender (Mapped to lower case)
 MailingListMappings = {
 	# To WAM
 	'wam':				CiscoDir("INBOX", "wam@cisco.com"),
 	'wam@cisco.com':		CiscoDir("INBOX", "wam@cisco.com"),
+	'group.rsmoak@cisco.com':	CiscoDir("INBOX", "wam@cisco.com"),
 	'wam@wamber.net':		WamberDir("INBOX", "wam@wamber.net"),
+
 	# Topics
-	'treo-interest@cisco.com': 	CiscoDir("Topic", "Treo"),
-	'treo-users@cisco.com': 	CiscoDir("Topic", "Treo"),
-	"stat-stp@cisco.com":		CiscoDir("Topic", "STP"),
+	'dns-security@cisco.com':	CiscoDir("Topic", "DNS-Security"),
 	"vulnwatch@vulnwatch.org":	CiscoDir("Topic", "Bugs"),
+	"full-disclosure@lists.grok.org.uk":
+					CiscoDir("Topic", "Bugs"),
+	"bugtraq@securityfocus.com":	CiscoDir("Topic", "Bugs", "BugTraq"),
+	"sie-open-source-security@cisco.com":
+					CiscoDir("Topic", "Bugs", "SIE-Open-Source"),
+	"vuln-dev@securityfocus.com":	CiscoDir("Topic", "Bugs", "Vuln-dev"),
 	"ipv6-deployment@cisco.com":	CiscoDir("Topic", "IPv6"),
 	"ipv6-interest@cisco.com":	CiscoDir("Topic", "IPv6"),
 	"attack-tools@cisco.com":	CiscoDir("Topic", "Tools"),
 	"cool-tools@cisco.com":		CiscoDir("Topic", "Tools"),
-	"codenomicon-users@cisco.com":	CiscoDir("Topic", "Codenomicon"),
-	"cody-admin@cisco.com":		CiscoDir("Topic", "Codenomicon"),
-	"full-disclosure@lists.grok.org.uk":
-					CiscoDir("Topic", "Bugs"),
 	"oval-developer-list@lists.mitre.org":
 					CiscoDir("Topic", "OVAL"),
 	"oval-discussion-list@lists.mitre.org":
@@ -55,61 +77,41 @@ MailingListMappings = {
 					CiscoDir("Topic", "OVAL"),
 	"spa-ops@cisco.com":		CiscoDir("Topic", "SPA"),
 	"spadev@cisco.com":		CiscoDir("Topic", "SPA"),
-	"spacvs-autospa@cisco.com":	CiscoDir("Topic", "SPA", "CVS"),
-	"wwsp-secarch-tools@cisco.com": CiscoDir("Topic", "WWSP"),
-	"wwsp-dev@cisco.com":		CiscoDir("Topic", "WWSP"),
-	"seo@cisco.com": 		CiscoDir("Topic", "SEO"), 
+	"spacvs-autospa@cisco.com":	CiscoDir("Topic", "SPA"),
 	"stat@cisco.com": 		CiscoDir("Topic", "STAT"), 
-	"members-stattools@ecsforge.cisco.com":
-					CiscoDir("Topic", "STAT"), 
-	"stat-ddts-interest@cisco.com":	CiscoDir("Topic", "STAT", "DDTS-Interest"),
-	"stat-ddts-interest@anthill.cisco.com":	
-					CiscoDir("Topic", "STAT", "DDTS-Interest"),
 	"sub-stat@cisco.com": 		CiscoDir("Topic", "STAT"), 
-	"group-byfraser@cisco.com": 	CiscoDir("Topic", "STAT"), 
-	"staff.byfraser@cisco.com":	CiscoDir("Topic", "STAT"), 
-	"stat-tools-dev@cisco.com":	CiscoDir("Topic", "STAT", "Tools-Dev"),
+	"stat-tools-dev@cisco.com":	CiscoDir("Topic", "STAT"),
 	"internal-security-announce@cisco.com":
 					CiscoDir("Topic", "PSIRT"), 
 	"psirt-legal@cisco.com":	CiscoDir("Topic", "PSIRT"),
 	"psirt-pr@cisco.com":		CiscoDir("Topic", "PSIRT"),
 	"security-tiger-team@cisco.com": CiscoDir("Topic", "PSIRT"),
 	"scapy.ml@secdev.org":		CiscoDir("Topic", "Scapy"), 
+	"pycon-organizers@python.org":  CiscoDir("Topic", "PyCon"),
+
+	# Troll lists
+	"vim-trolls@cisco.com":		CiscoDir("Topic", "Trolls", "VIM-Trolls"),
+	"ssh-trolls@cisco.com":		CiscoDir("Topic", "Trolls", "SSH-Trolls"), 
+	"python-trolls@cisco.com":	CiscoDir("Topic", "Trolls", "Python-Trolls"), 
 
 	# HR Related lists
-	"group.byfraser@cisco.com":	CiscoDir("Topic", "Organizational", "byfraser"), 
-	"group.clonvick@cisco.com":	CiscoDir("Topic", "Organizational", "clonvick"), 
-	"group.dscheinm@cisco.com":	CiscoDir("Topic", "Organizational", "dscheinm"), 
-	"group.ssteinhi@cisco.com":	CiscoDir("Topic", "Organizational", "ssteinhi"), 
-	"group.reg.ssteinhi@cisco.com":	CiscoDir("Topic", "Organizational", "ssteinhi"), 
-	"group.gamoore@cisco.com":	CiscoDir("Topic", "Organizational", "gamoore"), 
-	"group.welfrink@cisco.com":	CiscoDir("Topic", "Organizational", "welfrink"), 
-	"group.pasethi@cisco.com":	CiscoDir("Topic", "Organizational", "pasethi"), 
-	"group.chambers@cisco.com":	CiscoDir("Topic", "Organizational", "chambers"), 
+	"group.gamoore@cisco.com":	CiscoDir("Topic", "Organizational"), 
+	"group.welfrink@cisco.com":	CiscoDir("Topic", "Organizational"), 
+	"group.pasethi@cisco.com":	CiscoDir("Topic", "Organizational"), 
+	"group.chambers@cisco.com":	CiscoDir("Topic", "Organizational"), 
 
 	# Mailing lists that fall outside of topics
-	"con-serv@cisco.com": 		CiscoDir("Lists", "Con-Serv"), 
-	"con-serv-sec@cisco.com": 	CiscoDir("Lists", "Con-Serv-Sec"), 
-	"gosa@cisco.com": 		CiscoDir("Lists", "GOSA"), 
 	"cs-security@cisco.com":	CiscoDir("Lists", "CS-Security"),
-	"confederation@cisco.com":	CiscoDir("Lists", "Confederation"),
-	"vim-trolls@cisco.com":		CiscoDir("Lists", "VIM-Trolls"),
-	"ssh-trolls@cisco.com":		CiscoDir("Lists", "SSH-Trolls"), 
-	"python-trolls@cisco.com":	CiscoDir("Lists", "Python-Trolls"), 
 	"py-dev@codespeak.net":		CiscoDir("Lists", "Py-Dev-Codespeak"), 
-	"django-users@googlegroups.com": CiscoDir("Lists", "Django-Users"),
 	"service.plan.tool@cisco.com":	CiscoDir("Lists", "Service.Plan.Tool"),
 	"attack-interest@cisco.com":	CiscoDir("Lists", "Attack-Interest"),
-	"li-interest@cisco.com":	CiscoDir("Lists", "LI-Interest"),
-	"calea-interest@cisco.com":	CiscoDir("Lists", "LI-Interest"),
-	"ecsforge-users@cisco.com":	CiscoDir("Lists", "ECSForge-users"),
+	"intelservices-discuss@cisco.com": CiscoDir("Lists", "Intelservices-discuss"),
+	"it-flame@cisco.com":           CiscoDir("Lists", "it-flame"),
 	"ciag-interest@cisco.com":	CiscoDir("Lists", "CIAG-Interest"),
 	"xmleditor-support@xmlmind.com": CiscoDir("Lists", "XXE"), 
 	"xep-support@renderx.com":	CiscoDir("Lists", "XEP"), 
 	"sans-qualys@qualys.com":	CiscoDir("Lists", "SANS-Qualsys"), 
 	"ms-secnews@securityfocus.com":	CiscoDir("Lists", "MS-SecNews"),
-	"awesome-spam@cisco.com":	CiscoDir("Lists", "Awesome-Spam"),
-	"bugtraq@securityfocus.com":	CiscoDir("Lists", "BugTraq"),
 	"python-announce@python.org":	CiscoDir("Lists", "Python-Announce"), 
 	"python-list@python.org":	CiscoDir("Lists", "Python-Announce"), 
 	"python-announce-list@python.org": 
@@ -124,9 +126,9 @@ MailingListMappings = {
 	"pen-test@securityfocus.org":	CiscoDir("Lists", "PenTest"),
 	"pen-test@lists.securityfocus.com":
 					CiscoDir("Lists", "PenTest"),
-	"vuln-dev@securityfocus.com":	CiscoDir("Lists", "Vuln-dev"),
 	"xml@gnome.org":		CiscoDir("Lists", "XML-GNOME"),
 	"dailydave@lists.immunitysec.com": CiscoDir("Lists", "Daily-Dave"),
+	"dailydave@lists.immunityinc.com": CiscoDir("Lists", "Daily-Dave"),
 
 	# Mailing list and other traffic that can share with wamber.net
 	"wam+sourceforge@wamber.net":	WamberDir("Topic", "SourceForge"),
@@ -182,6 +184,8 @@ def AddrToFolder(addr):
 
 def filter_mail(to, cc, from_addr, msg, defines=[]):
 	log = logging.getLogger("pycmail.filter_mail")
+	log.debug("to=%r, cc=%r, from_addr=%r, msg=%r, defines=%r", 
+	          to, cc, from_addr, msg, defines)
 
 	#if msg.has_key('X-Spam-Flag'):
 	#	log.info("From=%s, To=%s, Cc=%s, Subject=%s, Filtered=%s",
@@ -191,18 +195,24 @@ def filter_mail(to, cc, from_addr, msg, defines=[]):
 	dests= set()
 	for addr in chain(to, cc):
 		folder = AddrToFolder(addr)
-		if folder: dests.add(folder)
+		if folder:
+			dests.add(folder)
 	if from_addr:
+		folder = None
 		from_addr=from_addr.lower()
-		if from_addr != "wam@cisco.com":
+		if from_addr in JunkOriginators:
+			folder = CiscoDir("INBOX", "Junk")
+			# if it's from a junker, just junk it
+			dests = set([folder])
+		elif from_addr != "wam@cisco.com":
 			folder = AddrToFolder(from_addr)
-			if folder: dests.add(folder)
+			if folder:
+				dests.add(folder)
 	if not dests:
 		dests.add(DefaultFolder(defines))
-	log.info("From=%s, To=%s, Cc=%s, Subject=%s, Filtered=%s",
-		 from_addr, to, cc, `msg.get('Subject', "")`, ", ".join(dests))
+	log.info("From=%r, To=%r, Cc=%r, Subject=%r, Filtered=%r",
+		 from_addr, to, cc, msg.get('Subject', ""), ", ".join(dests))
 	return dests
-
 
 
 
