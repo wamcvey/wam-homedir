@@ -24,5 +24,4 @@ except:
 	Debug("ADDR_FROM[1]=%s" % ADDR_FROM[1], 2)
 	Debug("Subject=%s" % mailmsg['Subject'], 2)
 	Debug("%s" % mailmsg, 20)
-	raise exc_type, exc_value
-Stop()
+	raise
