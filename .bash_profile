@@ -7,9 +7,6 @@ umask 022
 # TZ='America/New_York'; export TZ		# EST
 # TZ='America/Chicago'; export TZ		# CST
 
-# XXX quick hack for now
-# . $HOME/bin/kill-locale
-
 PATH=${HOME}/bin
 for dir in \
 	/usr/local/bin /opt/local/bin \
@@ -117,18 +114,9 @@ case "$SHELL" in
 	;;
 esac
 
-PYTHONPATH=/home/wam/lib/python 
-for dir in /usr/local/spa-report/lib/python /usr/autospa/lib/python /usr/autospa/py-modules/lib 
-do
-	if [ -d "$dir" -o -L "$dir" ]
-	then
-		PYTHONPATH="$PYTHONPATH":"$dir"
-	fi
-done
-export PYTHONPATH
-PYTHONSTARTUP=$HOME/.pythonrc
 
-for dir in /usr/local/java /usr/local/jdk /usr/java /usr/lib/jvm/java-1.5.0-sun
+for dir in /usr/local/java /usr/local/jdk /usr/java \
+           /usr/lib/jvm/java-6-sun  /usr/lib/jvm/java-1.5.0-sun
 do
 	if [ -d "$dir" ]; then
 		JAVA_HOME=$dir 
@@ -238,18 +226,9 @@ then
 	. /etc/bash_completion
 fi
 
-_optcomplete()
-{
-	COMPREPLY=( $( \
-	COMP_LINE=$COMP_LINE  COMP_POINT=$COMP_POINT \
-	COMP_WORDS="${COMP_WORDS[*]}"  COMP_CWORD=$COMP_CWORD \
-	OPTPARSE_AUTO_COMPLETE=1 $1 ) )
-}
-
-if [ -f /usr/local/django-trunk/extras/django_bash_completion ]
-then
-	. /usr/local/django-trunk/extras/django_bash_completion
+if [ -d $HOME/lib/bash_profile.d ]; then
+	for f in $HOME/lib/bash_profile.d/*
+	do
+		[ -f "$f" ] && . "$f"
+	done
 fi
-
-. ${HOME}/lib/aliases
-
