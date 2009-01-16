@@ -41,11 +41,13 @@ JunkOriginators = set([
 	'vip@soundforceprod.com',
 	'tjslist@aol.com',
 	'tooluxe@edt02.net',
-	'dell_epp@dellhome.usa.dell.com',
-	'dell@dellhome.usa.dell.com',
 	'noreply@thefederalmarketplace.com',
 	'feedback@einnews.com',
 	'eda_news_letter@edacafe.com',
+	'admin@rethinkmarkets.com',
+	# not really *spammers*, but close enough to get filtered out
+	'dell_epp@dellhome.usa.dell.com',
+	'dell@dellhome.usa.dell.com',
 ])
 
 # These match on either recipients or sender (Mapped to lower case)
