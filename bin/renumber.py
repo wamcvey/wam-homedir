@@ -39,7 +39,7 @@ if __name__ == '__main__':
 	#if options.var_n:
 	#	# do something
 	
-	file_pattern = re.compile(r'(.*[^0-9])([0-9]+)(\.[Jj][pP][eE]?[gG])')
+	file_pattern = re.compile(r'(.*[^0-9])([0-9]+)\.(jpe?g|wmv|mpe?g|avi)', re.IGNORECASE)
 	longest_num = 0
 	for param in params:
 		match = file_pattern.search(param)
@@ -55,7 +55,7 @@ if __name__ == '__main__':
 		if not match:
 			continue
 		prefix, num, ext = match.groups()
-		new = "%s%0*d%s" % (prefix, longest_num, int(num), ext)
+		new = "%s%0*d.%s" % (prefix, longest_num, int(num), ext)
 		if new != param:
 			os.rename(param, new)
 			print "mv %s %s" % (param, new)
