@@ -1,0 +1,37 @@
+#!/bin/bash
+# A down and dirty CLI interface to seeing what tickets are pending on a 
+# trac server. Looks for tickets owned by the user as well as lists tickets
+# which are new and have no owner.
+# 
+# YMMV if you've customized your reports so that the "My Tickets" report 
+# is not report #7
+#
+# William McVey <wam@cisco.com>
+# Feb 13, 2009
+
+TRAC_URL=${TRAC_URL:-http://sie-dev.cisco.com}
+TMPFILE=`mktemp` || exit 1
+# read -p "User (default: $USER)"  user
+user=${TRAC_USER:-$USER}
+read -s -p "Password: " pw
+
+curl -s -u "$user:$pw" -c $TMPFILE $TRAC_URL/login && \
+  curl -s -L -b $TMPFILE -c $TMPFILE  "$TRAC_URL/report/7?format=csv&USER=$user" | \
+  python -c '
+import csv, sys
+reader = csv.reader(sys.stdin)
+# __color__,__group__,ticket,summary,component,version,milestone,
+# type,priority,created,_changetime,_description,_reporter
+# 3,Accepted,7,Search Interface for Devices,dev_inventory & advisories,,,
+# enhancement,major,2008-07-29T10:42:07Z-0400,2008-07-29T10:42:32Z-0400,"Via email
+fields = reader.next()
+print
+for values in reader:
+	d = dict(zip(fields, values))
+	d["new"] = "N" if d["__group__"].lower() == "new" else ""
+	# print >>sys.stderr, d
+	print "%(new)1s%(ticket)-3s %(component)-20s(%(priority)s %(type)s): %(summary)s" % d
+' | sort -n
+# also report on any new tickets that don't have owners
+curl -s -L -b $TMPFILE -c $TMPFILE  "$TRAC_URL/query?status=new&format=csv" | tail -n +2
+rm $TMPFILE
