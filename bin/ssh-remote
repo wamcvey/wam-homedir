@@ -49,6 +49,7 @@ LOCALSSH_REDIR_PORT=`expr $RANDOM + 20000`
 if [ `whoami` = "root" ]
 then
 	/etc/init.d/exim4 stop
+	/etc/init.d/dovecot stop
 	cat <<! >&2
 Forwarding:
 	localhost:1080 to SOCKS
