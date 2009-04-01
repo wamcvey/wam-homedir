@@ -14,9 +14,9 @@ from itertools import chain
 
 # Generic utility definitions
 HomeDir = os.path.expanduser("~")
-GenericDir = lambda *x: os.path.join(HomeDir, "Mail", "Generic", *x)
-CiscoDir = lambda *x: os.path.join(HomeDir, "Mail", "Cisco", *x)
-WamberDir = lambda *x: os.path.join(HomeDir, "Mail", "Wamber", *x)
+GenericDir = lambda *x: os.path.join(HomeDir, "Maildir", "Generic", *x)
+CiscoDir = lambda *x: os.path.join(HomeDir, "Maildir", "Cisco", *x)
+WamberDir = lambda *x: os.path.join(HomeDir, "Maildir", "Wamber", *x)
 
 
 # Specific special folders
