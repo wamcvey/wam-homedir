@@ -32,7 +32,9 @@ Mrxvt.profile4.holdExit:	True
 
 ! transparency
 mrxvt*transparent: true
-mrxvt*backgroundFade: 50
+mrxvt*backgroundFade: 70
+mrxvt*shade: 30
+mrxvt*tint:  #FFFFFF
 mrxvt*itabBackground: black
 mrxvt*fading: 30
 mrxvt*transparentTabbar: true
