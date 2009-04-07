@@ -16,7 +16,7 @@ delete = True
 read_all = False
 # delete_after = 2
 delivered_to = False
-message_log = ~/Mail/getmail.log
+message_log = ~/Maildir/getmail.log
 
 # [filter-1-spamassassin]
 # type = Filter_external

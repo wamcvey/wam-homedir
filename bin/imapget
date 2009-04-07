@@ -1,6 +1,6 @@
 #!/bin/sh
 LIB=$HOME/lib/mail
-LOGFILE=$HOME/Mail/pycmail.log
+LOGFILE=$HOME/Maildir/pycmail.log
 
 if [ ! -f $LIB/getmail-$1.rc ]
 then

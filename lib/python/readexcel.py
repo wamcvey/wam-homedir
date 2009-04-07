@@ -4,7 +4,7 @@ import os
 import sys
 
 
-# Pulled from http://gizmojo.org/software/excelmailer/
+# Pulled from http://gizmojo.org/software/excelmailer/ (covered by GPL3)
 # Inspiration: http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/483742
 class readexcel(object):
     """ Simple OS-independent class for extracting data from an Excel File.
@@ -109,7 +109,7 @@ class readexcel(object):
 
 
 def main(argv=sys.argv, Progname=None):
-    from optparse import OptionParser, SUPPRESS_HELP       # aka Optik
+    from optparse import OptionParser, SUPPRESS_HELP 
     import csv
     import logging
 
@@ -166,7 +166,6 @@ def main(argv=sys.argv, Progname=None):
         sys.exit(1)
     xls = readexcel(params[0])
 
-    writer = csv.writer(sys.stdout)
 
     sheet_names = xls.book.sheet_names()
     if options.list_sheets:
@@ -186,6 +185,7 @@ def main(argv=sys.argv, Progname=None):
 	    for row in xls.iter_dict(sheet_name):
 	        print repr(row)
 	else:
+	    writer = csv.writer(sys.stdout)
 	    for row in xls.iter_list(sheet_name):
 		try:
 		    writer.writerow(row)

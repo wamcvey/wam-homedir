@@ -16,13 +16,3 @@ if [ "$PS1" ] && [ $bmajor -eq 2 ] && [ $bminor '>' 04 ] \
 fi
 unset bash bmajor bminor
 
-
-
-_optcomplete()
-{
-	COMPREPLY=( $( \
-	COMP_LINE=$COMP_LINE  COMP_POINT=$COMP_POINT \
-	COMP_WORDS="${COMP_WORDS[*]}"  COMP_CWORD=$COMP_CWORD \
-	OPTPARSE_AUTO_COMPLETE=1 $1 ) )
-}
-
