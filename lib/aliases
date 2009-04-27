@@ -60,6 +60,8 @@ echo_no_nl() {
 # Alias and functions common to both root and regular ole me
 #
 alias cd=pd
+alias cdv=cdvirtualenv
+complete -o nospace -F _cdvirtualenv_complete -S/ cdv
 alias emc2=emc2lookup
 mkcd() {
 	mkdir "$1" && cd "$1"
