@@ -1,0 +1,18 @@
+#!/bin/sh
+result=`host "$1"`
+if [ "$?" = 0 ]; then
+	echo "In DNS: $result"
+else
+	echo "Error in DNS: $result"
+fi
+
+resut=`grep -iw "$1" /etc/hosts`
+if [ "$?" = 0 ]; then
+	echo "In /etc/hosts: $result"
+fi
+
+
+result=`sed -rne "/Host.*${1}(\$|[       ])/,/^Host/ s/[         ]*(Hostname.*)/\\1/ p" ~/.ssh/config`
+if [ -n "$result" ]; then
+	echo "From ~/.ssh/config:" $result
+fi

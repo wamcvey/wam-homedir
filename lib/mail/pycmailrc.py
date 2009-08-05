@@ -14,9 +14,9 @@ from itertools import chain
 
 # Generic utility definitions
 HomeDir = os.path.expanduser("~")
-GenericDir = lambda *x: os.path.join(HomeDir, "Mail", "Generic", *x)
-CiscoDir = lambda *x: os.path.join(HomeDir, "Mail", "Cisco", *x)
-WamberDir = lambda *x: os.path.join(HomeDir, "Mail", "Wamber", *x)
+GenericDir = lambda *x: os.path.join(HomeDir, "Maildir", "Generic", *x)
+CiscoDir = lambda *x: os.path.join(HomeDir, "Maildir", "Cisco", *x)
+WamberDir = lambda *x: os.path.join(HomeDir, "Maildir", "Wamber", *x)
 
 
 # Specific special folders
@@ -41,11 +41,13 @@ JunkOriginators = set([
 	'vip@soundforceprod.com',
 	'tjslist@aol.com',
 	'tooluxe@edt02.net',
-	'dell_epp@dellhome.usa.dell.com',
-	'dell@dellhome.usa.dell.com',
 	'noreply@thefederalmarketplace.com',
 	'feedback@einnews.com',
 	'eda_news_letter@edacafe.com',
+	'admin@rethinkmarkets.com',
+	# not really *spammers*, but close enough to get filtered out
+	'dell_epp@dellhome.usa.dell.com',
+	'dell@dellhome.usa.dell.com',
 ])
 
 # These match on either recipients or sender (Mapped to lower case)
@@ -86,6 +88,9 @@ MailingListMappings = {
 	"psirt-legal@cisco.com":	CiscoDir("Topic", "PSIRT"),
 	"psirt-pr@cisco.com":		CiscoDir("Topic", "PSIRT"),
 	"security-tiger-team@cisco.com": CiscoDir("Topic", "PSIRT"),
+	"psirt@cisco.com":		CiscoDir("Topic", "PSIRT", "inbox"),
+	"psirt-tta@cisco.com":		CiscoDir("Topic", "PSIRT", "psirt-tta"),
+	"cdetsprod@cisco.com":		CiscoDir("Topic", "PSIRT", "cdetsprod"),
 	"scapy.ml@secdev.org":		CiscoDir("Topic", "Scapy"), 
 	"pycon-organizers@python.org":  CiscoDir("Topic", "PyCon"),
 
@@ -201,9 +206,15 @@ def filter_mail(to, cc, from_addr, msg, defines=[]):
 		folder = None
 		from_addr=from_addr.lower()
 		if from_addr in JunkOriginators:
-			folder = CiscoDir("INBOX", "Junk")
 			# if it's from a junker, just junk it
-			dests = set([folder])
+			dests = set([CiscoDir("INBOX", "Junk")])
+		elif from_addr == "cdetsprod@cisco.com" and \
+		   "psirt@cisco.com" in cc:
+		   	# I hate special casing this, but I don't have enough
+			# special cases to warrent a more general solution 
+			# right now.
+			# ignore the recipients on the mesg and store one copy
+			dests = set([AddrToFolder(from_addr)])
 		elif from_addr != "wam@cisco.com":
 			folder = AddrToFolder(from_addr)
 			if folder:
@@ -222,7 +233,7 @@ def main(argv=sys.argv, Progname=None):
 	# set up commandline arguments
 	if not Progname:
 		Progname=os.path.basename(argv[0])
-	Usage="%prog usage: XXX:[command_line_args]\n" \
+	Usage="%prog usage: [-f] files_or_email_addrs [...]\n" \
 	      "%prog usage: -h\n" \
 	      "%prog usage: -V" 
 	optparser = OptionParser(usage=Usage, version="%prog: $Id:$" )

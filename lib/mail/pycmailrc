@@ -1,13 +1,14 @@
 import logging, sys, os
+
+logging.basicConfig(filename="/home/wam/Maildir/pycmail.log",
+   level=logging.INFO,
+   format="%(asctime)s %(name)s[%(process)d]: %(message)s")
+log = logging.getLogger("pycmail")
+
+sys.path.insert(1, os.path.join(USERHOME, "lib", "mail"))
+
 try:
-
-	sys.path.insert(1, os.path.join(USERHOME, "lib", "mail"))
 	import pycmailrc
-
-	logging.basicConfig(filename="/home/wam/Mail/pycmail.log",
-	   level=logging.INFO,
-	   format="%(asctime)s %(name)s[%(process)d]: %(message)s")
-	log = logging.getLogger("pycmail")
 
 	default = MailDir(pycmailrc.DefaultFolder(defines=DEFINES))
 	#default = MailDir(pycmailrc.DefaultFolder)

@@ -15,7 +15,7 @@ usage="$progname: usage [-bhO] [-P sockshost:port] [-f arg] [files]"
 slide='P=$1; shift; set _ -`expr "$P" : '\''-.\(.*\)'\''` ${1+"$@"}; shift'
 param='if [ $# -lt 2 ]; then echo "$progname: missing value for $1" 1>&2 ; exit 1; fi'
 
-PATTERN='jpg$|zip$|mpeg$|mp.$|asf$|\.avi|ren$|aza$|xxx$|pdf$|.txt$|.egg$|\.[0-9]*$|flx$|wmv$'
+PATTERN='jpg$|zip$|mpeg$|mp.$|asf$|\.avi|ren$|aza$|xxx$|pdf$|.txt$|.egg$|\.[0-9]*$|fl[vx]$|wmv$'
 CURL_OPTS="-L ${CURL_OPTS}"
 BROWSER_EMULATE='-A Mozilla/4.05 [en] (X11; U; Linux 2.0.32 i586)'
 

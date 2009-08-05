@@ -1,8 +1,17 @@
 #!/usr/bin/env python
 
-"""A program to [ZZZ:do_something]
+"""Shows data which has been added to a file since the last time the program
+was run.
 
-[ZZZ: Detailed documentation]
+Uses a combination of a file information (inode and seek offset) to determine
+if you're viewing a file that has already been viewed with the program. If
+so, will only display the portion of the file that has been added since the
+last time the program was executed.
+
+The original implimentation of 'since' was from a friend/coworker 
+<ksb@fedex.com> and was written with his mkcmd C code generator. I 
+rewrote it (trying to keep compatibility between the two implimentations)
+in python for my own use (without needing his mkcmd toolchain).
 """
 
 __author__ =	"William McVey"
@@ -28,14 +37,14 @@ class SinceQuery:
 	def __init__(self, filename, openfile=None):
 		self.log = logging.getLogger(self.__class__.__name__)
 		self.filename = filename
-		self.DB_VERSION = self.DB_VERSION	# ZZZ: hack  __dict__
+		self.DB_VERSION = self.DB_VERSION	# ZZZ: hack populates  __dict__, used in __str__()
 		if openfile:				# stdin, possibly a directory
 			self.file = openfile
 			filestat = os.fstat(self.file.fileno())
 		elif os.path.isfile(filename):	# a file
 			self.file = file(filename)
 			filestat = os.fstat(self.file.fileno())
-		else:							# likely, a directory pathname
+		else:				# likely, a directory pathname
 			self.file = None
 			filestat = os.stat(filename) 
 		

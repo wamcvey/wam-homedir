@@ -3,5 +3,10 @@ map!  #!/usr/bin/env python!!echo '\# %'o# A program to do something#
 map ,n Gd1Gi
 map! : :	
 map!  import code;code.InteractiveConsole(locals=locals()).interact()
-set foldmethod=expr
-set foldexpr=getline(v:lnum)[0]==\"\\t\"
+"set foldmethod=expr
+"set foldexpr=getline(v:lnum)[0]==\"\\t\"
+set foldmethod=indent
+set foldnestmax=2
+set expandtab
+set tabstop=4 
+set shiftwidth=4
