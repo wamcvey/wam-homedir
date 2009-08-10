@@ -7,14 +7,22 @@ __date__ =  "Sep  3, 2002"
 
 import os
 import stat
-import md5
+try:
+	import hashlib
+	md5=None
+except:
+	import md5
+	hashlib = None
+
+import sys
 
 class reportsamefiles:
-	def __init__(self, verbose=0, delim=" ", remove=False):
+	def __init__(self, verbose=False, delim=" ", remove=False, all=False):
 		self._statcache={}
 		self._verbose=verbose
 		self.delimiter=delim
 		self.remove = remove
+		self.all = all
 
 	def run(self, directories, arg=None):
 		for dir in directories:
@@ -25,11 +33,12 @@ class reportsamefiles:
 		for file in files:
 			pathname=os.path.join(dirname,file)
 			if (self._verbose):
-				print "Looking at:", pathname
+				print >>sys.stderr, "Looking at:", pathname
 			try:
 				statobj = os.stat(pathname)
 			except:
-				sys.stderr.write("%s: Couldn't stat %s\n" %(os.path.basename(sys.argv[0]), pathname))
+				print >>sys.stderr, "%s: Couldn't stat %s" % (
+				  os.path.basename(sys.argv[0]), pathname)
 				continue
 			if not stat.S_ISREG(statobj.st_mode):
 				continue
@@ -44,9 +53,15 @@ class reportsamefiles:
 		try:
 			f=open(filename)
 		except:
-			sys.stderr.write("%s: Couldn't open %s for hashing\n" %(os.path.basename(sys.argv[0]), filename))
+			print >>sys.stderr, "%s: Couldn't open %r for hash" % (
+			  os.path.basename(sys.argv[0]), filename)
 			return None 
-		hash=md5.new(f.read())
+		if hashlib:
+			hash = hashlib.md5(f.read())
+		elif md5:
+			hash = md5.new(f.read())
+		else:
+			raise RuntimeError("Neither hashlib nor md5 installed.")
 		f.close()
 		return hash.digest()
 
@@ -55,6 +70,8 @@ class reportsamefiles:
 			md5cache={}
 			remove_files = {}
 			if len(self._statcache[file_size]) <= 1:
+				if self.all:
+					print self._statcache[file_size][0]
 				continue
 			for filename in self._statcache[file_size]:
 				hash = self.md5_file(filename)
@@ -68,6 +85,8 @@ class reportsamefiles:
 					md5cache[hash]=[filename]
 			for hash in md5cache:
 				if len(md5cache[hash]) == 1:
+					if self.all:
+						print md5cache[hash][0]
 					continue
 				print self.delimiter.join(md5cache[hash])
 				if self.remove:
@@ -91,19 +110,21 @@ if __name__ == '__main__':
 -r	prompt to remove duplicates (files seen first are kept)
 -d	specify a delimiter (default: space)
 -V      show version info
+-a      show all files (even ones that aren't duplicated)
 -h      show this message""" %  vars()
 
 	try:
-		opts, params = getopt.getopt(sys.argv[1:], "hvVrd:")
+		opts, params = getopt.getopt(sys.argv[1:], "hvVrad:")
 	except:
 		sys.exit("%(Progname)s: invalid commandline.\n%(Usage)s" % vars())
 
-	verbose=0
+	all = False
+	verbose= False
 	delim=" "
 	remove=False
 	for (option, val) in opts:
 		if option == "-v":
-			verbose=1
+			verbose=True
 		if option == "-d":
 			delim=val
 		if option == "-r":
@@ -111,6 +132,8 @@ if __name__ == '__main__':
 		if option == "-h":
 			print Help
 			sys.exit(0)
+		if option == "-a":
+			all = True
 		if option == "-V":
 			print Version
 			sys.exit(0)
@@ -119,5 +142,5 @@ if __name__ == '__main__':
 	else:
 		suspect_dirs = params
 
-	finder=reportsamefiles(verbose=verbose, delim=delim, remove=remove)
+	finder=reportsamefiles(verbose=verbose, delim=delim, remove=remove, all=all)
 	finder.run(suspect_dirs)
