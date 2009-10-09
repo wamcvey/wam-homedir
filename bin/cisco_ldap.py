@@ -16,14 +16,41 @@ import pprint
 
 import ldap
 
-class cisco_ldap:
+class ldap_user(object):
+	"""Provide a more convienient object interface to returned LDAP values
+	"""
+	def __init__(self, ldap_results):
+		if len(ldap_results) != 1:
+			raise RuntimeError("Ldap result expected to be a list of length 1, got length %d" % len(ldap_results))
+		self.dn, self.attr_dict = ldap_results[0]
+
+	@property
+	def attributes(self):
+		"""lists the attributes this object knows about
+		"""
+		return sorted(self.attr_dict.keys())
+	
+	def __getattr__(self, key):
+		try:
+			val = self.attr_dict[key]
+			if isinstance(val, list) and len(val) == 1:
+				val = val[0]
+			return val
+		except:
+			raise AttributeError("no info for key %r" % key)
+
+	def __repr__(self):
+		return "<ldap_user: %r>" % self.dn
+
+class cisco_ldap(object):
 	"""Easy interface to the Cisco LDAP servers
 	"""
 	LDAP_URL= 'ldap://ldap.cisco.com:389/'
 	BASE= "ou=active,ou=employees,ou=people,o=cisco.com"
 	SCOPE = ldap.SCOPE_SUBTREE
-	def __init__(self, retrieve_all=False, timeout=False):
+	def __init__(self, retrieve_all=False, timeout=-1):
 		self.log = logging.getLogger(self.__class__.__name__)
+		self.log.debug("Initializing against: %s", self.LDAP_URL)
 		self.ldap = ldap.initialize(self.LDAP_URL)
 		self.TIMEOUT = timeout		
 		if retrieve_all:
@@ -42,9 +69,15 @@ class cisco_ldap:
 		"""
 		query_string = "(&%s)" % "".join(["(%s=%s)" % x for x in kwargs.items()])
 		self.log.info("Querying: %r", query_string)
+		self.log.debug("Searching: base=%s, scope=%s, query_string=%s"
+		               " , attrlist=%s)", self.BASE, self.SCOPE,
+			       query_string, self.RETRIEVE)
 		id = self.ldap.search(self.BASE, self.SCOPE, query_string, self.RETRIEVE)
 		while True:
-			result_type, result_data = self.ldap.result(id, self.TIMEOUT)
+			# we choose 'all=False' so that we get results as they
+			# are available. The generator will simply block until
+			# all results have been retrieved
+			result_type, result_data = self.ldap.result(id, all=False, timeout=self.TIMEOUT)
 			if not result_data:
 				raise StopIteration()
 			yield result_data
@@ -70,7 +103,7 @@ def main(argv=sys.argv, Progname=None):
 	  help="Query on userid (default is to query on common name)")
 	optparser.add_option("--pattern", dest = "query_pattern",
 	  action="store_true",
-	  help="Query on an arbitrary search expression (e.g. site=*Austin*)")
+	  help="Query on an arbitrary search expression (e.g. building=*Austin*)")
 	optparser.add_option("-a", dest = "return_all",
 	  action="store_true",
 	  help="Return all available information (ordinarily, only a subset is returned")
@@ -115,10 +148,11 @@ def main(argv=sys.argv, Progname=None):
 	
 	ldap_engine = cisco_ldap(retrieve_all=options.return_all)
 	for results in ldap_engine.query(**query):
+		user = ldap_user(results)
 		if options.return_list_dn:
-			print results[0][0]
+			print user.dn
 		elif options.return_list_uid:
-			print " ".join(results[0][1]["uid"])
+			print user.uid
 		else:
 			pprint.pprint(results)
 			print

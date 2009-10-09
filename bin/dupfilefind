@@ -4,143 +4,164 @@
 
 __author__ = "William McVey <wam@cisco.com>"
 __date__ =  "Sep  3, 2002"
+__revision__ = "1.2.0"
+
 
 import os
 import stat
-try:
-	import hashlib
-	md5=None
-except:
-	import md5
-	hashlib = None
-
 import sys
+try:
+    import hashlib
+    md5=None
+except:
+    import md5
+    hashlib = None
+import logging
 
-class reportsamefiles:
-	def __init__(self, verbose=False, delim=" ", remove=False, all=False):
-		self._statcache={}
-		self._verbose=verbose
-		self.delimiter=delim
-		self.remove = remove
-		self.all = all
+class DupFinder:
+    def __init__(self, verbose=False, delim=" ", remove=False, all=False):
+        self.log = logging.getLogger(self.__class__.__name__)
+        self.cache={}
+        self.verbose=verbose
+        self.delimiter=delim
+        self.remove = remove
+        self.all = all
 
-	def run(self, directories, arg=None):
-		for dir in directories:
-			os.path.walk(dir, self.visit, arg)
-		self.report()
+    def run(self, directories, arg=None):
+        for dir in directories:
+            os.path.walk(dir, self.visit, arg)
+        self.report()
 
-	def visit(self, arg, dirname, files):
-		for file in files:
-			pathname=os.path.join(dirname,file)
-			if (self._verbose):
-				print >>sys.stderr, "Looking at:", pathname
-			try:
-				statobj = os.stat(pathname)
-			except:
-				print >>sys.stderr, "%s: Couldn't stat %s" % (
-				  os.path.basename(sys.argv[0]), pathname)
-				continue
-			if not stat.S_ISREG(statobj.st_mode):
-				continue
-			if self._statcache.has_key(statobj.st_size):
-				self._statcache[statobj.st_size].append(pathname)
-			else:
-				self._statcache[statobj.st_size]=[pathname]
+    def visit(self, arg, dirname, files):
+        for file in files:
+            pathname=os.path.join(dirname,file)
+            self.log.info("Looking at: %s", pathname)
+            try:
+                statobj = os.stat(pathname)
+            except Exception, info:
+                self.log.warn("Couldn't stat %s: %s", pathname, info)
+                continue
+            if not stat.S_ISREG(statobj.st_mode):
+                continue
+            self.cache.setdefault(statobj.st_size, []).append(pathname)
 
-	def md5_file(self, filename):
-		# ZZZ: potential optimization here... might not have to hash
-		# the whole file if I were a bit more clever (?)
-		try:
-			f=open(filename)
-		except:
-			print >>sys.stderr, "%s: Couldn't open %r for hash" % (
-			  os.path.basename(sys.argv[0]), filename)
-			return None 
-		if hashlib:
-			hash = hashlib.md5(f.read())
-		elif md5:
-			hash = md5.new(f.read())
-		else:
-			raise RuntimeError("Neither hashlib nor md5 installed.")
-		f.close()
-		return hash.digest()
+    def md5_file(self, filename):
+        # ZZZ: potential optimization here... might not have to hash
+        # the whole file if I were a bit more clever (?)
+        try:
+            f=open(filename)
+        except Exception, info:
+            self.log.warn("Couldn't open %r for hashing: %s", filename, info)
+            return None 
+        if hashlib:
+            hash = hashlib.md5(f.read())
+        elif md5:
+            hash = md5.new(f.read())
+        else:
+            raise RuntimeError("Neither hashlib nor md5 installed.")
+        f.close()
+        return hash.digest()
 
-	def report(self):
-		for file_size in self._statcache:
-			md5cache={}
-			remove_files = {}
-			if len(self._statcache[file_size]) <= 1:
-				if self.all:
-					print self._statcache[file_size][0]
-				continue
-			for filename in self._statcache[file_size]:
-				hash = self.md5_file(filename)
-				if hash == None:
-					continue
-				if md5cache.has_key(hash):
-					if self.remove:
-						remove_files.setdefault(hash, []).append(filename)
-					md5cache[hash].append(filename)
-				else:
-					md5cache[hash]=[filename]
-			for hash in md5cache:
-				if len(md5cache[hash]) == 1:
-					if self.all:
-						print md5cache[hash][0]
-					continue
-				print self.delimiter.join(md5cache[hash])
-				if self.remove:
-					ansr = raw_input("Remove %s: [Yn]:" % " ".join(remove_files[hash]))
-					if ansr.strip() == "" or ansr.strip()[0].upper() != "N":
-						map(os.unlink, remove_files[hash])
-					
+    def report(self):
+        for file_size in self.cache:
+            md5cache={}
+            remove_files = {}
+            if len(self.cache[file_size]) <= 1:
+                if self.all:
+                    print self.cache[file_size][0]
+                continue
+            for filename in self.cache[file_size]:
+                hash = self.md5_file(filename)
+                if hash == None:
+                    continue
+                if md5cache.has_key(hash):
+                    if self.remove:
+                        remove_files.setdefault(hash, []).append(filename)
+                    md5cache[hash].append(filename)
+                else:
+                    md5cache[hash]=[filename]
+            for hash in md5cache:
+                if len(md5cache[hash]) == 1:
+                    if self.all:
+                        print md5cache[hash][0]
+                    continue
+                print self.delimiter.join(md5cache[hash])
+                if self.remove:
+                    ansr = raw_input("Remove %s: [Yn]:" % " ".join(remove_files[hash]))
+                    if ansr.strip() == "" or ansr.strip()[0].upper() != "N":
+                        map(os.unlink, remove_files[hash])
+
+
+
+def setup_logging(debug=False, verbose=False, logfile=None):
+    """set up logging environment
+    """
+    root_log = logging.getLogger()          # grab the root logger
+    if debug:
+        root_log.setLevel(logging.DEBUG)
+    elif verbose:
+        root_log.setLevel(logging.INFO)
+    else:
+        root_log.setLevel(logging.WARN)
+    handler = logging.StreamHandler()
+    if logfile:
+        handler = logging.FileHandler(logfile) 
+        logformat = "%(asctime)s %(levelname)s:%(name)s:%(message)s"
+        handler.setFormatter(logging.Formatter(logformat))
+        root_log.addHandler(handler)
+    logformat = "%(name)s: %(levelname)s: %(message)s"
+    handler.setFormatter(logging.Formatter(logformat))
+    root_log.addHandler(handler)
+    return root_log
+
+
+def main(argv=sys.argv, Progname=None):
+    from optparse import OptionParser, SUPPRESS_HELP       # aka Optik
+
+    # set up commandline arguments
+    if not Progname:
+        Progname=os.path.basename(argv[0])
+    Usage="%prog usage: [-arv] [-d DELIM] [DIRECTORY_PATHNAME ...]\n" \
+         "%prog usage: -h\n" \
+         "%prog usage: -V" 
+    optparser = OptionParser(usage=Usage, version="%prog: $Id:$" )
+    optparser.remove_option("--version")    # we add our own that knows -V
+    optparser.add_option("-a", dest = "all", action="store_true",
+        help="show all files (even ones that aren't duplicated)")
+    optparser.add_option("-r", "--remove", dest = "remove",
+        action="store_true", 
+        help="prompt to remove duplicates (files seen first are kept)")
+    optparser.add_option("-v", "--verbose", dest = "verbose",
+        action="store_true", help="print more detailed status updates")
+    optparser.add_option("-d", "--delim", dest = "delimiter",
+        action="store", default=' ',
+        help="specify an alternate delimiter (default: space)")
+    optparser.add_option("-V", "--version", action="version",
+        help="show program's version number and exit")
+    optparser.add_option("--debug", dest = "debug",
+        action="store_true", help=SUPPRESS_HELP)
+    (options, params) = optparser.parse_args(argv[1:])
+    setup_logging(options.debug, options.verbose, logfile=None)
+    log = logging.getLogger(Progname)
+
+    if not params:
+        params.append(".")
+    
+    finder=DupFinder(verbose=options.verbose, delim=options.delimiter, 
+                     remove=options.remove, all=options.all)
+    finder.run(params)
 
 if __name__ == '__main__':
-	import getopt
-	import sys
-	import os
+    progname=os.path.basename(sys.argv[0])
+    try:
+        main()
+    except Exception:
+        (exc_type, exc_value, exc_tb) = sys.exc_info()
+        sys.excepthook(exc_type, exc_value, exc_tb)	# if debugging
+        sys.exit("%s: %s: %s" % (progname, exc_type.__name__, exc_value))
+    except:
+        # catches SystemExit and KeyboardInterrupt
+        (exc_type, exc_value, exc_tb) = sys.exc_info()
+        sys.exit(exc_value)
+    sys.exit(0)
 
-	Progname=os.path.basename(sys.argv[0])
-	Version= "%(Progname)s: $Id:$" % vars()
-	Usage="""\
-%(Progname)s usage: [directory ...]
-%(Progname)s usage: -h
-%(Progname)s usage: -V""" % vars()
-	Help="""%(Usage)s
--r	prompt to remove duplicates (files seen first are kept)
--d	specify a delimiter (default: space)
--V      show version info
--a      show all files (even ones that aren't duplicated)
--h      show this message""" %  vars()
-
-	try:
-		opts, params = getopt.getopt(sys.argv[1:], "hvVrad:")
-	except:
-		sys.exit("%(Progname)s: invalid commandline.\n%(Usage)s" % vars())
-
-	all = False
-	verbose= False
-	delim=" "
-	remove=False
-	for (option, val) in opts:
-		if option == "-v":
-			verbose=True
-		if option == "-d":
-			delim=val
-		if option == "-r":
-			remove=True
-		if option == "-h":
-			print Help
-			sys.exit(0)
-		if option == "-a":
-			all = True
-		if option == "-V":
-			print Version
-			sys.exit(0)
-	if len(params) == 0:
-		suspect_dirs = ["."]
-	else:
-		suspect_dirs = params
-
-	finder=reportsamefiles(verbose=verbose, delim=delim, remove=remove, all=all)
-	finder.run(suspect_dirs)
