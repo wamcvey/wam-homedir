@@ -44,7 +44,6 @@ def fetch_executable(url, destdir, user_agent=None, timeout=None,
     if not base:
         base = "untitled.exe"
     dest_filename = os.path.join(destdir, base)
-    request = urllib2.urlopen(url)
     req = urllib2.Request(url, headers=headers)
     response = urllib2.urlopen(req)
     actual_url = response.geturl()
