@@ -11,5 +11,6 @@ do
 done
 PYTHONSTARTUP=$HOME/.pythonrc
 PYTHONDOCS=/usr/share/doc/python-doc
+export WORKON_HOME=$HOME/projs/virtualenvs
 export PYTHONPATH PYTHONDOCS PYTHONSTARTUP
 
