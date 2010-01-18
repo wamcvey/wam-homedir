@@ -9,13 +9,17 @@ GNOMETERM=/apps/gnome-terminal
 GLOBAL_KEYS=/apps/metacity/global_keybindings
 WINDOW_KEYS=/apps/metacity/window_keybindings
 
-# I prefer mrxvt, but fallback to xterm if it's unavailable
-if which mrxvt >/dev/null 2>&1 
+if which terminator >/dev/null 2>&1
 then
+	TERM_PROG=terminator
+	TERM_EXEC_ARG=
+elif which mrxvt >/dev/null 2>&1 
+then
+	echo "Using mrxvt for term emulator as terminator is unavailable" >&2
 	TERM_PROG=mrxvt
 	TERM_EXEC_ARG="-e"
 else
-	echo "Using xterm for term emulator as mrxvt is unavailable" >&2
+	echo "Using xterm for term emulator as terminator and mrxvt are unavailable" >&2
 	TERM_PROG=xterm
 	TERM_EXEC_ARG="-e"
 fi
