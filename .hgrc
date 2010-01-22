@@ -1,0 +1,37 @@
+[ui]
+username=William McVey <wam@cisco.com>
+
+[extensions]
+hgext.convert=
+hgext.bookmarks = 
+color =
+hgext.record =
+# hgext.mq = 
+hgshelve = ~/lib/hg/hgshelve.py
+
+# [color]
+# status.modified = blue bold underline red_background
+# status.clean = none
+# status.copied = none
+# diff.diffline = bold
+# diff.extended = cyan bold
+# diff.file_a = red bold
+# diff.file_b = green bold
+# diff.hunk = magenta
+
+[color]
+status.modified = magenta bold
+status.added = green bold
+status.removed = red bold
+status.deleted = cyan bold
+status.unknown = blue bold
+status.ignored = black bold
+diff.deleted = red
+diff.inserted = green
+diff.changed = yellow
+diff.trailingwhitespace = bold red_background
+
+[auth]
+seeker.prefix = seeker.cisco.com/hg
+seeker.username = wam
+seeker.schemes = http https

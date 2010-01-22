@@ -536,4 +536,6 @@ watch_mailfilter() {
 	hilite -c cyan -u -p "Filtered=\(.*\)"
 }
 
+alias pyg=pygmentize
+alias hgst='hg status `hg root`'
 ENV=$oldENV

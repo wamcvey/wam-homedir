@@ -9,6 +9,12 @@
 # William McVey <wam@cisco.com>
 # Feb 13, 2009
 
+TRAC_CONF=${TRAC_CONF:-$HOME/lib/trac-servers.conf}
+if [ -f $TRAC_CONF ]; then
+	# can't use -F: because awk will split the URL on colons as well,
+	# resulting in fields of 'http' and '//hostname/path'
+	TRAC_URL=`awk '$1 ~ /^'${1:-default}':/ { print substr($_, 1+index($0, ":"))}' $TRAC_CONF`
+fi
 TRAC_URL=${TRAC_URL:-http://sie-dev.cisco.com}
 TMPFILE=`mktemp` || exit 1
 # read -p "User (default: $USER)"  user
