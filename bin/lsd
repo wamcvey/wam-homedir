@@ -6,7 +6,7 @@ then
 	name=""
 	shift
 else
-	name='! -name \.\*'
+	name='! -name "\.\*"'
 fi
 
 ARGS=${@:-.}
