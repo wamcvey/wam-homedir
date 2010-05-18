@@ -218,9 +218,6 @@ arin=whois.arin.com
 arin=whois.ripe.com
 ip_re='[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*'
 
-trap "echo \(\$?\)" ERR 2>/dev/null
-trap '/bin/rm -f $HISTFILE' EXIT HUP TERM
-
 if [ -f /etc/bash_completion ]
 then
 	. /etc/bash_completion
@@ -232,3 +229,8 @@ if [ -d $HOME/lib/bash_profile.d ]; then
 		[ -f "$f" ] && . "$f"
 	done
 fi
+
+# keep the error traps at the end, so that startup errors in things like 
+# bash_completion macros don't trigger the trap
+trap "echo \(\$?\)" ERR  2>/dev/null
+trap '/bin/rm -f $HISTFILE' EXIT HUP TERM
