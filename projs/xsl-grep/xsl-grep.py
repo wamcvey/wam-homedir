@@ -64,7 +64,7 @@ if __name__ == '__main__':
 
 	Progname=os.path.basename(sys.argv[0])
 	Usage="""\
-%(Progname)s usage: [-k] [-a attribute|-c] [--ns NS=URL] [-A xpath_expr]... [-d delim] xpath_expr FILE[...]
+%(Progname)s usage: [-k] [-a attribute|-c] [--ns [NS=]URL] [-A xpath_expr]... [-d delim] xpath_expr FILE[...]
 %(Progname)s usage: -h
 %(Progname)s usage: -V""" % vars()
 
