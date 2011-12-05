@@ -1,4 +1,12 @@
 #!/bin/sh
-myip=`myip eth0 || myip eth1`
+#myip=`myip eth0 || myip eth1`
+if [ "$1" = "-i" ]
+then
+	myip=`myip ${2}`
+	shift
+	shift
+else
+	myip=`myip eth0`
+fi
 
 ssh $@ "pkill synergyc ; DISPLAY=:0.0 synergyc $myip"
