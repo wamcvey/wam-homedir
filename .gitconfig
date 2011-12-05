@@ -12,3 +12,9 @@
 	ci = commit
 [tar]
 	umask = user
+
+[merge]
+	tool = meld
+
+[push]
+	default = current
