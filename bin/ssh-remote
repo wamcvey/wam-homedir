@@ -5,6 +5,7 @@
 #
 # ssh-remote [-v] [-b] [remotehost]
 # -b	Bounce through crypt...
+# -w    Bounce through wam's ISP
 # 
 # William McVey <wam@cisco.com>
 # Dec 10, 2000
