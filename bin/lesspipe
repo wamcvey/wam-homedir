@@ -54,13 +54,13 @@ case "$1" in
 	base=`expr "$1" : '\(.*\)::'`
 	dehtml $base | less
 	;;
-*.zip|*.xpi|*.egg)
-	$UNZIP -l $1 2> /dev/null
+*.zip|*.xpi|*.egg|*.epub)
+	$UNZIP -l "$1" 2> /dev/null
 	;;
-*.zip::*|*.xpi::*|*.egg:*)
+*.zip::*|*.xpi::*|*.egg::*|*.epub::*)
 	base=`expr "$1" : '\(.*\)::'`
 	subfile=`expr "$1" : '.*::\(.*\)'`
-	$UNZIP -p $base $subfile 2> /dev/null
+	$UNZIP -p "$base" "$subfile" 2> /dev/null
 	;;
 esac
 exit 0
