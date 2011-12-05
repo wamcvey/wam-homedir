@@ -203,7 +203,6 @@ fi
 [ -d ${TMP}/junk ] || mkdir ${TMP}/junk
 [ -f $HOME/lib/dircolors.db ] && eval `dircolors $HOME/lib/dircolors.db`
 [ -f $HOME/.profile-`hostname` ] && . $HOME/.profile-`hostname`
-[ -f $HOME/lib/aliases ] && . $HOME/lib/aliases
 
 if [ -n "${DISPLAY}" ]; then
 	echo "Display is: ${DISPLAY}"
@@ -218,9 +217,6 @@ arin=whois.arin.com
 arin=whois.ripe.com
 ip_re='[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*'
 
-trap "echo \(\$?\)" ERR 2>/dev/null
-trap '/bin/rm -f $HISTFILE' EXIT HUP TERM
-
 if [ -f /etc/bash_completion ]
 then
 	. /etc/bash_completion
@@ -232,3 +228,7 @@ if [ -d $HOME/lib/bash_profile.d ]; then
 		[ -f "$f" ] && . "$f"
 	done
 fi
+[ -f $HOME/lib/aliases ] && . $HOME/lib/aliases
+
+trap "echo \(\$?\)" ERR 2>/dev/null
+trap '/bin/rm -f $HISTFILE' EXIT HUP TERM
