@@ -46,19 +46,21 @@ class cisco_ldap(object):
 	"""Easy interface to the Cisco LDAP servers
 	"""
 	LDAP_URL= 'ldap://ldap.cisco.com:389/'
-	BASE= "ou=active,ou=employees,ou=people,o=cisco.com"
+	PEOPLE_BASE= "ou=active,ou=employees,ou=people,o=cisco.com"
+	RESOURCE_BASE = "ou=resources,o=cisco.com"
 	SCOPE = ldap.SCOPE_SUBTREE
-	def __init__(self, retrieve_all=False, timeout=-1):
+	def __init__(self, retrieve_all=False, timeout=-1, resources=False):
 		self.log = logging.getLogger(self.__class__.__name__)
 		self.log.debug("Initializing against: %s", self.LDAP_URL)
 		self.ldap = ldap.initialize(self.LDAP_URL)
 		self.TIMEOUT = timeout		
+		self.BASE = self.RESOURCE_BASE if resources else self.PEOPLE_BASE
 		if retrieve_all:
 			self.RETRIEVE = None		# pull all info
 		else:
 			self.RETRIEVE = ['uid','cn', 'title', 'description', 
 			  'employeenumber', 'mail', 'manager', 'site', 
-			  'mobile', 'telephonenumber']
+			  'mobile', 'telephonenumber', 'alternatephoneflag']
 	
 	def query(self, **kwargs):
 		"""Issue a query against the LDAP server and return an iterator
@@ -113,6 +115,9 @@ def main(argv=sys.argv, Progname=None):
 	optparser.add_option("-L", dest = "return_list_dn",
 	  action="store_true",
 	  help="Only print the matching distinguished name")
+	optparser.add_option("-r", dest = "resources",
+	  action="store_true", default=False,
+	  help="Query for defined resources (e.g. conference rooms)")
 	optparser.add_option("-v", "--verbose", dest = "verbose",
 	  action="store_true", help="be verbose")
 	(options, params) = optparser.parse_args(argv[1:])
@@ -146,7 +151,7 @@ def main(argv=sys.argv, Progname=None):
 	else:
 		query = {"cn": params[0]}
 	
-	ldap_engine = cisco_ldap(retrieve_all=options.return_all)
+	ldap_engine = cisco_ldap(retrieve_all=options.return_all, resources=options.resources)
 	for results in ldap_engine.query(**query):
 		user = ldap_user(results)
 		if options.return_list_dn:
