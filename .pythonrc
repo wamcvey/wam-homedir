@@ -21,8 +21,8 @@ from pprint import pprint as p
 
 try:
 	import ultraTB
-	# sys.excepthook = ultraTB.ColorTB()
-	sys.excepthook = ultraTB.VerboseTB()
+	sys.excepthook = ultraTB.ColorTB()
+	# sys.excepthook = ultraTB.VerboseTB()
 except:
 	pass
 
