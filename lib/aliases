@@ -189,6 +189,20 @@ addafter() { PATH=${PATH}:$1; echo $PATH ; }
 addbefore() { PATH=$1:${PATH}; echo $PATH ; }
 pathrm() { PATH=`echo $PATH | sed -e "s=^${1}:==;s=:${1}$==;s=:${1}:=:="` ; echo $PATH; }
 
+spin() {
+	trap 'tput cnorm' EXIT INT
+	local s=$(($SECONDS + $1))
+	(tput civis
+	 while [[ $SECONDS -lt $s ]]
+	 do
+		for f in '|' '\' '-' '/'
+		do
+			echo -n "$f" && sleep .2s && echo -n $'\b'
+		done
+	 done
+	)
+	tput cnorm
+}
 idle() {
 	(
 	while true
