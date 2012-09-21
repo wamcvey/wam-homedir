@@ -1,4 +1,4 @@
-set tabstop=4 shiftwidth=4 ai
+set tabstop=4 shiftwidth=4 ai et
 map!  #!/usr/bin/env python!!echo '\# %'o# A program to do something## William McVey <wam@cisco.com>!!date +"\# \%b \%e, \%Y"oif __name__ == '__main__':import getoptimport sys
 map ,n Gd1Gi
 map! : :	
