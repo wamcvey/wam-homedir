@@ -233,6 +233,8 @@ if [ -d $HOME/lib/bash_profile.d ]; then
 	done
 fi
 [ -f $HOME/lib/aliases ] && . $HOME/lib/aliases
+# trap '/bin/rm -f $HISTFILE' EXIT HUP TERM
 
+# keep the error traps at the end, so that startup errors in things like 
+# bash_completion macros don't trigger the trap
 trap "echo \(\$?\)" ERR 2>/dev/null
-trap '/bin/rm -f $HISTFILE' EXIT HUP TERM
