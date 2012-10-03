@@ -22,7 +22,9 @@ run_bash_completion() {
 	unset bash bmajor bminor
 }
 run_bash_completion
-#if [ "$PS1" ]
-#then
-#	[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
-#fi
+if [ "$PS1" ]
+then
+	[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
+fi
+
+PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
