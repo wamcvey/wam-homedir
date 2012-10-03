@@ -9,6 +9,10 @@ hgext.record =
 # hgext.mq = 
 hgshelve = ~/lib/hg/hgshelve.py
 
+hggit = 
+
+prompt = ~/lib/hg/prompt.py
+
 # [color]
 # status.modified = blue bold underline red_background
 # status.clean = none
@@ -35,3 +39,6 @@ diff.trailingwhitespace = bold red_background
 seeker.prefix = seeker.cisco.com/hg
 seeker.username = wam
 seeker.schemes = http https
+
+[git]
+intree=1
