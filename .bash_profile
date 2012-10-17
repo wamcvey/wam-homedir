@@ -106,7 +106,7 @@ case "$SHELL" in
 	# The brackets indicate escape codes so command editing doesn't get
 	# screwed up
 	# PS1='\[`color yellow`\]${USERAT}${SHORTHOST} ${DIR}\[`color off`\] ${ROOTPROMPT} '
-	PS1='\[`color yellow`\]${USERAT}${SHORTHOST} ${DIR}\[`color off`\] \[`color cyan`\]$(hg prompt "{[{root|basename}:}{branch}{status}]" 2>/dev/null )\[`color green`\]$(git_prompt)\[`color off`\] ${ROOTPROMPT} '
+	PS1='\[`color yellow`\]${USERAT}${SHORTHOST} \[`color cyan`\]$(hg prompt "{[{root|basename}:}{branch}{status}]" 2>/dev/null )\[`color green`\]$(git_prompt) \[`color yellow`\]${DIR}\[`color off`\] ${ROOTPROMPT} '
 	;;
 *ksh|sh)
 	PS1='`color yellow`${USERAT}${SHORTHOST} ${DIR}`color off` ${ROOTPROMPT} '
