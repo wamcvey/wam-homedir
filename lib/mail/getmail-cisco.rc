@@ -1,6 +1,6 @@
 [retriever]
-type = SimpleIMAPRetriever
-server = email.cisco.com
+type = SimpleIMAPSSLRetriever
+server = mail.cisco.com
 username = wam
 # mailboxes = ("INBOX", "Calendar",)
 mailboxes = ("INBOX",)
