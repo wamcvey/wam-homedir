@@ -3,6 +3,9 @@ bin/aironet-config.sh
 lib/wamber_wpa_supplicant.conf
 .ssh/id_dsa
 .ssh/identity
+.Private
+.ecryptfs
+.pki
 
 
 # hierachies that deserve their own repository
@@ -25,11 +28,25 @@ recently-used.xbel
 .gksu.lock
 .esd_auth
 .Xauthority
-.bash_history
+.*[-_]history
 .thumbnails
 .thumbnails/*
 .xsession-errors
 recently-used.xbel
+.recently-used
 .viminfo
 .asoundrc
 .asoundrc.asoundconf
+.goutputstream*
+.gstreamer-0.10
+.pulse-cookie
+.*.bak
+Dropbox
+.ssh/known_hosts
+.webex
+
+# files I don't necessarily want everywhere
+lib/images/
+.java
+.kde
+.nvidia*

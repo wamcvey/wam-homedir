@@ -4,6 +4,12 @@
 # William McVey <wam@cisco.com>
 # $Id$
 
+if [ "$1" = "--internet" ]
+then
+	dig myip.opendns.com @Resolver1.opendns.com +short
+	exit 0
+fi
+
 result=`ifconfig $1 | sed -ne 's/.*inet addr:\([^ ]*\) .*$/\1/p'`
 
 if [ -z "$result" ]

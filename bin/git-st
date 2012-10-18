@@ -1,0 +1,10 @@
+#!/bin/sh
+# A 'git status' alternative that improves the display of uncommitted files
+# William McVey - <wam@cisco.com>
+# Oct 3, 2012
+
+git status --untracked-files=no  "$@"
+color cyan
+git status --porcelain "$@" | sed -n -e 's/^?? //p' | ls_display  
+color off
+

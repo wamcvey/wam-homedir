@@ -42,6 +42,7 @@ for dir in \
 	/cygdrive/c/WINDOWS/i386 \
 	/cygdrive/c/winnt/system32 /cygdrive/c/winnt /cygdrive/c/winnt/i386 \
 	/cygdrive/c/spatools \
+	/home/wam/projs/virtualenvs/dev-tools/bin \
 	${HOME}/hosts 
 do
 	if [ -d $dir ]; then
@@ -104,7 +105,8 @@ case "$SHELL" in
 *bash)
 	# The brackets indicate escape codes so command editing doesn't get
 	# screwed up
-	PS1='\[`color yellow`\]${USERAT}${SHORTHOST} ${DIR}\[`color off`\] ${ROOTPROMPT} '
+	# PS1='\[`color yellow`\]${USERAT}${SHORTHOST} ${DIR}\[`color off`\] ${ROOTPROMPT} '
+	PS1='\[`color yellow`\]${USERAT}${SHORTHOST} \[`color cyan`\]$(hg prompt "{[{root|basename}:}{branch}{status}]" 2>/dev/null )\[`color green`\]$(git_prompt) \[`color yellow`\]${DIR}\[`color off`\] ${ROOTPROMPT} '
 	;;
 *ksh|sh)
 	PS1='`color yellow`${USERAT}${SHORTHOST} ${DIR}`color off` ${ROOTPROMPT} '
@@ -164,6 +166,9 @@ then
 	export FORREST_HOME=${HOME}/tools/forrest
 	PATH=${PATH}:${HOME}/tools/forrest/bin
 fi
+
+#export GEM_HOME=$HOME/lib/gems
+#export PATH=$GEM_HOME/bin:$PATH
 
 GDFONTPATH=/mnt/windows/windows/Fonts:/usr/X11R6/lib/X11/fonts/mozilla-fonts:/usr/X11R6/lib/X11/fonts/TTF:/usr/X11R6/lib/X11/fonts/Type1:$HOME/.cxoffice/dotwine/fake_windows/Windows/Fonts
 export GDFONTPATH
