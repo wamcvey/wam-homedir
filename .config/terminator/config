@@ -1,0 +1,17 @@
+[global_config]
+  focus = system
+[keybindings]
+[profiles]
+  [[default]]
+    background_darkness = 0.88
+    login_shell = True
+    background_type = transparent
+[layouts]
+  [[default]]
+    [[[child1]]]
+      type = Terminal
+      parent = window0
+    [[[window0]]]
+      type = Window
+      parent = ""
+[plugins]
