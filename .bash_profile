@@ -19,7 +19,7 @@ for dir in \
 	/usr/local/tex/bin \
 	/usr/local/misc \
 	/usr/ccs/bin /opt/SUNWspro/bin /usr/lang \
-	/usr/local/java /usr/local/java/bin /usr/java/bin \
+	/usr/local/java /usr/local/java/bin /usr/java/bin /opt/java/bin \
 	/usr/local/xep/bin /usr/local/xep \
 	/bin /etc /usr/etc /usr/sbin /sbin /usr/bin \
 	/usr/ucb /usr/bsd \
@@ -118,9 +118,9 @@ esac
 
 
 for dir in /usr/local/java /usr/local/jdk /usr/java \
-           /usr/lib/jvm/java-6-sun  /usr/lib/jvm/java-1.5.0-sun
+           /opt/java /usr/lib/jvm/java-6-sun  /usr/lib/jvm/java-1.5.0-sun
 do
-	if [ -d "$dir" ]; then
+	if [ -d "${dir}/bin" ]; then
 		JAVA_HOME=$dir 
 		export JAVA_HOME
 		break
