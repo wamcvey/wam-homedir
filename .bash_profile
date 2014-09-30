@@ -239,3 +239,10 @@ fi
 # keep the error traps at the end, so that startup errors in things like 
 # bash_completion macros don't trigger the trap
 trap "echo \(\$?\)" ERR 2>/dev/null
+
+# Set Locale variables
+export LANGUAGE="en_US:en"
+export LC_MESSAGES="en_US.UTF-8"
+export LC_CTYPE="en_US.UTF-8"
+export LC_COLLATE="en_US.UTF-8"
+
